@@ -1,0 +1,3 @@
+Sabado_7_de_Febrero_2026.txt
+errores_del_sistema.txt
+admin_audit.txt

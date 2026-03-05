@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-width, initial-scale=1.0">
+    <title>Simulador de Sensores - Envio de Datos</title>
+    <style>
+        /* 1. IMPORTACIÓN DE FUENTE ORBITRON (ESTILO DIGITAL) */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        
+        body { 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
+            background-color: #f4f4f9; 
+            color: #333;
+        }
+        .container { 
+            background-color: #fff; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            max-width: 500px; 
+            width: 100%; 
+        }
+        h1 { 
+            color: #17a2b8; /* Info color */
+            margin-bottom: 20px; 
+            text-align: center;
+        }
+        .control-button { 
+            width: 100%;
+            padding: 12px 20px; 
+            font-size: 18px; 
+            font-weight: bold;
+            cursor: pointer; 
+            border: none; 
+            border-radius: 5px; 
+            color: white; 
+            transition: background-color 0.3s; 
+            margin-top: 10px;
+        }
+        #toggleButton {
+            margin-top: 0;
+        }
+        #toggleButton.inactive { 
+            background-color: #dc3545; /* Rojo */
+        }
+        #toggleButton.active { 
+            background-color: #28a745; /* Verde */
+        }
+        #toggleButton.shutting-down { 
+            background-color: #ffc107; /* Amarillo */
+            cursor: not-allowed;
+        }
+        #clearLogButton {
+            background-color: #ffc107; /* Amarillo/Advertencia */
+            color: #333;
+            font-size: 14px;
+            padding: 8px;
+            width: auto;
+            align-self: flex-end;
+            margin: 10px 0 0 0;
+        }
+        #toggleButton:not(.shutting-down):hover, #clearLogButton:hover { 
+            opacity: 0.9; 
+        }
+        #statusMessage { 
+            margin-top: 20px; 
+            padding: 10px; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            text-align: center; 
+            background-color: #e9ecef;
+            display: flex;
+            flex-direction: column;
+        }
+        /* ESTILO DIGITAL CON FUENTE ORBITRON Y VERDE LIMA */
+        #countdownDisplay {
+            margin-top: 8px;
+            font-size: 1.6em; /* Mayor tamaño para destacar */
+            font-family: 'Orbitron', monospace; /* Fuente digital */
+            font-weight: 700; /* Negrita para un look más sólido */
+            color: #90EE90; /* Verde Lima Claro */
+            background-color: #333; /* Fondo oscuro para contraste */
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            letter-spacing: 1px; /* Espaciado extra para look digital */
+        }
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        .log-container { 
+            padding: 15px; 
+            background-color: #f8f9fa; 
+            border: 1px solid #dee2e6;
+            border-radius: 5px; 
+            height: 200px; 
+            overflow-y: scroll; 
+            text-align: left; 
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+        .log-item { 
+            margin-bottom: 3px; 
+            line-height: 1.2;
+        }
+        .log-success { 
+            color: #155724; 
+        }
+        .log-error { 
+            color: #721c24; 
+        }
+        .log-info { 
+            color: #004085; 
+        }
+        .config-group {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .config-group:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        .config-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .config-group select, .config-group input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        
+        /* Estilo para el nuevo Checkbox de Modo Motor */
+        .engine-mode-group {
+            display: flex;
+            align-items: center;
+            background-color: #f0f8ff; /* Azul claro para destacar */
+            padding: 10px;
+            border: 1px solid #cceeff;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .engine-mode-group input[type="checkbox"] {
+            transform: scale(1.5); /* Checkbox más grande */
+            margin-right: 15px;
+        }
+        .engine-mode-group label {
+            margin-bottom: 0;
+            font-weight: bold;
+            color: #007bff;
+            flex-grow: 1;
+        }
+
+
+        /* Estilos específicos para la configuración de sensores */
+        .sensor-input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+            align-items: center;
+        }
+        .sensor-input-row input {
+            flex: 1;
+            width: auto; /* Anula el 100% de .config-group input */
+            margin-bottom: 0;
+        }
+        .sensor-input-row span {
+            font-weight: bold;
+        }
+        .sensor-range-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .slider-group {
+            margin-top: 5px;
+        }
+        .slider-group label {
+            font-weight: normal;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0;
+        }
+        .slider-container {
+             display: flex;
+             flex-direction: column;
+             margin-bottom: 10px;
+        }
+        .slider-container label {
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 2px;
+            justify-content: flex-start;
+        }
+        .slider-container input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            border: none;
+        }
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #17a2b8;
+            cursor: pointer;
+        }
+        .slider-container input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #17a2b8;
+            cursor: pointer;
+        }
+
+        /* --- ESTILOS DE LA MODAL --- */
+        .modal-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.4); /* Fondo negro semi-transparente */
+            padding-top: 60px;
+            backdrop-filter: blur(3px); /* Efecto de desenfoque */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% superior y centrado */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%; 
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Botón de configuración principal */
+        #openConfigButton {
+            background-color: #007bff; /* Azul */
+            margin-bottom: 20px;
+            font-size: 16px;
+            padding: 10px;
+        }
+        #openConfigButton:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Envío de Sensores</h1>
+
+        <div class="engine-mode-group">
+            <input type="checkbox" id="engineModeCheckbox">
+            <label for="engineModeCheckbox">Activar Modo Motor Encendido</label>
+        </div>
+
+        <div class="config-group">
+            <label for="intervalSelect">Frecuencia de Envío Principal:</label>
+            <select id="intervalSelect">
+                <option value="10000">10 Segundos</option>
+                <option value="30000">30 Segundos</option>
+                <option value="60000" selected>1 Minuto (Por defecto)</option>
+                <option value="120000">2 Minutos</option>
+                <option value="300000">5 Minutos</option>
+            </select>
+        </div>
+
+        <button id="openConfigButton" class="control-button">
+            ⚙️ Abrir Configuración de Sensores
+        </button>
+
+        <button id="toggleButton" class="control-button inactive">
+            ▶️ Iniciar Simulación (Desactivado)
+        </button>
+        <div id="statusMessage">
+            <span id="mainStatusText"></span>
+            <div id="countdownDisplay"></div> 
+        </div>
+        
+        <div class="log-header">
+            <h3>Registro de Envíos</h3>
+            <button id="clearLogButton" class="control-button">
+                🗑️ Limpiar
+            </button>
+        </div>
+        
+        <div id="log" class="log-container"></div>
+    </div>
+
+    <div id="configModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalButton">&times;</span>
+            <h2>⚙️ Parámetros de Sensores</h2>
+
+            <p style="color: #dc3545; font-weight: bold;">⚠️ NOTA: Estos ajustes solo se usan si el "Modo Motor Encendido" NO está activo.</p>
+
+            <div id="config-sensors-group">
+
+                <div class="sensor-range-group">
+                    <label>Temperatura (°C) - Rango [Min, Max] **(Controlable por Sliders)**</label>
+                    <div class="sensor-input-row">
+                        <input type="number" id="tempMin" value="70" step="1" placeholder="Min" min="0" max="120">
+                        <span>-</span>
+                        <input type="number" id="tempMax" value="120" step="1" placeholder="Max" min="0" max="120">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-container">
+                            <label for="tempSliderMin">Valor Mínimo:</label>
+                            <input type="range" id="tempSliderMin" min="0" max="119" value="70" step="1">
+                        </div>
+                        <div class="slider-container">
+                            <label for="tempSliderMax">Valor Máximo:</label>
+                            <input type="range" id="tempSliderMax" min="1" max="120" value="120" step="1">
+                        </div>
+                    </div>
+
+                    <div class="slider-group">
+                        <label>Variación Aleatoria dentro del Rango: <span id="tempVariationValue">10</span>%</label>
+                        <input type="range" id="tempVariation" min="0" max="100" value="10">
+                    </div>
+                </div>
+
+                <div class="sensor-range-group">
+                    <label>Presión (PSI) - Rango [Min, Max]</label>
+                    <div class="sensor-input-row">
+                        <input type="number" id="presMin" value="0" step="1" placeholder="Min">
+                        <span>-</span>
+                        <input type="number" id="presMax" value="160" step="1" placeholder="Max">
+                    </div>
+                    <div class="slider-group">
+                        <label>Variación Aleatoria dentro del Rango: <span id="presVariationValue">10</span>%</label>
+                        <input type="range" id="presVariation" min="0" max="100" value="10">
+                </div>
+
+                <div class="sensor-range-group">
+                    <label>Voltaje (V) - Rango [Min, Max]</label>
+                    <div class="sensor-input-row">
+                        <input type="number" id="voltMin" value="26" step="0.01" placeholder="Min">
+                        <span>-</span>
+                        <input type="number" id="voltMax" value="28" step="0.01" placeholder="Max">
+                    </div>
+                    <div class="slider-group">
+                        <label>Variación Aleatoria dentro del Rango: <span id="voltVariationValue">10</span>%</label>
+                        <input type="range" id="voltVariation" min="0" max="100" value="10">
+                    </div>
+                </div>
+                
+            </div>
+            </div>
+    </div>
+
+
+    <script>
+        // --- CONFIGURACIÓN DE URLS ---
+        const URL_ENVIO = "http://marant.medianewsonline.com/php/Ajax_2seg_Update.php";  
+        const URL_GUARDADO = "http://marant.medianewsonline.com/php/salvar.php";
+        const INTERVALO_GUARDADO_MS = 60000; // 1 minuto (60 segundos)
+          
+        // --- ESTADO GENERAL ---
+        let intervalId = null; 
+        let saveIntervalId = null; 
+        let countdownId = null; 
+        let coolDownIntervalId = null; 
+        let timeRemaining = 0; 
+        let isSending = false; 
+
+        // --- VARIABLES DE ESTADO PARA MODO MOTOR ---
+        let isEngineModeActive = false; 
+        let currentTemp = 25.0; 
+        let currentPres = 0.0; 
+        let currentVolt = 24.5; 
+        let tempStepCounter = 0; 
+        let lastSendIntervalMs = 10000; 
+        let presDropCounter = 0; // NUEVA: Contador para el descenso gradual de la presión.
+
+        // RANGOS ESTABLES Y TRANSICIÓN DEL MOTOR
+        const TEMP_RUNNING_MIN = 80.0;
+        const TEMP_RUNNING_MAX = 95.0;
+        const PRES_MAX_RISE = 55.0; 
+        
+        // RANGOS MODIFICADOS PARA LA NUEVA LÓGICA DE PRESIÓN
+        const PRES_TRANSITION_TARGET = 40.0; // Presión objetivo para la transición
+        const PRES_RUNNING_MIN = 40.0; // Nuevo mínimo para la operación estable
+        const PRES_RUNNING_MAX = 45.0; // Nuevo máximo para la operación estable
+        
+        const VOLT_RUNNING_MIN = 27.0;
+        const VOLT_RUNNING_MAX = 28.0;
+        const VOLT_MAX_RISE = 27.8; 
+        const TEMP_INCREMENT_INTERVAL_MS = 30000; // 30 segundos
+        const PRES_DROP_TIME_MS = 30000; // 30 segundos para el descenso de presión
+        
+        // --- CONSTANTES PARA LA SECUENCIA DE APAGADO ---
+        const SHUTDOWN_VOLTAGE = 24.5; // Voltaje final
+        const SHUTDOWN_PRES_MIN = 0.0; // Presión final mínima
+        const SHUTDOWN_PRES_MAX = 5.0; // Presión final máxima
+
+        // --- CONSTANTES PARA EL ENFRIAMIENTO (ACTUALIZADAS) ---
+        const TEMP_SHUTDOWN_FINAL = 40.0; // Temperatura objetivo para el apagado total
+        const COOL_DOWN_INTERVAL_MS = 20000; // Intervalo de actualización (20 segundos)
+        const TEMP_DECREMENT_MIN = 1.0; // Descenso mínimo (1.0°C)
+        const TEMP_DECREMENT_MAX = 1.5; // Descenso máximo (1.5°C)
+        
+        // --- WAKE LOCK ---
+        let wakeLock = null; 
+
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator && isSending) {
+                try {
+                    if (wakeLock) await wakeLock.release(); 
+                    
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    wakeLock.addEventListener('release', () => {
+                        logMessage('🔒 El Bloqueo de Activación fue liberado por el OS.', 'info');
+                    });
+                    logMessage('🔓 Bloqueo de Activación ACTIVO. La pantalla no se apagará automáticamente (mientras la app esté en primer plano).', 'success');
+                } catch (err) {
+                    logMessage(`⚠️ Error al solicitar Bloqueo de Activación: ${err.name}.`, 'error');
+                }
+            }
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock) {
+                wakeLock.release();
+                wakeLock = null;
+                logMessage('🔒 Bloqueo de Activación liberado.', 'info');
+            }
+        }
+        
+        // --- ELEMENTOS DEL DOM ---
+        const toggleButton = document.getElementById('toggleButton');
+        const mainStatusText = document.getElementById('mainStatusText'); 
+        const countdownDisplay = document.getElementById('countdownDisplay'); 
+        const logElement = document.getElementById('log');
+        const intervalSelect = document.getElementById('intervalSelect');
+        const clearLogButton = document.getElementById('clearLogButton');
+        const openConfigButton = document.getElementById('openConfigButton'); 
+        const engineModeCheckbox = document.getElementById('engineModeCheckbox'); 
+
+        const configModal = document.getElementById('configModal');
+        const closeModalButton = document.getElementById('closeModalButton');
+            
+        const tempMin = document.getElementById('tempMin');
+        const tempMax = document.getElementById('tempMax');
+        const tempSliderMin = document.getElementById('tempSliderMin'); 
+        const tempSliderMax = document.getElementById('tempSliderMax'); 
+        const tempVariation = document.getElementById('tempVariation');
+        const tempVariationValue = document.getElementById('tempVariationValue');
+
+        const presMin = document.getElementById('presMin');
+        const presMax = document.getElementById('presMax');
+        const presVariation = document.getElementById('presVariation');
+        const presVariationValue = document.getElementById('presVariationValue');
+
+        const voltMin = document.getElementById('voltMin');
+        const voltMax = document.getElementById('voltMax');
+        const voltVariation = document.getElementById('voltVariation');
+        const voltVariationValue = document.getElementById('voltVariationValue');
+
+
+        // ------------------------------------------------------------------
+        // --- FUNCIONES DE UTILIDAD ---
+        // ------------------------------------------------------------------
+        function openModal() { configModal.style.display = 'block'; }
+        function closeModal() { configModal.style.display = 'none'; }
+        
+        function formatTime(ms) {
+            const totalSeconds = Math.round(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function randomRange(min, max, decimals) { 
+            const value = Math.random() * (max - min) + min;
+            return parseFloat(value.toFixed(decimals));
+        }
+        
+        function generateSensorValue(min, max, variationPercent, decimals) { 
+            const minVal = parseFloat(min);
+            const maxVal = parseFloat(max);
+            const varPct = parseFloat(variationPercent);
+
+            if (isNaN(minVal) || isNaN(maxVal) || minVal >= maxVal) {
+                return 0.0;
+            }
+
+            const midpoint = (minVal + maxVal) / 2;
+            const halfRange = (maxVal - minVal) / 2;
+            const maxDeviation = halfRange * (varPct / 100);
+            const deviation = randomRange(-maxDeviation, maxDeviation, decimals);
+            let finalValue = midpoint + deviation;
+
+            finalValue = Math.max(minVal, Math.min(maxVal, finalValue));
+
+            return parseFloat(finalValue.toFixed(decimals));
+        }
+        
+        function logMessage(message, type) { 
+            const now = new Date().toLocaleTimeString();
+            const logItem = document.createElement('div');
+            logItem.className = `log-item log-${type}`;
+            logItem.innerHTML = `**[${now}]** ${message}`;
+            logElement.prepend(logItem); 
+            while (logElement.children.length > 50) {
+                logElement.removeChild(logElement.lastChild);
+            }
+        }
+        
+        function clearLog() { 
+            logElement.innerHTML = '';
+            logMessage('Registro de envíos limpiado.', 'info');
+        }
+        
+        function updateVariationSliderDisplay(sliderElement, valueDisplayElement) { 
+            valueDisplayElement.textContent = sliderElement.value;
+        }
+        
+        function syncTempMin(source) { 
+            let val;
+            if (source === 'slider') {
+                val = parseInt(tempSliderMin.value);
+                if (val >= parseInt(tempSliderMax.value)) {
+                    val = parseInt(tempSliderMax.value) - 1;
+                    tempSliderMin.value = val;
+                }
+                tempMin.value = val;
+            } else if (source === 'input') {
+                val = parseInt(tempMin.value);
+                const maxVal = parseInt(tempSliderMax.value) - 1;
+                if (val > maxVal) {
+                    val = maxVal;
+                    tempMin.value = val;
+                }
+                if (val < parseInt(tempSliderMin.min)) {
+                    val = parseInt(tempSliderMin.min);
+                    tempMin.value = val;
+                }
+                tempSliderMin.value = val;
+            }
+        }
+        
+        function syncTempMax(source) { 
+            let val;
+            if (source === 'slider') {
+                val = parseInt(tempSliderMax.value);
+                if (val <= parseInt(tempSliderMin.value)) {
+                    val = parseInt(tempSliderMin.value) + 1;
+                    tempSliderMax.value = val;
+                }
+                tempMax.value = val;
+            } else if (source === 'input') {
+                val = parseInt(tempMax.value);
+                const minVal = parseInt(tempSliderMin.value) + 1;
+                if (val < minVal) {
+                    val = minVal;
+                    tempMax.value = val;
+                }
+                if (val > parseInt(tempSliderMax.max)) {
+                    val = parseInt(tempSliderMax.max);
+                    tempMax.value = val;
+                }
+                tempSliderMax.value = val;
+            }
+        }
+        
+        function updateCountdownDisplay() { 
+            if (timeRemaining > 0) {
+                const displayTime = Math.round(timeRemaining / 1000) * 1000;
+                countdownDisplay.textContent = `Próximo envío Principal en: ${formatTime(displayTime)}`;
+            } else {
+                countdownDisplay.textContent = `Próximo envío Principal en: 0:00`; 
+            }
+        }
+        
+        function startCountdown() { 
+            if (countdownId) clearInterval(countdownId);
+
+            timeRemaining = parseInt(intervalSelect.value); 
+            updateCountdownDisplay();
+
+            countdownId = setInterval(() => {
+                timeRemaining -= 1000; 
+
+                if (timeRemaining < -500) { 
+                    timeRemaining = parseInt(intervalSelect.value);
+                }
+
+                updateCountdownDisplay();
+
+            }, 1000); 
+        }
+        
+        function stopCountdown() { 
+            if (countdownId) {
+                clearInterval(countdownId);
+                countdownId = null;
+            }
+            countdownDisplay.textContent = ''; 
+        }
+
+        // ------------------------------------------------------------------
+        // --- LÓGICA DEL MODO MOTOR ENCENDIDO ---
+        // ------------------------------------------------------------------
+
+        function resetEngineState() {
+            currentTemp = 25.0; 
+            currentVolt = 24.5; 
+            tempStepCounter = 0;
+            presDropCounter = 0; // MODIFICADO: Reiniciar el contador de descenso
+            
+            // Presión inicial instantánea (50.0 - 55.0 PSI)
+            currentPres = randomRange(50.0, PRES_MAX_RISE, 2); 
+            
+            lastSendIntervalMs = parseInt(intervalSelect.value);
+            logMessage(`Modo Motor: Reiniciado. Presión de aceite inicial: ${currentPres}PSI.`, 'info');
+        }
+
+
+        function generateEngineData() {
+            const maxSteps = TEMP_INCREMENT_INTERVAL_MS / lastSendIntervalMs;
+
+            // FASE I: CALENTAMIENTO (currentTemp < 80.0°C)
+            if (currentTemp < TEMP_RUNNING_MIN) {
+                
+                // --- TEMPERATURA (Subir 1-2°C cada 30s) ---
+                tempStepCounter++;
+                if (tempStepCounter >= maxSteps) {
+                    const increment = randomRange(1.0, 2.0, 1);
+                    currentTemp += increment;
+                    if (currentTemp > TEMP_RUNNING_MIN) currentTemp = TEMP_RUNNING_MIN; 
+                    tempStepCounter = 0;
+                }
+                currentTemp = parseFloat(currentTemp.toFixed(2));
+
+
+                // --- PRESIÓN (MANTENER ALTO EN FRÍO: 50.0 - 55.0 PSI) ---
+                currentPres = randomRange(50.0, PRES_MAX_RISE, 2);
+                currentPres = parseFloat(currentPres.toFixed(2));
+
+
+                // --- VOLTAJE (Subir de 24.5 a 27.8) ---
+                const voltMaxTimeMs = 60000; // 1 minuto para alcanzar 27.8V
+                const voltageIncrementPerStep = (VOLT_MAX_RISE - 24.5) / (voltMaxTimeMs / lastSendIntervalMs);
+                currentVolt = Math.min(VOLT_MAX_RISE, currentVolt + voltageIncrementPerStep);
+                currentVolt = parseFloat(currentVolt.toFixed(2));
+                
+                logMessage(`[MODO MOTOR: INICIO] T: ${currentTemp}°C, P: ${currentPres}PSI, V: ${currentVolt}V`, 'info');
+
+            } 
+            // FASE II: OPERACIÓN ESTABLE (currentTemp >= 80.0°C)
+            else {
+                
+                // --- TEMPERATURA (Oscilar 80-95) ---
+                currentTemp = randomRange(TEMP_RUNNING_MIN, TEMP_RUNNING_MAX, 2);
+                
+                
+                // --- PRESIÓN (Descenso Gradual de 30s a 40 PSI, luego oscila 40-45) ---
+                const dropDuration = PRES_DROP_TIME_MS;
+                const totalSteps = dropDuration / lastSendIntervalMs;
+                const initialPres = PRES_MAX_RISE; // 55.0 PSI
+                const dropDelta = initialPres - PRES_TRANSITION_TARGET; // 15.0 PSI
+
+                if (presDropCounter < totalSteps) {
+                    // CÁLCULO DE DESCENSO LINEAL
+                    presDropCounter++;
+                    const decrementPerStep = dropDelta / totalSteps;
+                    currentPres = Math.max(PRES_TRANSITION_TARGET, currentPres - decrementPerStep);
+                    currentPres += randomRange(-0.5, 0.5, 2); // Pequeña variación durante el descenso
+                    
+                    currentPres = parseFloat(currentPres.toFixed(2));
+                    
+                    logMessage(`[MODO MOTOR: DESCENSO PRES] P: ${currentPres}PSI. Paso ${presDropCounter}/${totalSteps}`, 'info');
+
+                } else {
+                    // OPERACIÓN ESTABLE DE PRESIÓN (Oscila entre 40.0 y 45.0 PSI)
+                    currentPres = randomRange(PRES_RUNNING_MIN, PRES_RUNNING_MAX, 2);
+                }
+
+                
+                // --- VOLTAJE (Oscilar 27-28) ---
+                currentVolt = randomRange(VOLT_RUNNING_MIN, VOLT_RUNNING_MAX, 2);
+                
+                logMessage(`[MODO MOTOR: OPERACIÓN] T: ${currentTemp}°C, P: ${currentPres}PSI, V: ${currentVolt}V`, 'info');
+            }
+
+            return {
+                temperatura: currentTemp,
+                presion: currentPres,
+                voltaje: currentVolt
+            };
+        }
+
+
+        // ------------------------------------------------------------------
+        // --- SECUENCIA DE APAGADO Y ENFRIAMIENTO ---
+        // ------------------------------------------------------------------
+
+        /**
+         * Finaliza completamente la simulación y libera recursos.
+         */
+        function completeFinalShutdown() {
+            releaseWakeLock(); 
+            
+            toggleButton.classList.remove('active');
+            toggleButton.classList.remove('shutting-down');
+            toggleButton.classList.add('inactive');
+            toggleButton.innerHTML = '▶️ Iniciar Simulación (Desactivado)';
+            mainStatusText.innerHTML = 'Estado: <span style="color:#dc3545;">Detenido.</span> Presiona Iniciar para comenzar.';
+
+            // Habilitar controles
+            intervalSelect.disabled = false;
+            openConfigButton.disabled = false;
+            engineModeCheckbox.disabled = false; 
+            
+            logMessage('Secuencia de apagado completada. Simulador totalmente detenido.', 'success');
+        }
+
+        /**
+         * Envía los datos actuales a ambas URLs.
+         */
+        async function sendDataToBothUrls(temp, pres, volt, context) {
+            // Notificamos el envío en el log, pero manejamos los errores de forma asíncrona
+            logMessage(`[${context}] Enviando T=${temp}°C, P=${pres}PSI, V=${volt}V...`, 'info');
+            
+            try {
+                // Send to Real-time (ahora con POST)
+                const bodyRealTime = new URLSearchParams();
+                bodyRealTime.append('temperatura', temp);
+                bodyRealTime.append('presion', pres);
+                bodyRealTime.append('voltaje', volt);
+
+                fetch(URL_ENVIO, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: bodyRealTime
+                }).catch(e => logMessage(`❌ [${context}] Error URL Principal: ${e.message}`, 'error'));
+                
+                // Send to DB Save (esperamos para confirmar el estado de la BD)
+                const bodyDbSave = new URLSearchParams();
+                bodyDbSave.append('temperatura', temp);
+                bodyDbSave.append('presion', pres);
+                bodyDbSave.append('voltaje', volt);
+
+                const response = await fetch(URL_GUARDADO, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: bodyDbSave
+                });
+                const textResponse = await response.text();
+                
+                if (response.ok) {
+                    logMessage(`✅ [${context}] Envío a BD exitoso.`, 'success');
+                } else {
+                    logMessage(`❌ [${context}] Error Guardado HTTP ${response.status}. Respuesta: ${textResponse.trim()}`, 'error');
+                }
+
+            } catch (error) {
+                logMessage(`⚠️ [${context}] Error de Conexión o Red al guardar: ${error.message}`, 'error');
+            }
+        }
+
+
+        /**
+         * Maneja el descenso gradual de la temperatura y el envío de datos.
+         */
+        function performCoolDown() {
+            const timeSeconds = COOL_DOWN_INTERVAL_MS / 1000;
+            logMessage(`🌡️ Iniciando enfriamiento del motor. Objetivo: ${TEMP_SHUTDOWN_FINAL}°C (Descenso de ${TEMP_DECREMENT_MIN}°C a ${TEMP_DECREMENT_MAX}°C cada ${timeSeconds}s).`, 'info');
+
+            // Aseguramos que currentPres y currentVolt ya están en sus valores de apagado (P=0-5, V=24.5)
+            
+            if (currentTemp <= TEMP_SHUTDOWN_FINAL) {
+                // Si ya está frío, pasar directamente al apagado final
+                completeFinalShutdown();
+                return;
+            }
+            
+            coolDownIntervalId = setInterval(async () => {
+                
+                // 1. Calcular el decremento variable
+                const decrement = randomRange(TEMP_DECREMENT_MIN, TEMP_DECREMENT_MAX, 2);
+                
+                // 2. Bajar la temperatura
+                currentTemp -= decrement;
+                let finalSend = false;
+
+                if (currentTemp < TEMP_SHUTDOWN_FINAL) {
+                    currentTemp = TEMP_SHUTDOWN_FINAL;
+                    finalSend = true;
+                }
+                currentTemp = parseFloat(currentTemp.toFixed(2));
+
+                // 3. Actualizar UI
+                toggleButton.innerHTML = `🧊 ENFRIANDO... T: ${currentTemp}°C`;
+
+                // 4. Enviar datos (doble envío)
+                await sendDataToBothUrls(currentTemp, currentPres, currentVolt, 'ENFRIAMIENTO');
+
+                // 5. Verificar si se alcanzó la temperatura de apagado
+                if (finalSend) {
+                    clearInterval(coolDownIntervalId);
+                    logMessage(`✅ Temperatura de apagado (${TEMP_SHUTDOWN_FINAL}°C) alcanzada. Apagado total en breve.`, 'success');
+                    // Pequeño retardo final para la percepción de cierre
+                    setTimeout(completeFinalShutdown, 1000); 
+                }
+
+            }, COOL_DOWN_INTERVAL_MS);
+        }
+
+
+        /**
+         * Realiza la secuencia de apagado retardado (inicia enfriamiento)
+         */
+        async function performShutdownSequence() {
+            toggleButton.classList.add('shutting-down');
+            toggleButton.innerHTML = '🛑 APAGANDO... (Iniciando Enfriamiento)';
+            logMessage('Iniciando secuencia de apagado. Deteniendo envíos periódicos.', 'info');
+
+            // 1. Detener intervalos principales de envío
+            if (intervalId) clearInterval(intervalId);
+            if (saveIntervalId) clearInterval(saveIntervalId);
+            intervalId = null;
+            saveIntervalId = null;
+            isSending = false;
+            stopCountdown();
+
+            // 2. Establecer los valores finales de presión y voltaje para el enfriamiento
+            currentPres = randomRange(SHUTDOWN_PRES_MIN, SHUTDOWN_PRES_MAX, 2); // 0 a 5 PSI
+            currentVolt = SHUTDOWN_VOLTAGE; // 24.5V
+            
+            // 3. Iniciar secuencia de enfriamiento
+            performCoolDown();
+        }
+
+
+        // ------------------------------------------------------------------
+        // --- FUNCIONES DE ENVÍO PERIÓDICO ---
+        // ------------------------------------------------------------------
+
+        async function sendSaveData() { 
+            let data;
+            
+            if (isEngineModeActive) {
+                data = {
+                    temperatura: currentTemp, 
+                    presion: currentPres,
+                    voltaje: currentVolt
+                };
+            } else {
+                data = {
+                    temperatura: generateSensorValue(tempMin.value, tempMax.value, tempVariation.value, 2),
+                    presion: generateSensorValue(presMin.value, presMax.value, presVariation.value, 2),
+                    voltaje: generateSensorValue(voltMin.value, voltMax.value, voltVariation.value, 2)
+                };
+            }
+
+            try {
+                // Preparamos el cuerpo de la solicitud POST
+                const body = new URLSearchParams();
+                body.append('temperatura', data.temperatura);
+                body.append('presion', data.presion);
+                body.append('voltaje', data.voltaje);
+
+                const response = await fetch(URL_GUARDADO, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: body
+                });
+                const textResponse = await response.text();
+                
+                if (response.ok) {
+                    logMessage(`✅ [GUARDADO 1 MIN] Envío exitoso.`, 'success');
+                } else {
+                    logMessage(`❌ [GUARDADO 1 MIN] Error HTTP ${response.status}.`, 'error');
+                }
+
+            } catch (error) {
+                logMessage(`⚠️ [GUARDADO 1 MIN] Error de Conexión o Red: ${error.message}`, 'error');
+            }
+        }
+
+        async function sendSensorData() { 
+            timeRemaining = parseInt(intervalSelect.value); 
+
+            let data = isEngineModeActive ? generateEngineData() : {
+                temperatura: generateSensorValue(tempMin.value, tempMax.value, tempVariation.value, 2),
+                presion: generateSensorValue(presMin.value, presMax.value, presVariation.value, 2),
+                voltaje: generateSensorValue(voltMin.value, voltMax.value, voltVariation.value, 2)
+            };
+            
+            if (!isEngineModeActive) {
+                currentTemp = data.temperatura;
+                currentPres = data.presion;
+                currentVolt = data.voltaje;
+            }
+
+            updateCountdownDisplay();
+            
+            logMessage(`[ENVÍO PRINCIPAL] Datos: T=${data.temperatura}°C, P=${data.presion}PSI, V=${data.voltaje}V`, 'info');
+
+            try {
+                const body = new URLSearchParams();
+                body.append('temperatura', data.temperatura);
+                body.append('presion', data.presion);
+                body.append('voltaje', data.voltaje);
+               
+                const response = await fetch(URL_ENVIO, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: body
+                });
+                const textResponse = await response.text();
+                
+                if (response.ok) {
+                    logMessage(`✅ [ENVÍO PRINCIPAL] Envío exitoso.`, 'success');
+                } else {
+                    logMessage(`❌ [ENVÍO PRINCIPAL] Error HTTP ${response.status}.`, 'error');
+                }
+
+            } catch (error) {
+                logMessage(`⚠️ [ENVÍO PRINCIPAL] Error de Conexión o Red: ${error.message}`, 'error');
+            }
+        }
+
+
+        // ------------------------------------------------------------------
+        // --- FUNCIONES DE CONTROL E INICIALIZACIÓN ---
+        // ------------------------------------------------------------------
+        
+        function toggleSending() { 
+            const intervaloMs = parseInt(intervalSelect.value);
+            const intervaloSeg = intervaloMs / 1000;
+            const intervaloTexto = intervaloSeg < 60 
+                ? `${intervaloSeg} segundos` 
+                : `${intervaloSeg / 60} minuto(s)`;
+
+            if (isSending) {
+                // DETENER SIMULACIÓN
+                
+                // Si el enfriamiento ya está activo, no hacemos nada.
+                if (coolDownIntervalId) return; 
+
+                // Detenemos los ciclos regulares y comenzamos el enfriamiento
+                if (intervalId) clearInterval(intervalId);
+                if (saveIntervalId) clearInterval(saveIntervalId);
+                intervalId = null;
+                saveIntervalId = null;
+                isSending = false;
+                stopCountdown();
+                
+                // *** INICIA SECUENCIA DE APAGADO RETARDADO / ENFRIAMIENTO ***
+                performShutdownSequence(); 
+                
+            } else {
+                // INICIAR SIMULACIÓN
+                isSending = true;
+                
+                isEngineModeActive = engineModeCheckbox.checked; 
+                lastSendIntervalMs = intervaloMs; 
+
+                if (isEngineModeActive) {
+                    resetEngineState(); 
+                    logMessage('¡Modo Motor Encendido ACTIVO! Se simulará la secuencia de arranque/calentamiento y la nueva lógica de presión de operación.', 'success');
+                } else {
+                    logMessage('Modo Motor Encendido INACTIVO. Se usará la configuración manual de rangos.', 'info');
+                }
+                
+                // Deshabilitar controles
+                intervalSelect.disabled = true;
+                openConfigButton.disabled = true; 
+                engineModeCheckbox.disabled = true; 
+                
+                requestWakeLock(); 
+
+                // Iniciar intervalos
+                startCountdown(); 
+                sendSensorData(); 
+                intervalId = setInterval(sendSensorData, intervaloMs);
+                
+                sendSaveData(); 
+                saveIntervalId = setInterval(sendSaveData, INTERVALO_GUARDADO_MS);
+                
+                toggleButton.classList.remove('inactive');
+                toggleButton.classList.add('active');
+                toggleButton.innerHTML = '⏸️ Detener Simulación (Activo)';
+                mainStatusText.innerHTML = `Estado: <span style="color:#28a745;">Activo.</span> Envío Principal: cada ${intervaloTexto}. Envío de Guardado: cada 1 minuto. ${isEngineModeActive ? ' (MOTOR ACTIVO)' : ''}`;
+                logMessage(`Simulación iniciada. Intervalo Principal: ${intervaloTexto}. Intervalo de Guardado: 1 minuto.`, 'info');
+            }
+        }
+
+        function updateStatusOnIntervalChange() { 
+            if (!isSending) {
+                const intervaloMs = parseInt(intervalSelect.value);
+                const intervaloSeg = intervaloMs / 1000;
+                const intervaloTexto = intervaloSeg < 60 
+                    ? `${intervaloSeg} segundos` 
+                    : `${intervaloSeg / 60} minuto(s)`;
+
+                let modeText = engineModeCheckbox.checked ? ' **(MODO MOTOR ACTIVO)**' : '';
+                mainStatusText.innerHTML = `Estado: Detenido. Presiona Iniciar para comenzar el envío cada ${intervaloTexto}.${modeText}`;
+                countdownDisplay.textContent = ''; 
+            }
+        }
+
+        document.addEventListener('visibilitychange', async () => {
+             if (isSending && document.visibilityState === 'visible') {
+                requestWakeLock();
+             }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Eventos de Control Principal
+            toggleButton.addEventListener('click', toggleSending);
+            intervalSelect.addEventListener('change', updateStatusOnIntervalChange);
+            clearLogButton.addEventListener('click', clearLog);
+            engineModeCheckbox.addEventListener('change', updateStatusOnIntervalChange);
+            
+            // Eventos de la Modal
+            openConfigButton.addEventListener('click', openModal);
+            closeModalButton.addEventListener('click', closeModal);
+            configModal.addEventListener('click', (e) => {
+                if (e.target === configModal) closeModal();
+            });
+            
+            // Eventos de Sincronización para Temperatura 
+            tempSliderMin.addEventListener('input', () => syncTempMin('slider'));
+            tempMin.addEventListener('change', () => syncTempMin('input'));
+            tempSliderMax.addEventListener('input', () => syncTempMax('slider'));
+            tempMax.addEventListener('change', () => syncTempMax('input'));
+
+
+            // Eventos para actualizar el display de los sliders de VARIACIÓN
+            tempVariation.addEventListener('input', () => updateVariationSliderDisplay(tempVariation, tempVariationValue));
+            presVariation.addEventListener('input', () => updateVariationSliderDisplay(presVariation, presVariationValue));
+            voltVariation.addEventListener('input', () => updateVariationSliderDisplay(voltVariation, voltVariationValue));
+
+            // Inicializar displays y rangos
+            updateVariationSliderDisplay(tempVariation, tempVariationValue);
+            updateVariationSliderDisplay(presVariation, presVariationValue);
+            updateVariationSliderDisplay(voltVariation, voltVariationValue);
+            
+            syncTempMin('slider');
+            syncTempMax('slider');
+
+            updateStatusOnIntervalChange();
+
+            logMessage('Sistema de simulación listo. Marque la casilla "Modo Motor Encendido" para simular la secuencia de arranque/calentamiento.', 'info');
+        });
+
+    </script>
+</body>
+</html>

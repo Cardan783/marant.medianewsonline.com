@@ -1,0 +1,82 @@
+/* Este es el código limpio. Asegúrate de que tu archivo medidores-style.css es EXACTAMENTE este */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f7f6; 
+    color: #333; 
+}
+h1 {
+    color: #2c3e50;
+    font-size: 1.8em;
+}
+
+.header-container {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.back-button {
+    text-decoration: none;
+    background-color: #3498db;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #2980b9;
+}
+
+.medidores-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 30px;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.medidor-card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+.medidor-card:hover {
+    transform: translateY(-5px);
+}
+
+.medidor-card h2 {
+    margin-top: 0;
+    color: #34495e;
+}
+.valor-actual {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #2c3e50;
+}
+
+/* Responsividad */
+@media (max-width: 1000px) {
+    .medidores-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .medidor-card {
+        width: 90%;
+        max-width: 350px;
+    }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    
+    <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/radial/gauge.min.js"></script>
+    <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/linear/gauge.min.js"></script>
+    
+    <title>Sistema Auxiliar de Monitoreo</title>
+</head>
+<body>
+  
+  <h1 class="neon-title">Sistema Auxiliar de Monitoreo de Presión Temperatura y Voltaje</h1>
+
+  <div class="card-grid"> 
+    <div class="gauge-container">
+      <canvas id="gauge-temperature"></canvas>
+      <p>Temperatura C</p>
+    </div>
+    
+    <div class="gauge-container">
+      <canvas id="gauge-humidity"></canvas>
+      <p>Presión PSI</p> </div>
+
+    <div class="gauge-container">
+      <canvas id="gauge-voltage"></canvas>
+      <p>Voltaje (V)</p>
+    </div>
+  </div>
+
+  <p>Última Actualización: <span id="last-update">--</span></p>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

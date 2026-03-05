@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medidores Analógicos con Canvas Gauges</title>
+    
+    <link rel="stylesheet" href="css/relojes-style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-gauges@2.1.7/gauge.min.js"></script>
+    
+    </head>
+<body>
+    <div class="header-container">
+        <h1><i class="fa-solid fa-gauge"></i> Medidores Analógicos de Sensores</h1>
+        <a href="index.html" class="back-button"><i class="fa-solid fa-arrow-left"></i> Volver a la Gráfica</a>
+    </div>
+
+    <div class="relojes-container">
+        <div class="reloj-card">
+            <h2><i class="fa-solid fa-temperature-half"></i> Temperatura (°C)</h2>
+            <canvas id="gauge-temp" data-type="radial-gauge"></canvas>
+            <p class="valor-actual" id="valorTempActual">-- °C</p>
+        </div>
+ 
+        <div class="reloj-card">
+            <h2><i class="fa-solid fa-gauge"></i> Presión (Bar)</h2>
+            <canvas id="gauge-presion" data-type="radial-gauge"></canvas>
+            <p class="valor-actual" id="valorPresionActual">-- Bar</p>
+        </div>
+
+        <div class="reloj-card">
+            <h2><i class="fa-solid fa-bolt"></i> Voltaje (V)</h2>
+            <canvas id="gauge-voltaje" data-type="radial-gauge"></canvas>
+            <p class="valor-actual" id="valorVoltajeActual">-- V</p>
+        </div>
+    </div>
+
+    <script src="js/gauges-script.js"></script> 
+</body>
+</html>

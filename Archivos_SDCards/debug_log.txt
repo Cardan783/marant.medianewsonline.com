@@ -1,0 +1,174 @@
+[2026-01-31 01:25:16] Iniciando carga: Fecha.txt
+[2026-01-31 01:25:16] Exito: Fecha.txt guardado (11 bytes).
+[2026-01-31 01:35:04] Iniciando carga: Domingo 26 Octubre 2025.txt
+[2026-01-31 01:35:04] Exito: Domingo 26 Octubre 2025.txt guardado (38610 bytes).
+[2026-01-31 01:36:25] Iniciando carga: Lunes 27 Octubre 2025.txt
+[2026-01-31 01:36:25] Exito: Lunes 27 Octubre 2025.txt guardado (66831 bytes).
+[2026-01-31 01:58:20] Iniciando carga: Jueves 20 Noviembre 2025.txt
+[2026-01-31 01:58:20] Exito: Jueves 20 Noviembre 2025.txt guardado (39105 bytes).
+[2026-01-31 02:00:16] Iniciando carga: Viernes 30 Enero 2026.txt
+[2026-01-31 02:00:16] Exito: Viernes 30 Enero 2026.txt guardado (45708 bytes).
+[2026-01-31 02:49:06] Iniciando carga: Jueves 29 Enero 2026.txt
+[2026-01-31 02:49:06] Exito: Jueves 29 Enero 2026.txt guardado (100263 bytes).
+[2026-01-31 03:24:37] Iniciando carga: Lunes 8 Diciembre 2025.txt
+[2026-01-31 03:24:37] Exito: Lunes 8 Diciembre 2025.txt guardado (14225 bytes).
+[2026-01-31 04:07:54] Iniciando carga: Viernes 30 Enero 2026.txt
+[2026-01-31 04:07:54] Exito: Viernes 30 Enero 2026.txt guardado (51976 bytes).
+[2026-02-01 04:00:02] Iniciando carga: Sabado 31 Enero 2026.txt
+[2026-02-01 04:00:02] Exito: Sabado 31 Enero 2026.txt guardado (1278 bytes).
+[2026-02-01 14:34:02] Iniciando carga: Sabado 31 Enero 2026.txt
+[2026-02-01 14:34:02] Exito: Sabado 31 Enero 2026.txt guardado (1278 bytes).
+[2026-02-01 16:57:00] Iniciando carga: Sabado 31 Enero 2026.txt
+[2026-02-01 16:57:00] Exito: Sabado 31 Enero 2026.txt guardado (1278 bytes).
+[2026-02-02 00:07:25] Iniciando carga: Sabado 31 Enero 2026.txt
+[2026-02-02 00:07:25] Exito: Sabado 31 Enero 2026.txt guardado (1278 bytes).
+[2026-02-02 16:37:02] Iniciando carga: Domingo 1 Febrero 2026.txt
+[2026-02-02 16:37:02] Exito: Domingo 1 Febrero 2026.txt guardado (73217 bytes).
+[2026-02-03 06:32:31] Advertencia: No se detectó nombre de archivo, usando genérico.
+[2026-02-03 06:32:31] Iniciando carga: archivo_desconocido_1770100351.bin
+[2026-02-03 06:32:31] Alerta: Archivo archivo_desconocido_1770100351.bin creado pero vacio (0 bytes recibidos).
+[2026-02-03 06:34:22] Advertencia: No se detectó nombre de archivo, usando genérico.
+[2026-02-03 06:34:22] Iniciando carga: archivo_desconocido_1770100462.bin
+[2026-02-03 06:34:22] Alerta: Archivo archivo_desconocido_1770100462.bin creado pero vacio (0 bytes recibidos).
+[2026-02-03 06:35:12] Advertencia: No se detectó nombre de archivo, usando genérico.
+[2026-02-03 06:35:12] Iniciando carga: archivo_desconocido_1770100512.bin
+[2026-02-03 06:35:12] Alerta: Archivo archivo_desconocido_1770100512.bin creado pero vacio (0 bytes recibidos).
+[2026-02-03 07:07:55] Advertencia: No se detectó nombre de archivo, usando genérico.
+[2026-02-03 07:07:55] Iniciando carga: archivo_desconocido_1770102475.bin
+[2026-02-03 07:07:55] Alerta: Archivo archivo_desconocido_1770102475.bin creado pero vacio (0 bytes recibidos).
+[2026-02-03 07:13:09] Advertencia: No se detectó nombre de archivo, usando genérico.
+[2026-02-03 07:13:09] Iniciando carga: archivo_desconocido_1770102789.bin
+[2026-02-03 07:13:09] Alerta: Archivo archivo_desconocido_1770102789.bin creado pero vacio (0 bytes recibidos).
+[2026-02-03 07:25:33] Advertencia: No se detectó nombre de archivo, usando genérico.
+[2026-02-03 07:25:33] Iniciando carga: archivo_desconocido_1770103533.bin
+[2026-02-03 07:25:33] Alerta: Archivo archivo_desconocido_1770103533.bin creado pero vacio (0 bytes recibidos).
+[2026-02-03 07:32:03] Iniciando carga: Martes 3 de Febrero 2026.txt
+[2026-02-03 07:32:03] Exito: Martes 3 de Febrero 2026.txt guardado (1536 bytes).
+[2026-02-03 21:44:31] Iniciando carga: Martes 3 de Febrero 2026.txt
+[2026-02-03 21:44:31] Exito: Martes 3 de Febrero 2026.txt guardado (35723 bytes).
+[2026-02-03 21:44:34] Iniciando carga: Lunes 2 Febrero 2026.txt
+[2026-02-03 21:44:34] Exito: Lunes 2 Febrero 2026.txt guardado (31901 bytes).
+[2026-02-03 21:44:41] Iniciando carga: Domingo 1 Febrero 2026.txt
+[2026-02-03 21:44:42] Exito: Domingo 1 Febrero 2026.txt guardado (73217 bytes).
+[2026-02-03 21:44:43] Iniciando carga: Sabado 31 Enero 2026.txt
+[2026-02-03 21:44:43] Exito: Sabado 31 Enero 2026.txt guardado (1278 bytes).
+[2026-02-03 21:50:12] Iniciando carga: Jueves 29 Enero 2026.txt
+[2026-02-03 21:50:12] Exito: Jueves 29 Enero 2026.txt guardado (100263 bytes).
+[2026-02-03 21:50:19] Iniciando carga: Miercoles 28 Enero 2026.txt
+[2026-02-03 21:50:19] Exito: Miercoles 28 Enero 2026.txt guardado (77274 bytes).
+[2026-02-03 21:50:26] Iniciando carga: Martes 27 Enero 2026.txt
+[2026-02-03 21:50:26] Exito: Martes 27 Enero 2026.txt guardado (69564 bytes).
+[2026-02-03 21:56:26] Iniciando carga: Soluccion error de Synthwave 84.png
+[2026-02-03 21:56:26] Exito: Soluccion error de Synthwave 84.png guardado (326076 bytes).
+[2026-02-03 21:57:01] Iniciando carga: Soluccion error de Synthwave 84.png
+[2026-02-03 21:57:01] Exito: Soluccion error de Synthwave 84.png guardado (326076 bytes).
+[2026-02-03 22:08:20] Iniciando carga: Martes 3 de Febrero 2026.txt
+[2026-02-03 22:08:20] Exito: Martes 3 de Febrero 2026.txt guardado (36827 bytes).
+[2026-02-03 22:11:50] Iniciando carga: Martes 3 de Febrero 2026.txt
+[2026-02-03 22:11:50] Exito: Martes 3 de Febrero 2026.txt guardado (36971 bytes).
+[2026-02-03 22:12:08] Iniciando carga: Martes 3 de Febrero 2026.txt
+[2026-02-03 22:12:08] Exito: Martes 3 de Febrero 2026.txt guardado (36971 bytes).
+[2026-02-03 23:27:21] Iniciando carga: Martes 3 de Febrero 2026.txt
+[2026-02-03 23:27:21] Exito: Martes 3 de Febrero 2026.txt guardado (336 bytes).
+[2026-02-03 23:30:03] Iniciando carga: Martes_3_de_Febrero_2026.txt
+[2026-02-03 23:30:03] Exito: Martes_3_de_Febrero_2026.txt guardado (144 bytes).
+[2026-02-04 00:01:46] Iniciando carga: Domingo_2_Julio_2023.txt
+[2026-02-04 00:01:46] Exito: Domingo_2_Julio_2023.txt guardado (59722 bytes).
+[2026-02-04 21:11:32] Iniciando carga: Martes_3_de_Febrero_2026.txt
+[2026-02-04 21:11:32] Exito: Martes_3_de_Febrero_2026.txt guardado (9222 bytes).
+[2026-02-04 21:32:37] Iniciando carga: Miercoles_4_de_Febrero_2026.txt
+[2026-02-04 21:32:37] Exito: Miercoles_4_de_Febrero_2026.txt guardado (102 bytes).
+[2026-02-04 22:11:30] Iniciando carga: Confirmaciones_Nube.txt
+[2026-02-04 22:11:30] Exito: Confirmaciones_Nube.txt guardado (61 bytes).
+[2026-02-04 23:07:44] Iniciando carga: Eeprom.txt
+[2026-02-04 23:07:44] Exito: Eeprom.txt guardado (18 bytes).
+[2026-02-04 23:18:13] Iniciando carga: Eeprom.txt
+[2026-02-04 23:18:13] Exito: Eeprom.txt guardado (18 bytes).
+[2026-02-05 04:00:45] Iniciando carga: Miercoles_4_de_Febrero_2026.txt
+[2026-02-05 04:00:45] Exito: Miercoles_4_de_Febrero_2026.txt guardado (8620 bytes).
+[2026-02-05 04:24:59] Iniciando carga: Jueves 15 Febrero 2024.txt
+[2026-02-05 04:24:59] Exito: Jueves 15 Febrero 2024.txt guardado (58616 bytes).
+[2026-02-05 04:26:03] Iniciando carga: Jueves 15 Febrero 2024.txt
+[2026-02-05 04:26:03] Exito: Jueves 15 Febrero 2024.txt guardado (58616 bytes).
+[2026-02-05 04:37:04] Iniciando carga: Eeprom.txt
+[2026-02-05 04:37:04] Exito: Eeprom.txt guardado (18 bytes).
+[2026-02-05 04:37:28] Iniciando carga: Jueves 15 Febrero 2024.txt
+[2026-02-05 04:37:28] Exito: Jueves 15 Febrero 2024.txt guardado (58616 bytes).
+[2026-02-05 04:43:11] Iniciando carga: Jueves 15 Febrero 2024.txt
+[2026-02-05 04:43:11] Exito: Jueves 15 Febrero 2024.txt guardado (58616 bytes).
+[2026-02-05 04:43:34] Iniciando carga: Lunes 3 Julio 2023.txt
+[2026-02-05 04:43:34] Exito: Lunes 3 Julio 2023.txt guardado (64731 bytes).
+[2026-02-05 04:44:13] Iniciando carga: Domingo_2_Julio_2023.txt
+[2026-02-05 04:44:13] Exito: Domingo_2_Julio_2023.txt guardado (59722 bytes).
+[2026-02-05 04:47:45] Iniciando carga: Jueves15Febrero2024.txt
+[2026-02-05 04:47:45] Exito: Jueves15Febrero2024.txt guardado (58616 bytes).
+[2026-02-05 13:12:16] Iniciando carga: Fecha.txt
+[2026-02-05 13:12:16] Exito: Fecha.txt guardado (11 bytes).
+[2026-02-06 04:00:19] Iniciando carga: Jueves_5_de_Febrero_2026.txt
+[2026-02-06 04:00:19] Exito: Jueves_5_de_Febrero_2026.txt guardado (54686 bytes).
+[2026-02-06 22:27:06] Iniciando carga: Domingo_3_Marzo_2024.txt
+[2026-02-06 22:27:06] Exito: Domingo_3_Marzo_2024.txt guardado (4641 bytes).
+[2026-02-07 05:00:11] Iniciando carga: Viernes_6_de_Febrero_2026.txt
+[2026-02-07 05:00:11] Exito: Viernes_6_de_Febrero_2026.txt guardado (638 bytes).
+[2026-02-07 10:41:50] Iniciando carga: Domingo_16_Julio_2023.txt
+[2026-02-07 10:41:50] Exito: Domingo_16_Julio_2023.txt guardado (16328 bytes).
+[2026-02-07 10:42:40] Iniciando carga: errores_del_sistema.txt
+[2026-02-07 10:42:40] Exito: errores_del_sistema.txt guardado (1098 bytes).
+[2026-02-07 18:06:21] Iniciando carga: Sabado_7_de_Febrero_2026.txt
+[2026-02-07 18:06:21] Exito: Sabado_7_de_Febrero_2026.txt guardado (14928 bytes).
+[2026-02-08 00:21:44] Iniciando carga: Sabado_7_de_Febrero_2026.txt
+[2026-02-08 00:21:44] Exito: Sabado_7_de_Febrero_2026.txt guardado (3508 bytes).
+[2026-02-08 00:21:45] Iniciando carga: errores_del_sistema.txt
+[2026-02-08 00:21:45] Exito: errores_del_sistema.txt guardado (2074 bytes).
+[2026-02-08 00:21:46] Iniciando carga: admin_audit.txt
+[2026-02-08 00:21:46] Exito: admin_audit.txt guardado (82 bytes).
+[2026-02-08 00:22:08] Iniciando carga: Confirmaciones_Nube.txt
+[2026-02-08 00:22:08] Exito: Confirmaciones_Nube.txt guardado (69 bytes).
+[2026-02-08 01:52:17] Iniciando carga: Domingo _4_Junio_2023.txt
+[2026-02-08 01:52:17] Exito: Domingo _4_Junio_2023.txt guardado (12189 bytes).
+[2026-02-08 01:52:22] Iniciando carga: Viernes_28_Julio_2023.txt
+[2026-02-08 01:52:22] Exito: Viernes_28_Julio_2023.txt guardado (23764 bytes).
+[2026-02-08 04:00:19] Iniciando carga: Sabado_7_de_Febrero_2026.txt
+[2026-02-08 04:00:19] Exito: Sabado_7_de_Febrero_2026.txt guardado (7051 bytes).
+[2026-02-09 11:49:57] Iniciando carga: Domingo_8_de_Febrero_2026.txt
+[2026-02-09 11:49:57] Exito: Domingo_8_de_Febrero_2026.txt guardado (59382 bytes).
+[2026-02-10 04:01:02] Iniciando carga: Lunes_9_de_Febrero_2026.txt
+[2026-02-10 04:01:02] Exito: Lunes_9_de_Febrero_2026.txt guardado (51462 bytes).
+[2026-02-11 04:00:22] Iniciando carga: Martes_10_de_Febrero_2026.txt
+[2026-02-11 04:00:22] Exito: Martes_10_de_Febrero_2026.txt guardado (54727 bytes).
+[2026-02-11 04:01:22] Iniciando carga: Alarmas_log.txt
+[2026-02-11 04:01:22] Exito: Alarmas_log.txt guardado (17579 bytes).
+[2026-02-11 04:01:32] Iniciando carga: registro_fallos.txt
+[2026-02-11 04:01:32] Exito: registro_fallos.txt guardado (110 bytes).
+[2026-02-12 04:00:44] Iniciando carga: Miercoles_11_de_Febrero_2026.txt
+[2026-02-12 04:00:44] Exito: Miercoles_11_de_Febrero_2026.txt guardado (55120 bytes).
+[2026-02-13 04:00:50] Iniciando carga: Jueves_12_de_Febrero_2026.txt
+[2026-02-13 04:00:50] Exito: Jueves_12_de_Febrero_2026.txt guardado (56399 bytes).
+[2026-02-13 13:40:13] Iniciando carga: Maximos_historicos_diarios.txt
+[2026-02-13 13:40:13] Exito: Maximos_historicos_diarios.txt guardado (2772 bytes).
+[2026-02-13 22:41:39] Iniciando carga: Sabado_2_Marzo_2024.txt
+[2026-02-13 22:41:39] Exito: Sabado_2_Marzo_2024.txt guardado (2850 bytes).
+[2026-02-13 22:42:30] Iniciando carga: Eeprom.txt
+[2026-02-13 22:42:30] Exito: Eeprom.txt guardado (18 bytes).
+[2026-02-14 10:43:28] Iniciando carga: Viernes_13_de_Febrero_2026.txt
+[2026-02-14 10:43:28] Exito: Viernes_13_de_Febrero_2026.txt guardado (53686 bytes).
+[2026-02-15 07:25:04] Iniciando carga: Sabado_14_de_Febrero_2026.txt
+[2026-02-15 07:25:04] Exito: Sabado_14_de_Febrero_2026.txt guardado (41405 bytes).
+[2026-02-17 13:21:10] Iniciando carga: Domingo_15_de_Febrero_2026.txt
+[2026-02-17 13:21:10] Exito: Domingo_15_de_Febrero_2026.txt guardado (14800 bytes).
+[2026-02-18 17:29:31] Iniciando carga: Martes_17_de_Febrero_2026.txt
+[2026-02-18 17:29:31] Exito: Martes_17_de_Febrero_2026.txt guardado (10633 bytes).
+[2026-02-19 04:00:22] Iniciando carga: Miercoles_18_de_Febrero_2026.txt
+[2026-02-19 04:00:22] Exito: Miercoles_18_de_Febrero_2026.txt guardado (27456 bytes).
+[2026-02-28 04:40:25] Iniciando carga: Viernes_27_de_Febrero_2026.txt
+[2026-02-28 04:40:25] Exito: Viernes_27_de_Febrero_2026.txt guardado (17850 bytes).
+[2026-03-01 18:52:25] Iniciando carga: Sabado_28_de_Febrero_2026.txt
+[2026-03-01 18:52:25] Exito: Sabado_28_de_Febrero_2026.txt guardado (33957 bytes).
+[2026-03-02 06:51:16] Iniciando carga: Domingo_1_de_Marzo_2026.txt
+[2026-03-02 06:51:16] Exito: Domingo_1_de_Marzo_2026.txt guardado (11703 bytes).
+[2026-03-03 04:00:57] Iniciando carga: Lunes_2_de_Marzo_2026.txt
+[2026-03-03 04:00:57] Exito: Lunes_2_de_Marzo_2026.txt guardado (14760 bytes).
+[2026-03-04 04:00:41] Iniciando carga: Martes_3_de_Marzo_2026.txt
+[2026-03-04 04:00:41] Exito: Martes_3_de_Marzo_2026.txt guardado (31234 bytes).
+[2026-03-05 04:00:45] Iniciando carga: Miercoles_4_de_Marzo_2026.txt
+[2026-03-05 04:00:45] Exito: Miercoles_4_de_Marzo_2026.txt guardado (60564 bytes).

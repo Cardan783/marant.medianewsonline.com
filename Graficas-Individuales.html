@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gráficas Individuales de Sensores</title>
+
+    <link rel="icon" href="data:," />
+    <!-- Se asume que existe css/style.css basado en Graficas.html, si no, los estilos inline cubren lo necesario -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      /* Estilos base */
+      body {
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #333;
+      }
+
+      /* --- LAYOUT DE 3 COLUMNAS --- */
+      .charts-row {
+        display: flex;
+        flex-direction: row; /* Alineadas una al lado de la otra */
+        gap: 20px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Tarjeta individual para cada gráfica */
+      .chart-card {
+        flex: 1; /* Todas ocupan el mismo ancho disponible */
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        min-width: 0; /* Evita desbordamiento en flex items */
+        display: flex;
+        flex-direction: column;
+      }
+
+      .chart-card h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        color: #4b5563;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .chart-container {
+        position: relative;
+        width: 100%;
+        height: 300px; /* Altura fija para consistencia visual */
+      }
+
+      /* Botón de tema */
+      .theme-toggle-button {
+        background-color: #fff;
+        border: 1px solid #d1d5db;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #374151;
+        transition: all 0.2s;
+      }
+      .theme-toggle-button:hover {
+        background-color: #f3f4f6;
+      }
+
+      /* --- RESPONSIVE: En pantallas pequeñas (<900px), columna vertical --- */
+      @media (max-width: 900px) {
+        .charts-row {
+          flex-direction: column; /* Una debajo de la otra */
+        }
+        .chart-container {
+          height: 250px; /* Un poco más bajas en móvil */
+        }
+      }
+
+      /* --- MODO OSCURO --- */
+      body.dark-mode {
+        background-color: #111827;
+        color: #f9fafb;
+      }
+      body.dark-mode h1 {
+        color: #f9fafb;
+      }
+      body.dark-mode .chart-card {
+        background-color: #1f2937;
+        border: 1px solid #374151;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+      body.dark-mode .chart-card h3 {
+        color: #e5e7eb;
+      }
+      body.dark-mode .theme-toggle-button {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #e5e7eb;
+      }
+      body.dark-mode .theme-toggle-button:hover {
+        background-color: #4b5563;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header-container">
+      <h1><i class="fa-solid fa-chart-line"></i> Monitor Individual de Sensores</h1>
+      <button id="toggle-theme" class="theme-toggle-button">
+        <i class="fa-solid fa-moon"></i> Tema Oscuro
+      </button>
+    </div>
+
+    <div class="charts-row">
+      <!-- Gráfica 1: Temperatura -->
+      <div class="chart-card">
+        <h3><i class="fa-solid fa-temperature-half"></i> Temperatura</h3>
+        <div class="chart-container">
+          <canvas id="chartTemp"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfica 2: Presión -->
+      <div class="chart-card">
+        <h3><i class="fa-solid fa-gauge"></i> Presión de Aceite</h3>
+        <div class="chart-container">
+          <canvas id="chartPresion"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfica 3: Voltaje -->
+      <div class="chart-card">
+        <h3><i class="fa-solid fa-bolt"></i> Voltaje</h3>
+        <div class="chart-container">
+          <canvas id="chartVoltaje"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enlace al archivo JS externo -->
+    <script src="js/scrip_gra_ind.js"></script>
+  </body>
+</html>

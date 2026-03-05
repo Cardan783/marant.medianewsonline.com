@@ -1,0 +1,323 @@
+<?php
+// Iniciar sesión para manejo futuro de usuarios
+session_start();
+
+if (isset($_SESSION['user_id'])) {
+    header("Location: Graficas.php");
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMPATV - Monitor de Sensores</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Hero Section con imagen de fondo */
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .section-padding {
+            padding: 80px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fa-solid fa-chart-line me-2"></i> SAMPATV
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link active" href="#inicio">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#nosotros">Quiénes Somos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="fa-solid fa-user me-2"></i> Iniciar Sesión
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-3 fw-bold mb-4">Monitoreo Inteligente en Tiempo Real</h1>
+            <p class="lead mb-5">Sistema Auxiliar de Medición de Presión, Temperatura y Voltaje para el transporte y la industria.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#nosotros" class="btn btn-lg btn-outline-light">Conocer Más</a>
+                <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Acceder al Sistema</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Nosotros -->
+    <section id="nosotros" class="section-padding">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="mb-4 fw-bold text-primary">Quiénes Somos</h2>
+                    <p class="lead">Marant Electronics C.A. es líder en soluciones de telemetría y protección de activos.</p>
+                    <p>Nos dedicamos a brindar tranquilidad a nuestros clientes mediante sistemas avanzados de monitoreo. Entendemos que sus unidades de transporte no son solo vehículos, son su inversión y el sustento de sus familias.</p>
+                    <ul class="list-unstyled mt-4">
+                        <li class="mb-2"><i class="fa-solid fa-check-circle text-success me-2"></i> Tecnología de punta</li>
+                        <li class="mb-2"><i class="fa-solid fa-check-circle text-success me-2"></i> Soporte 24/7</li>
+                        <li class="mb-2"><i class="fa-solid fa-check-circle text-success me-2"></i> Integración personalizada</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <i class="fa-solid fa-server fa-10x text-secondary opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Servicios -->
+    <section id="servicios" class="section-padding bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Nuestros Servicios</h2>
+                <p class="text-muted">Soluciones integrales para el monitoreo de variables críticas.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <div class="p-5 bg-white rounded shadow-sm h-100 hover-effect">
+                        <i class="fa-solid fa-temperature-high feature-icon"></i>
+                        <h4>Control de Temperatura</h4>
+                        <p class="text-muted">Monitoreo preciso de la temperatura del motor para prevenir sobrecalentamientos y daños costosos.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="p-5 bg-white rounded shadow-sm h-100 hover-effect">
+                        <i class="fa-solid fa-gauge-high feature-icon"></i>
+                        <h4>Presión de Aceite</h4>
+                        <p class="text-muted">Vigilancia constante de la presión para asegurar la lubricación vital del motor en todo momento.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="p-5 bg-white rounded shadow-sm h-100 hover-effect">
+                        <i class="fa-solid fa-bolt feature-icon"></i>
+                        <h4>Sistema Eléctrico</h4>
+                        <p class="text-muted">Supervisión del voltaje y estado de la batería en tiempo real para evitar fallos eléctricos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 text-center">
+        <div class="container">
+            <div class="mb-3">
+                <a href="#" class="text-white me-3"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                <a href="#" class="text-white me-3"><i class="fa-brands fa-twitter fa-lg"></i></a>
+                <a href="#" class="text-white"><i class="fa-brands fa-instagram fa-lg"></i></a>
+            </div>
+            <p class="mb-0">&copy; <?php echo date("Y"); ?> Marant Electronics C.A. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Login / Registro -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Acceso a SAMPATV</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Navegación de pestañas -->
+                    <ul class="nav nav-pills nav-fill mb-4" id="authTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button">
+                                <i class="fa-solid fa-right-to-bracket me-2"></i>Ingresar
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-pane" type="button">
+                                <i class="fa-solid fa-user-plus me-2"></i>Crear Cuenta
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="authTabContent">
+                        <!-- Formulario Login -->
+                        <div class="tab-pane fade show active" id="login-pane">
+                            <!-- Formulario real apuntando al login.php -->
+                            <form action="php/login.php" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Usuario / Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                                        <input type="text" name="email" class="form-control" placeholder="nombre@ejemplo.com" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Contraseña</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                                        <input type="password" name="password" class="form-control" placeholder="******" required>
+                                    </div>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="#" class="text-decoration-none small">¿Olvidaste tu contraseña?</a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Formulario Registro -->
+                        <div class="tab-pane fade" id="register-pane">
+                            <form action="php/registro.php" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre Completo</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                                        <input type="text" name="nombre" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Código de Registro (Empresarial)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                                        <input type="text" name="codigo_registro" class="form-control" placeholder="Ingrese el código provisto por el administrador" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Identificación</label>
+                                    <div class="input-group">
+                                        <select class="form-select" name="tipo_identificacion" style="max-width: 90px;">
+                                            <option value="V-">V-</option>
+                                            <option value="E-">E-</option>
+                                            <option value="J-">J-</option>
+                                            <option value="G-">G-</option>
+                                            <option value="DNI">DNI</option>
+                                        </select>
+                                        <input type="text" name="identificacion" class="form-control" placeholder="12345678" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                                        <input type="email" name="email" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Contraseña</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                                        <input type="password" name="password" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirmar Contraseña</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                                        <input type="password" name="confirm_password" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg">Registrarse</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const msg = urlParams.get('msg');
+
+            if (status === 'register_error') {
+                // Abrir modal
+                const loginModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal'));
+                loginModal.show();
+                
+                // Cambiar a pestaña de registro
+                const registerTab = bootstrap.Tab.getOrCreateInstance(document.querySelector('#register-tab'));
+                registerTab.show();
+
+                // Mostrar error con SweetAlert2
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Registro',
+                    text: msg,
+                    confirmButtonColor: '#d33'
+                });
+            } else if (status === 'register_success') {
+                const loginModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal'));
+                loginModal.show();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Registro Exitoso!',
+                    text: 'Ahora puedes iniciar sesión.',
+                    confirmButtonColor: '#0d6efd'
+                });
+            } else if (status === 'login_error') {
+                // Abrir modal en la pestaña de login
+                const loginModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal'));
+                loginModal.show();
+
+                // Mostrar error con SweetAlert2
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Inicio de Sesión',
+                    text: msg,
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Control - Sensores</title>
+    <!-- Evitar error 404 de favicon usando un icono vacío -->
+    <link rel="icon" href="data:," />
+
+    <!-- Bootstrap 5 & FontAwesome -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Vue 3 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+    <style>
+      body {
+        background-color: #f0f2f5;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      /* Estilos de la Paleta de Colores */
+      .color-circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+      }
+      .color-circle:hover {
+        transform: scale(1.1);
+      }
+      .color-circle.selected {
+        box-shadow:
+          0 0 0 2px white,
+          0 0 0 4px var(--bs-primary);
+      }
+
+      /* Sobrescribir variables de Bootstrap dinámicamente */
+      :root {
+        --bs-primary: #0d6efd; /* Azul por defecto */
+        --bs-primary-rgb: 13, 110, 253;
+      }
+      .btn-primary {
+        background-color: var(--bs-primary) !important;
+        border-color: var(--bs-primary) !important;
+      }
+      .text-primary {
+        color: var(--bs-primary) !important;
+      }
+      .bg-primary {
+        background-color: var(--bs-primary) !important;
+      }
+      .spinner-border.text-primary {
+        color: var(--bs-primary) !important;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        background-color: #ffffff;
+        border-right: 1px solid #dee2e6;
+        min-height: 100vh;
+      }
+      .sidebar-title {
+        color: var(--bs-primary);
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      /* Cards */
+      .kpi-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        transition: transform 0.2s;
+      }
+      .kpi-card:hover {
+        transform: translateY(-3px);
+      }
+      .table-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+
+      /* Table */
+      .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+      }
+      .status-badge {
+        font-size: 0.8em;
+        padding: 0.5em 0.8em;
+        font-weight: 600;
+      }
+
+      /* Utilities */
+      .text-xs {
+        font-size: 0.75rem;
+      }
+      .cursor-pointer {
+        cursor: pointer;
+      }
+
+      /* Forzar color del tema en los textos de la tabla y títulos */
+      .table tbody td {
+        color: var(--bs-primary) !important;
+      }
+      .kpi-card h6,
+      .table-card .card-header h5 {
+        color: var(--bs-primary) !important;
+      }
+
+      /* Clases para alertas de temperatura (Prioridad sobre el tema) */
+      .temp-warning {
+        background-color: #fff3cd !important;
+        color: #856404 !important;
+        font-weight: bold;
+      }
+      .temp-danger {
+        background-color: #f8d7da !important;
+        color: #721c24 !important;
+        font-weight: bold;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+      }
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+        .sidebar {
+          display: none !important;
+        }
+        .main-content {
+          width: 100% !important;
+          padding: 0 !important;
+        }
+      }
+
+      /* Dark Mode Overrides */
+      [data-bs-theme="dark"] body {
+        background-color: #0d1117;
+      }
+      [data-bs-theme="dark"] .sidebar {
+        background-color: #161b22;
+        border-right-color: #30363d !important;
+      }
+      [data-bs-theme="dark"] .bg-white {
+        background-color: #161b22 !important;
+        color: #e6edf3;
+      }
+      [data-bs-theme="dark"] .bg-light {
+        background-color: #21262d !important;
+        border-color: #30363d !important;
+      }
+      [data-bs-theme="dark"] .table thead th {
+        background-color: #161b22;
+        border-bottom-color: #30363d;
+        color: #e6edf3;
+      }
+      /* Estilo simple para el link de volver/salir */
+      .nav-link-custom {
+        color: inherit; text-decoration: none; display: block; padding: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="d-flex">
+      <!-- 1. SIDEBAR DE FILTROS (Izquierda) -->
+      <div
+        class="sidebar p-4 d-none d-md-block"
+        style="width: 320px; flex-shrink: 0"
+      >
+        <h4 class="sidebar-title mb-4">
+          <i class="fa-solid fa-chart-line me-2"></i>SAMPATV
+        </h4>
+
+        <!-- Menú de Navegación Interno -->
+        <div class="mb-4 border-bottom pb-3">
+            <a href="Graficas.html" class="nav-link-custom"><i class="fa-solid fa-chart-area me-2"></i> Ir a Gráficas</a>
+            <a href="php/configuracion.php" class="nav-link-custom"><i class="fa-solid fa-gear me-2"></i> Configuración</a>
+            <a href="php/logout.php" class="nav-link-custom text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión</a>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold text-xs text-uppercase text-muted">Seleccionar Unidad (MAC)</label>
+          <select class="form-select mb-3" v-model="filtros.macAddress" @change="aplicarFiltros">
+            <option value="">-- Seleccionar --</option>
+            <option v-for="eq in listaEquipos" :key="eq.id" :value="eq.id">{{ eq.nombre_equipo }}</option>
+          </select>
+
+          <label class="form-label fw-bold text-xs text-uppercase text-muted"
+            >Rango de Fechas</label
+          >
+          <input
+            type="date"
+            class="form-control mb-2"
+            v-model="filtros.fechaInicio"
+          />
+          <input type="date" class="form-control" v-model="filtros.fechaFin" />
+        </div>
+
+        <hr class="text-muted" />
+
+        <div class="mb-3">
+          <label class="form-label fw-bold text-xs text-uppercase text-muted"
+            >Temperatura (°C)</label
+          >
+          <div class="input-group input-group-sm">
+            <span class="input-group-text">Min</span>
+            <input
+              type="number"
+              class="form-control"
+              v-model.number="filtros.tempMin"
+            />
+            <span class="input-group-text">Max</span>
+            <input
+              type="number"
+              class="form-control"
+              v-model.number="filtros.tempMax"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold text-xs text-uppercase text-muted"
+            >Presión (kPa)</label
+          >
+          <div class="input-group input-group-sm">
+            <span class="input-group-text">Min</span>
+            <input
+              type="number"
+              class="form-control"
+              v-model.number="filtros.presionMin"
+            />
+            <span class="input-group-text">Max</span>
+            <input
+              type="number"
+              class="form-control"
+              v-model.number="filtros.presionMax"
+            />
+          </div>
+        </div>
+
+        <!-- Nuevo Filtro: Solo Alertas -->
+        <div class="mb-3 p-2 border rounded bg-white">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input cursor-pointer"
+              type="checkbox"
+              id="filterAlerts"
+              v-model="filtros.soloAlertas"
+            />
+            <label
+              class="form-check-label small fw-bold text-danger"
+              for="filterAlerts"
+            >
+              <i class="fa-solid fa-triangle-exclamation me-1"></i> Solo Alertas
+              (≥ 85°C)
+            </label>
+          </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+          <button class="btn btn-primary" @click="aplicarFiltros">
+            <i class="fa-solid fa-filter me-1"></i> Actualizar Datos
+          </button>
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            @click="limpiarFiltros"
+          >
+            <i class="fa-solid fa-rotate-left me-1"></i> Resetear Filtros
+          </button>
+        </div>
+
+        <div class="mt-4 p-3 bg-light rounded border">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input cursor-pointer"
+              type="checkbox"
+              id="autoRefresh"
+              v-model="autoRefresh"
+            />
+            <label class="form-check-label small fw-bold" for="autoRefresh">
+              Auto-actualizar (20s)
+            </label>
+          </div>
+          <div class="form-check form-switch mt-2">
+            <input
+              class="form-check-input cursor-pointer"
+              type="checkbox"
+              id="darkMode"
+              v-model="darkMode"
+            />
+            <label class="form-check-label small fw-bold" for="darkMode">
+              Modo Oscuro
+            </label>
+          </div>
+
+          <hr class="my-3" />
+          <label class="form-label small fw-bold text-uppercase text-muted mb-2"
+            >Color de Acento</label
+          >
+          <div class="d-flex gap-2 flex-wrap">
+            <div
+              v-for="color in colors"
+              :key="color.hex"
+              class="color-circle"
+              :style="{ backgroundColor: color.hex }"
+              :class="{ selected: selectedColor === color.hex }"
+              @click="cambiarColor(color)"
+            >
+              <i
+                v-if="selectedColor === color.hex"
+                class="fa-solid fa-check text-white"
+                style="
+                  font-size: 0.8rem;
+                  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+                "
+              ></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. CONTENIDO PRINCIPAL (Derecha) -->
+      <div class="flex-grow-1 main-content p-4" style="min-width: 0">
+        <!-- Botón menú móvil -->
+        <div class="d-md-none mb-3">
+          <button
+            class="btn btn-primary w-100"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mobileFilters"
+          >
+            <i class="fa-solid fa-filter"></i> Mostrar Filtros
+          </button>
+          <div class="collapse mt-2" id="mobileFilters">
+            <div class="card card-body">
+              <!-- Copia simplificada de filtros para móvil -->
+              <input
+                type="date"
+                class="form-control mb-2"
+                v-model="filtros.fechaInicio"
+              />
+              <input
+                type="date"
+                class="form-control mb-2"
+                v-model="filtros.fechaFin"
+              />
+              <div class="form-check form-switch mb-2">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="mobileAlerts"
+                  v-model="filtros.soloAlertas"
+                />
+                <label class="form-check-label" for="mobileAlerts"
+                  >Solo Alertas</label
+                >
+              </div>
+              <button class="btn btn-primary btn-sm" @click="aplicarFiltros">
+                Aplicar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TARJETAS DE ESTADÍSTICAS (KPIs) -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <div class="card kpi-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-xs text-uppercase mb-1">Total Registros</h6>
+                  <h3 class="fw-bold mb-0">{{ datosFiltrados.length }}</h3>
+                </div>
+                <div
+                  class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary"
+                >
+                  <i class="fa-solid fa-database fa-lg"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card kpi-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-xs text-uppercase mb-1">
+                    Temp. Máxima (Rango)
+                  </h6>
+                  <h3 class="fw-bold mb-0 text-danger">{{ maxTemp }}°C</h3>
+                </div>
+                <div
+                  class="bg-danger bg-opacity-10 p-3 rounded-circle text-danger"
+                >
+                  <i class="fa-solid fa-temperature-high fa-lg"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card kpi-card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-xs text-uppercase mb-1">Promedio Temp.</h6>
+                  <h3 class="fw-bold mb-0 text-info">{{ avgTemp }}°C</h3>
+                </div>
+                <div class="bg-info bg-opacity-10 p-3 rounded-circle text-info">
+                  <i class="fa-solid fa-temperature-half fa-lg"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABLA DE DATOS -->
+        <div class="card table-card">
+          <div
+            class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2"
+          >
+            <h5 class="mb-0 fw-bold">Datos Históricos</h5>
+            <div class="no-print">
+              <button class="btn btn-sm btn-success me-2" @click="exportarCSV">
+                <i class="fa-solid fa-file-excel me-1"></i> Excel
+              </button>
+              <button class="btn btn-sm btn-secondary" @click="imprimir">
+                <i class="fa-solid fa-print me-1"></i> PDF
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0 align-middle">
+                <thead>
+                  <tr>
+                    <th class="ps-4">
+                      {{ esMismoDia ? 'Fecha: ' + filtros.fechaInicio : 'Fecha y Hora' }}
+                    </th>
+                    <th class="text-center">Temperatura</th>
+                    <th class="text-center">Presión</th>
+                    <th class="text-center">Voltaje</th>
+                    <th class="text-center">Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- ESTADO: CARGANDO -->
+                  <tr v-if="cargando">
+                    <td colspan="5" class="text-center py-5">
+                      <div
+                        class="spinner-border text-primary"
+                        role="status"
+                      ></div>
+                      <p class="mt-2 text-muted small">Cargando datos...</p>
+                    </td>
+                  </tr>
+
+                  <!-- ESTADO: SIN DATOS -->
+                  <tr v-else-if="datosPaginados.length === 0">
+                    <td colspan="5" class="text-center py-5 text-muted">
+                      <i
+                        class="fa-solid fa-folder-open fa-2x mb-3 opacity-50"
+                      ></i>
+                      <p class="mb-0">
+                        No se encontraron registros con los filtros actuales.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- ESTADO: DATOS -->
+                  <tr v-for="(item, index) in datosPaginados" :key="index">
+                    <td class="ps-4 fw-bold">
+                      {{ esMismoDia && item.fecha && item.fecha.includes(' ') ? item.fecha.split(' ')[1] :
+                      item.fecha }}
+                    </td>
+                    <td
+                      class="text-center"
+                      :class="getTempTextClass(item.temperatura)"
+                    >
+                      {{ item.temperatura }} °C
+                    </td>
+                    <td class="text-center">{{ item.presion }} kPa</td>
+                    <td class="text-center">{{ item.voltaje }} V</td>
+                    <td class="text-center">
+                      <span
+                        class="badge rounded-pill status-badge"
+                        :class="getBadgeClass(item.temperatura)"
+                      >
+                        {{ getStatusLabel(item.temperatura) }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- PAGINACIÓN -->
+          <div
+            class="card-footer bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2"
+          >
+            <div class="text-muted small">
+              Mostrando {{ datosPaginados.length }} de {{ datosFiltrados.length
+              }} registros
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <select
+                class="form-select form-select-sm"
+                style="width: auto"
+                v-model.number="itemsPerPage"
+              >
+                <option :value="10">10</option>
+                <option :value="25">25</option>
+                <option :value="50">50</option>
+                <option :value="100">100</option>
+              </select>
+              <div class="btn-group">
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  @click="currentPage--"
+                  :disabled="currentPage === 1"
+                >
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" disabled>
+                  {{ currentPage }} / {{ totalPaginas || 1 }}
+                </button>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  @click="currentPage++"
+                  :disabled="currentPage >= totalPaginas"
+                >
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const {
+        createApp,
+        ref,
+        shallowRef,
+        computed,
+        reactive,
+        onMounted,
+        onUnmounted,
+        watch,
+      } = Vue;
+
+      createApp({
+        setup() {
+          const API_URL =
+            "php/consulta_tablas.php";
+
+          // Estado
+          const datosTabla = shallowRef([]);
+          const listaEquipos = shallowRef([]); // Nueva variable para la lista
+          const cargando = ref(false);
+          const autoRefresh = ref(true);
+          const darkMode = ref(localStorage.getItem("theme") === "dark");
+          const pollingInterval = ref(null);
+
+          // Colores
+          const colors = [
+            { hex: "#0d6efd", rgb: "13, 110, 253" }, // Azul (Default)
+            { hex: "#76c043", rgb: "118, 192, 67" }, // Verde Lima
+            { hex: "#ffc107", rgb: "255, 193, 7" }, // Amarillo
+            { hex: "#6f42c1", rgb: "111, 66, 193" }, // Morado
+            { hex: "#fd7e14", rgb: "253, 126, 20" }, // Naranja
+          ];
+          const selectedColor = ref(colors[0].hex);
+
+          // Paginación
+          const currentPage = ref(1);
+          const itemsPerPage = ref(10);
+
+          // Filtros
+          const getTodayDate = () => {
+            const hoy = new Date();
+            const anio = hoy.getFullYear();
+            const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+            const dia = String(hoy.getDate()).padStart(2, "0");
+            return `${anio}-${mes}-${dia}`;
+          };
+          const filtros = reactive({
+            fechaInicio: getTodayDate(),
+            fechaFin: getTodayDate(),
+            macAddress: localStorage.getItem('selectedMac') || "", // Cargar selección guardada
+            tempMin: 0,
+            tempMax: 150,
+            presionMin: 0,
+            presionMax: 100,
+            voltajeMin: 0,
+            voltajeMax: 50,
+            soloAlertas: false,
+          });
+
+          const esMismoDia = computed(() => {
+            return (
+              filtros.fechaInicio &&
+              filtros.fechaFin &&
+              filtros.fechaInicio === filtros.fechaFin
+            );
+          });
+
+          // --- CARGAR LISTA DE EQUIPOS ---
+          const cargarEquipos = async () => {
+            try {
+                const res = await fetch('php/obtener_equipos.php');
+                if(res.ok) {
+                    listaEquipos.value = await res.json();
+                }
+            } catch (e) { console.error("Error cargando equipos", e); }
+          };
+
+          // --- LÓGICA DE DATOS ---
+          const obtenerDatos = async (background = false) => {
+            if (!background) cargando.value = true;
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
+
+            try {
+              const params = new URLSearchParams();
+              // Filtros de fecha (obligatorios para la consulta)
+              if (filtros.fechaInicio && filtros.fechaFin) {
+                params.append("fecha_inicio", filtros.fechaInicio);
+                params.append("fecha_fin", filtros.fechaFin);
+              }
+              if (filtros.macAddress) {
+                params.append("mac", filtros.macAddress);
+              }
+
+              // Añadir el resto de filtros a la petición
+              if (filtros.soloAlertas) {
+                params.append("solo_alertas", "true");
+              } else {
+                if (filtros.tempMin > 0) params.append("temp_min", filtros.tempMin);
+                if (filtros.tempMax < 150) params.append("temp_max", filtros.tempMax);
+              }
+              if (filtros.presionMin > 0) params.append("presion_min", filtros.presionMin);
+              if (filtros.presionMax < 100) params.append("presion_max", filtros.presionMax);
+
+              const response = await fetch(`${API_URL}?${params.toString()}`, { signal: controller.signal });
+              clearTimeout(timeoutId);
+
+              if (!response.ok) throw new Error("Error en red");
+
+              const data = await response.json();
+              // Validar que la respuesta sea un array (lista de datos)
+              if (Array.isArray(data)) {
+                datosTabla.value = data;
+              } else {
+                datosTabla.value = [];
+              }
+            } catch (error) {
+              console.error("Error cargando datos:", error);
+              if (!background) datosTabla.value = [];
+            } finally {
+              if (!background) cargando.value = false;
+            }
+          };
+
+          // --- COMPUTADOS ---
+          const datosFiltrados = computed(() => {
+            // El filtrado ahora se realiza en el servidor (PHP).
+            // Simplemente devolvemos los datos que ya vienen filtrados.
+            // Ordenamos por fecha descendente (más nuevo primero)
+            return [...datosTabla.value].sort((a, b) => {
+              const parseFecha = (f) => {
+                if (!f) return 0;
+                const str = String(f);
+                // Si el formato es DD-MM-YYYY (el guion está en la posición 2)
+                if (str.indexOf('-') === 2) {
+                  const [fechaPart, horaPart] = str.split(' ');
+                  const [dia, mes, anio] = fechaPart.split('-');
+                  return new Date(`${anio}-${mes}-${dia}T${horaPart || '00:00'}`).getTime();
+                }
+                return new Date(str).getTime();
+              };
+              return parseFecha(b.fecha) - parseFecha(a.fecha);
+            });
+          });
+
+          const datosPaginados = computed(() => {
+            const start = (currentPage.value - 1) * itemsPerPage.value;
+            return datosFiltrados.value.slice(
+              start,
+              start + itemsPerPage.value,
+            );
+          });
+
+          const totalPaginas = computed(() =>
+            Math.ceil(datosFiltrados.value.length / itemsPerPage.value),
+          );
+
+          // KPIs Computados
+          const maxTemp = computed(() => {
+            if (datosFiltrados.value.length === 0) return 0;
+            return Math.max(
+              ...datosFiltrados.value.map((d) => parseFloat(d.temperatura)),
+            ).toFixed(1);
+          });
+
+          const avgTemp = computed(() => {
+            if (datosFiltrados.value.length === 0) return 0;
+            const sum = datosFiltrados.value.reduce(
+              (acc, curr) => acc + parseFloat(curr.temperatura),
+              0,
+            );
+            return (sum / datosFiltrados.value.length).toFixed(1);
+          });
+
+          // --- UTILIDADES ---
+          const cambiarColor = (color) => {
+            selectedColor.value = color.hex;
+            document.documentElement.style.setProperty(
+              "--bs-primary",
+              color.hex,
+            );
+            document.documentElement.style.setProperty(
+              "--bs-primary-rgb",
+              color.rgb,
+            );
+            localStorage.setItem("themeColor", JSON.stringify(color));
+          };
+
+          const getBadgeClass = (temp) => {
+            const t = parseFloat(temp);
+            if (t >= 90) return "bg-danger";
+            if (t >= 85) return "bg-warning text-dark";
+            return "bg-success";
+          };
+
+          const getStatusLabel = (temp) => {
+            const t = parseFloat(temp);
+            if (t >= 90) return "CRÍTICO";
+            if (t >= 85) return "ALERTA";
+            return "NORMAL";
+          };
+
+          const getTempTextClass = (temp) => {
+            const badgeClass = getBadgeClass(temp);
+            if (badgeClass === "bg-danger") return "temp-danger";
+            if (badgeClass === "bg-warning text-dark") return "temp-warning";
+            return "";
+          };
+
+          const aplicarFiltros = () => {
+            // Guardar selección para persistencia entre páginas
+            if (filtros.macAddress) {
+                localStorage.setItem('selectedMac', filtros.macAddress);
+            }
+            currentPage.value = 1;
+            obtenerDatos();
+          };
+
+          const limpiarFiltros = () => {
+            filtros.fechaInicio = "";
+            filtros.fechaFin = "";
+            filtros.tempMin = 0;
+            filtros.tempMax = 150;
+            filtros.soloAlertas = false;
+            aplicarFiltros();
+          };
+
+          const exportarCSV = () => {
+            if (datosFiltrados.value.length === 0)
+              return alert("Sin datos para exportar");
+
+            const headers = ["Fecha", "Temperatura", "Presion", "Voltaje"];
+            const rows = datosFiltrados.value.map((d) =>
+              [`"${d.fecha}"`, d.temperatura, d.presion, d.voltaje].join(
+                ";",
+              ),
+            );
+
+            const csvContent =
+              "\ufeff" + [headers.join(";"), ...rows].join("\n");
+            const blob = new Blob([csvContent], {
+              type: "text/csv;charset=utf-8;",
+            });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "reporte_sensores.csv";
+            link.click();
+          };
+
+          const imprimir = () => window.print();
+
+          // --- AUTO REFRESH ---
+          const setupPolling = () => {
+            if (pollingInterval.value) clearInterval(pollingInterval.value);
+            if (autoRefresh.value) {
+              pollingInterval.value = setInterval(
+                () => obtenerDatos(true),
+                20000,
+              );
+            }
+          };
+
+          watch(autoRefresh, setupPolling);
+
+          watch(
+            darkMode,
+            (val) => {
+              document.documentElement.setAttribute(
+                "data-bs-theme",
+                val ? "dark" : "light",
+              );
+              localStorage.setItem("theme", val ? "dark" : "light");
+            },
+            { immediate: true },
+          );
+
+          onMounted(() => {
+            const savedColor = localStorage.getItem("themeColor");
+            if (savedColor) {
+              cambiarColor(JSON.parse(savedColor));
+            }
+            cargarEquipos(); // Llamamos a la función al iniciar
+            obtenerDatos();
+            setupPolling();
+          });
+
+          onUnmounted(() => {
+            if (pollingInterval.value) clearInterval(pollingInterval.value);
+          });
+
+          return {
+            filtros,
+            esMismoDia,
+            listaEquipos, // Retornamos para usar en el HTML
+            datosFiltrados,
+            datosPaginados,
+            cargando,
+            currentPage,
+            itemsPerPage,
+            totalPaginas,
+            maxTemp,
+            avgTemp,
+            autoRefresh,
+            darkMode,
+            colors,
+            selectedColor,
+            cambiarColor,
+            aplicarFiltros,
+            limpiarFiltros,
+            exportarCSV,
+            imprimir,
+            getBadgeClass,
+            getStatusLabel,
+            getTempTextClass,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>

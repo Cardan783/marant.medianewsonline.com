@@ -1,0 +1,80 @@
+/* --- CONFIGURACIÓN GENERAL --- */
+body {
+    background-color: #121212; /* Fondo muy oscuro */
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Título con efecto Neón */
+.neon-title {
+    color: #fff;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #0073e6,
+        0 0 40px #0073e6;
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+/* --- GRID DEL DASHBOARD --- */
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.gauge-container {
+    background: #1e1e1e; /* Color de la placa base */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s;
+}
+
+.gauge-container p {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #aaaaaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- ANIMACIÓN DE ALERTA --- */
+
+/* Esta clase se añade vía JS al Canvas cuando hay peligro */
+.alert-active {
+    /* Animación de parpadeo */
+    animation: alarm-pulse 0.8s infinite alternate;
+    
+    /* Aseguramos que el borde sea redondo para coincidir con el reloj */
+    border-radius: 50%; 
+}
+
+/* Definición de la animación (Rojo intenso parpadeante) */
+@keyframes alarm-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+        transform: scale(1);
+    }
+    100% {
+        box-shadow: 0 0 30px 10px rgba(255, 0, 0, 1); /* Resplandor rojo externo */
+        transform: scale(1.02); /* Ligero efecto de latido */
+    }
+}
+
+/* Texto de última actualización */
+#last-update {
+    color: #00ff41; /* Verde terminal */
+    font-family: monospace;
+    font-weight: bold;
+}

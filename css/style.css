@@ -1,0 +1,445 @@
+/* --- Estilos Base (Tema Claro) --- */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f4f7f6; /* Fondo claro */
+  color: #333; /* Texto oscuro */
+  transition: background-color 0.3s, color 0.3s;
+}
+h1 {
+  color: #2c3e50;
+}
+
+/* Contenedor del Título y el Botón de Tema */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    max-width: 1000px;
+    margin-bottom: 20px;
+}
+
+/* --- Bloque de Estilos Propuesto para Botones Elegantes --- */
+
+/* Estilos de botones generales */
+.control-buttons-group button, .theme-toggle-button {
+    /* Fondo y texto base (tema claro) */
+    background-color: #007bff; /* Azul primario */
+    color: white;
+    
+    /* Configuración de bordes y padding */
+    padding: 10px 15px; /* Más padding para que sean más grandes */
+    border-radius: 6px; /* Bordes ligeramente más redondeados */
+    border: none;
+    
+    /* Fuente y cursor */
+    cursor: pointer;
+    font-size: 1em; 
+    font-weight: 600; /* Un poco más de peso a la fuente */
+    
+    /* Transiciones suaves para la elegancia */
+    transition: all 0.3s ease; 
+    margin-left: 8px; /* Separación de 8px */
+
+    /* Sombra sutil por defecto (efecto de "flotación") */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+/* Efecto de HOVER (Levantarse y Sombra más marcada) */
+.control-buttons-group button:hover, .theme-toggle-button:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el cursor */
+    /* Efecto de levantamiento: Mueve ligeramente hacia arriba y aumenta la sombra */
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
+}
+
+/* Efecto de PRESSED (Hundirse) */
+.control-buttons-group button:active, .theme-toggle-button:active {
+    transform: translateY(1px); /* Mover hacia abajo */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Sombra más pequeña (hundido) */
+}
+
+/* Estilo específico para botón de reporte/exportar (Rojo) */
+#btnReporteCritico, #btnExportarPDF {
+    background-color: #dc3545; /* Rojo para destacar la criticidad */
+}
+#btnReporteCritico:hover, #btnExportarPDF:hover {
+    background-color: #c82333; /* Rojo más oscuro al pasar el cursor */
+}
+
+/* Estilo para botones deshabilitados */
+.control-buttons-group button:disabled {
+    background-color: #adb5bd; /* Gris neutro */
+    color: #f8f9fa;
+    cursor: not-allowed;
+    opacity: 1; /* Quitamos la opacidad para usar el color de fondo */
+    transform: none; /* Deshabilitar efectos de transformación */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra muy sutil */
+}
+/* El hover no debería hacer nada en el estado deshabilitado */
+.control-buttons-group button:disabled:hover {
+    background-color: #adb5bd;
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* --- FIN Bloque de Estilos Propuesto para Botones Elegantes --- */
+
+
+.chart-container {
+  width: 80%;
+  max-width: 1000px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+/* Alerta movida arriba */
+#contenedor-alerta {
+  width: 80%;
+  max-width: 1000px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+.alerta-peligro {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+.alerta-advertencia { /* Nuevo estilo para la advertencia */
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+}
+
+/* Estilos para el contenedor de filtros y tarjetas */
+.filtro-container, .stat-card {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.filtro-container {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 1000px;
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+}
+/* Estilos para los pares de label e input */
+.filtro-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Estilo para el checkbox de temperatura crítica */
+.filtro-group.critica-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 15px; /* Separación de los filtros anteriores */
+}
+.filtro-group.critica-group input[type="checkbox"] {
+    transform: scale(1.5); /* Aumenta el tamaño del checkbox */
+}
+
+.filtro-container input,
+.filtro-container button {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.filtro-container input[type="number"] {
+  width: 80px;
+  text-align: center; 
+}
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  max-width: 1000px;
+  margin-bottom: 20px;
+  gap: 20px; 
+}
+.stat-card {
+  flex: 1; 
+  padding: 15px 20px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 150px;
+  transition: all 0.3s;
+}
+
+/* --- TAMAÑOS DE FUENTE AJUSTADOS --- */
+.stat-card h3 {
+  margin: 0 0 8px 0; /* Aumentado margen inferior */
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em; /* Ligeramente más grande */
+}
+.stat-card h3 i {
+    margin-right: 8px; 
+    color: #007bff; /* Iconos en azul */
+    transition: color 0.3s;
+}
+.stat-card p {
+  margin: 0;
+  font-size: 1.8em; /* Tamaño de fuente grande para el valor */
+  font-weight: bold;
+  font-family: monospace, sans-serif;
+  line-height: 1.2;
+}
+/* --- FIN TAMAÑOS DE FUENTE AJUSTADOS --- */
+
+.temp-peligro {
+  color: #a94442;
+}
+.oculto {
+  display: none;
+}
+/* --- ESTILOS DE TENDENCIA (Flechas) --- */
+.trend-icon {
+  font-size: 0.8em;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+.trend-up {
+  color: #d9534f;
+}
+.trend-down {
+  color: #5cb85c;
+}
+.trend-neutral {
+  color: #777;
+}
+
+/* --- ESTILOS DE COLOR BASE PARA VALORES ACTUALES (Tema Claro) --- */
+.presion-card {
+  background-color: #b3e5fc;
+  border-left: 5px solid #03a9f4;
+}
+.voltaje-card {
+  background-color: #c8e6c9;
+  border-left: 5px solid #4caf50;
+}
+
+/* --- ESTILOS DE SEMÁFORO (Solo para temp-card, Tema Claro) --- */
+.temp-card.status-normal {
+  background-color: #e6ffe6;
+  border-left: 5px solid #4CAF50;
+}
+.temp-card.status-warning {
+  background-color: #fff8e1;
+  border-left: 5px solid #FFC107;
+}
+.temp-card.status-danger {
+  background-color: #fce4e4;
+  border-left: 5px solid #F44336;
+}
+
+/* --- NUEVOS ESTILOS PARA LA ALERTA DE TEMPERATURA ACTUAL --- */
+.temp-card .valor-temp-alerta.rojo {
+  color: #dc3545;
+}
+.temp-card .valor-temp-alerta.amarillo { 
+  color: #FFA500; /* NARANJA BRILLANTE */
+}
+.temp-card .valor-temp-alerta.titilando-texto {
+  animation: pulse-red 1s infinite alternate; /* Animación de parpadeo */
+}
+
+/* Definición de la animación de parpadeo */
+@keyframes pulse-red {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+/* --- ESTILOS DEL CRONÓMETRO DE ACTUALIZACIÓN --- */
+.timer-display {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #007bff;
+    margin-top: 5px;
+}
+/* Ajuste en el grupo de intervalo para alinear */
+.filtro-group.intervalo-group {
+    flex-direction: column;
+    align-items: flex-start;
+}
+.filtro-group.intervalo-group select {
+    margin-bottom: 5px;
+}
+
+
+/* ================================================= */
+/* --- ESTILOS MODO OSCURO ---           */
+/* ================================================= */
+
+body.dark-mode {
+  background-color: #121212; /* Fondo oscuro */
+  color: #e0e0e0; /* Texto claro */
+}
+body.dark-mode h1 {
+  color: #bb86fc; /* Púrpura suave */
+}
+body.dark-mode .stat-card h3 {
+    color: #bdbdbd;
+}
+body.dark-mode .stat-card h3 i {
+    color: #03dac6; /* Cian suave */
+}
+
+/* Modo Oscuro - Contenedores */
+body.dark-mode .filtro-container, 
+body.dark-mode .stat-card {
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); 
+}
+body.dark-mode .filtro-container input,
+body.dark-mode .filtro-container select {
+  background-color: #333;
+  color: #e0e0e0;
+  border: 1px solid #444;
+}
+body.dark-mode .timer-display {
+    color: #03dac6;
+}
+
+/* Modo Oscuro - Botones */
+body.dark-mode .control-buttons-group button, 
+body.dark-mode .theme-toggle-button {
+    background-color: #03dac6; /* Cian primario */
+    color: #212121; /* Texto oscuro en el botón claro */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+body.dark-mode .control-buttons-group button:hover, 
+body.dark-mode .theme-toggle-button:hover {
+    background-color: #00bfa5;
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.15);
+}
+
+/* Modo Oscuro - Botones de alerta */
+body.dark-mode #btnReporteCritico, 
+body.dark-mode #btnExportarPDF {
+    background-color: #e57373; /* Rojo más suave para el contraste */
+    color: #212121; /* Texto oscuro en el botón claro */
+}
+body.dark-mode #btnReporteCritico:hover, 
+body.dark-mode #btnExportarPDF:hover {
+    background-color: #ef5350;
+}
+
+/* Modo Oscuro - Deshabilitado */
+body.dark-mode .control-buttons-group button:disabled {
+    background-color: #424242; /* Gris oscuro para deshabilitado */
+    color: #9e9e9e;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Modo Oscuro Ajustes de Tarjetas de Acento */
+body.dark-mode .presion-card {
+  background-color: #154e66;
+  border-left: 5px solid #00b0ff;
+}
+body.dark-mode .voltaje-card {
+  background-color: #2e5c30;
+  border-left: 5px solid #66bb6a;
+}
+body.dark-mode .temp-card.status-normal {
+  background-color: #2e5c30;
+  border-left: 5px solid #66bb6a;
+}
+body.dark-mode .temp-card.status-warning {
+  background-color: #6d4c41;
+  border-left: 5px solid #ffb300;
+}
+body.dark-mode .temp-card.status-danger {
+  background-color: #612121;
+  border-left: 5px solid #f44336;
+}
+
+/* --- FIN ESTILOS MODO OSCURO --- */
+
+
+/* --- Estilos para Responsividad --- */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .header-container {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      width: 100%;
+  }
+
+  .control-buttons-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+  }
+
+  .control-buttons-group button {
+      flex: 1 1 auto; /* Permite que los botones se adapten al ancho */
+      margin-left: 0;
+  }
+
+  .filtro-container,
+  .stats-container,
+  .chart-container,
+  #contenedor-alerta {
+    width: 100%;
+  }
+
+  .filtro-container {
+    flex-direction: row; 
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+    gap: 10px 5px; 
+    align-items: flex-start; 
+  }
+  
+  .filtro-group.fecha-group,
+  .filtro-group.critica-group {
+      flex-grow: 1;
+      width: 100%;
+  }
+  .filtro-group.umbral-group,
+  .filtro-group.umbral-critico-group { 
+      flex-grow: 0;
+  }
+  .filtro-group.intervalo-group {
+    flex-grow: 1;
+    width: 100%;
+    align-items: center;
+  }
+  .filtro-group.intervalo-group select {
+    flex-grow: 1;
+  }
+
+  .stats-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
