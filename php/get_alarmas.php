@@ -41,18 +41,21 @@ if ($mac_recibida !== '' || $equipo_id_recibido !== '') {
             if ($stmt_alarmas->rowCount() > 0) {
                 $alarmas = $stmt_alarmas->fetch();
                 
+                // Si el valor es NULL en la BD, se usa el valor por defecto (derecha)
+                $id = $alarmas['id'] ?? 0;
+                $equipo_id_res = $alarmas['equipo_id'] ?? $equipo_id;
+                $temperatura = $alarmas['Temperatura'] ?? 90;
+                $temp_advertencia = $alarmas['Temp_advertencia'] ?? 85;
+                $presion = $alarmas['Presion'] ?? 0;
+                $voltaje_max = $alarmas['Voltaje_Max'] ?? 0;
+                $voltaje_min = $alarmas['Voltaje_Min'] ?? 0;
+
                 // Imprimimos los 7 datos separados por comas
-                echo $alarmas['id'] . "," . 
-                     $alarmas['equipo_id'] . "," . 
-                     $alarmas['Temperatura'] . "," . 
-                     $alarmas['Temp_advertencia'] . "," . 
-                     $alarmas['Presion'] . "," . 
-                     $alarmas['Voltaje_Max'] . "," . 
-                     $alarmas['Voltaje_Min'];
+                echo "{$id},{$equipo_id_res},{$temperatura},{$temp_advertencia},{$presion},{$voltaje_max},{$voltaje_min}";
                      
             } else {
-                // Respuesta de seguridad: si el equipo existe pero no tiene alarmas configuradas
-                echo "0,0,0,0,0,0,0"; 
+                // Respuesta de seguridad: si el equipo existe pero no tiene alarmas, devolver valores por defecto.
+                echo "0,{$equipo_id},90,85,0,0,0"; 
             }
         }
         

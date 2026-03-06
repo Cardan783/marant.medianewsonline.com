@@ -154,8 +154,8 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
           min="10"
           max="125"
           step="0.5"
-          value="85"
-          placeholder="85"
+          value=""
+          placeholder="Cargando..."
           readonly
         />
         <label>°C</label>
@@ -170,8 +170,8 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
           min="10"
           max="125"
           step="0.5"
-          value="90"
-          placeholder="90"
+          value=""
+          placeholder="Cargando..."
           readonly
         />
         <label>°C</label>
@@ -324,24 +324,29 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
                 // Limpiar opciones anteriores (excepto la primera)
                 selectMac.innerHTML = '<option value="" disabled selected>-- Seleccionar Unidad --</option>';
                 
-                data.forEach(equipo => {
-                    const option = document.createElement('option');
-                    // Usamos el ID como valor para futuras consultas a la BD
-                    option.value = equipo.id; 
-                    option.textContent = equipo.nombre_equipo;
-                    selectMac.appendChild(option);
-                });
-
-                // Establecer valor seleccionado si existe
-                if (currentMac) {
-                    selectMac.value = currentMac;
-                }
-
-                // Una vez que los equipos están cargados y seleccionados, iniciamos la lógica de la gráfica
-                if(typeof controlarActualizacion === 'function') {
-                    controlarActualizacion();
-                }
-            })
+                                data.forEach(equipo => {
+                                    const option = document.createElement('option');
+                                    option.value = equipo.id; 
+                                    option.textContent = equipo.nombre_equipo;
+                                    selectMac.appendChild(option);
+                                });
+                
+                                let macToSelect = currentMac;
+                
+                                // Si no hay MAC pre-seleccionada, pero la lista de equipos no está vacía, seleccionamos el primero por defecto.
+                                if (!macToSelect && data.length > 0) {
+                                  macToSelect = data[0].id;
+                                }
+                
+                                // Establecer valor seleccionado si se determinó uno
+                                if (macToSelect) {
+                                    selectMac.value = macToSelect;
+                                }
+                                
+                                // Una vez que los equipos están cargados y seleccionados, iniciamos la lógica de la gráfica
+                                if(typeof controlarActualizacion === 'function') {
+                                    controlarActualizacion();
+                                }            })
             .catch(error => {
                 console.error('Error:', error);
                 // Iniciar la gráfica incluso si fallan los equipos, para que la UI no se quede en blanco
@@ -362,37 +367,6 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
         });
 
         // Función para obtener y actualizar las alarmas. Será llamada por script.js
-        function actualizarAlarmas() {
-          let url = "php/get_alarmas.php?t=" + new Date().getTime();
-          // Si hay un equipo seleccionado (ID), lo añadimos a la petición
-          if (currentMac) {
-              url += `&equipo_id=${encodeURIComponent(currentMac)}`;
-          }
-
-          // Agregamos un timestamp para evitar que el navegador use la caché y siempre traiga datos frescos
-          return fetch(url)
-            .then((response) => response.text())
-            .then((data) => {
-              console.log("Datos de alarmas recibidos (CSV):", data); // Para depuración en consola
-              // Verificamos si recibimos datos y actualizamos los inputs
-              // Formato que se recibe: id,equipo_id,Temperatura,Temp_advertencia,Presion,Voltaje_Max,Voltaje_Min
-              const valores = data.split(',');
-
-              if (valores.length >= 4) { // Asegurarse de que hay suficientes datos
-                // valores[2] es 'Temperatura' (Umbral Crítico)
-                document.getElementById("umbral_critico_temp").value = parseFloat(valores[2]);
-                
-                // valores[3] es 'Temp_advertencia' (Umbral de Advertencia)
-                document.getElementById("umbral_advertencia_temp").value = parseFloat(valores[3]);
-              }
-            })
-            .catch((error) =>
-              console.error(
-                "Error al cargar la configuración de alarmas:",
-                error,
-              ),
-            );
-        }
       });
 
       // --- Confirmación de Salida (Logout) ---
@@ -416,6 +390,6 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
     </script>
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js?v=1.2"></script>
+    <script src="js/script.js?v=1.4"></script>
   </body>
 </html>

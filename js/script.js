@@ -1,4 +1,5 @@
 // 1. --- SELECCIONAR ELEMENTOS DEL DOM ---
+console.log(">>> Carga de script.js v1.3 iniciada"); // Log para verificar versión
 const selectorEquipo = document.getElementById("selectMacAddress");
 const ctx = document.getElementById("myChart").getContext("2d");
 const contenedorAlerta = document.getElementById("contenedor-alerta");
@@ -894,6 +895,70 @@ function iniciarCountdown() {
   intervaloCountdown = setInterval(actualizarDisplay, 1000);
 }
 // ------------------------------------------
+
+/**
+ * Función para obtener las alarmas desde la BD y actualizar los inputs.
+ * Se conecta a php/get_alarmas.php
+ */
+async function actualizarAlarmas() {
+  console.log(">>> [actualizarAlarmas] Iniciando solicitud de alarmas...");
+
+  // Obtener el ID del equipo seleccionado (el parámetro 'mac' en la URL o el valor del selector contienen el ID)
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentEquipoId = urlParams.get('mac') || (selectorEquipo ? selectorEquipo.value : '');
+
+  if (!currentEquipoId) {
+    console.warn(">>> [actualizarAlarmas] No hay equipo seleccionado. Se omite la carga.");
+    return;
+  }
+
+  const url = `php/get_alarmas.php?equipo_id=${currentEquipoId}`;
+  console.log(`>>> [actualizarAlarmas] URL: ${url}`);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const text = await response.text();
+    console.log(`>>> [actualizarAlarmas] Respuesta cruda: ${text}`);
+
+    // Verificar si la respuesta es un error del PHP
+    if (text.trim().startsWith("Error")) {
+      console.error(`>>> [actualizarAlarmas] Error devuelto por PHP: ${text}`);
+      return;
+    }
+
+    // Parsear CSV: id, equipo_id, temperatura, temp_advertencia, presion, voltaje_max, voltaje_min
+    const parts = text.split(',');
+    
+    if (parts.length >= 4) {
+      // Según get_alarmas.php:
+      // parts[2] -> Temperatura (Crítica)
+      // parts[3] -> Temp_advertencia
+      
+      const tempCritica = parseFloat(parts[2]);
+      const tempAdvertencia = parseFloat(parts[3]);
+
+      console.log(`>>> [actualizarAlarmas] Datos parseados -> Crítico: ${tempCritica}, Advertencia: ${tempAdvertencia}`);
+
+      if (!isNaN(tempCritica) && umbralCriticoInput) {
+        umbralCriticoInput.value = tempCritica;
+      }
+
+      if (!isNaN(tempAdvertencia) && umbralAdvertenciaInput) {
+        umbralAdvertenciaInput.value = tempAdvertencia;
+      }
+    } else {
+      console.warn(">>> [actualizarAlarmas] Formato de respuesta inesperado (faltan campos):", parts);
+    }
+
+  } catch (error) {
+    console.error(">>> [actualizarAlarmas] Excepción:", error);
+  }
+  console.log(">>> [actualizarAlarmas] Finalizado.");
+}
 
 // 3. --- FUNCIÓN PARA OBTENER DATOS Y ACTUALIZAR LA GRÁFICA ---
 async function actualizarGrafica(
