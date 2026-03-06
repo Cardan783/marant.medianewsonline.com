@@ -101,21 +101,20 @@ try {
     <div class="container pb-5 pt-5 pt-lg-4">
         
         <!-- Barra de Progreso del Perfil -->
-        <div class="card mb-4 border-0 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="mb-0 text-primary"><i class="fa-solid fa-user-check me-2"></i>Completado del Perfil</h5>
-                    <span class="fw-bold"><?php echo $progreso; ?>%</span>
-                </div>
-                <div class="progress" style="height: 20px;">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated <?php echo $progreso == 100 ? 'bg-success' : 'bg-warning'; ?>" role="progressbar" style="width: <?php echo $progreso; ?>%;" aria-valuenow="<?php echo $progreso; ?>" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <?php if ($perfil_incompleto): ?>
-                    <div class="mt-2 text-end">
-                        <a href="php/perfil.php" class="text-decoration-none small fw-bold text-danger">Faltan datos por completar <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                <?php endif; ?>
+        <div id="profile-progress-card" class="alert <?php echo $progreso == 100 ? 'alert-success' : 'alert-warning'; ?> <?php if ($perfil_incompleto) echo 'alert-dismissible'; ?> fade show" role="alert" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0"><i class="fa-solid fa-user-check me-2"></i>Completado del Perfil</h5>
+                <span class="fw-bold"><?php echo $progreso; ?>%</span>
             </div>
+            <div class="progress" style="height: 20px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated <?php echo $progreso == 100 ? 'bg-success' : 'bg-warning'; ?>" role="progressbar" style="width: <?php echo $progreso; ?>%;" aria-valuenow="<?php echo $progreso; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <?php if ($perfil_incompleto): ?>
+                <div class="mt-2 text-end">
+                    <a href="php/perfil.php" class="alert-link small fw-bold">Faltan datos por completar <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <?php endif; ?>
         </div>
 
         <div class="welcome-banner d-flex justify-content-between align-items-center">
@@ -190,5 +189,33 @@ try {
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileCard = document.getElementById('profile-progress-card');
+            const progreso = <?php echo $progreso; ?>;
+
+            if (profileCard) {
+                if (progreso === 100) {
+                    profileCard.style.display = 'block'; // Mostrar para luego desvanecer
+                    // Si el perfil está 100% completo, ocultar la alerta después de 2 segundos.
+                    setTimeout(() => {
+                        const alertInstance = bootstrap.Alert.getOrCreateInstance(profileCard);
+                        if (alertInstance) {
+                            alertInstance.close();
+                        }
+                    }, 2000);
+                } else {
+                    // Si está incompleto, verificar si el usuario ya lo cerró en esta sesión.
+                    if (sessionStorage.getItem('hideProfileReminder') !== 'true') {
+                        profileCard.style.display = 'block';
+                    }
+                    // Guardar en sessionStorage cuando el usuario cierre la alerta manualmente.
+                    profileCard.addEventListener('close.bs.alert', function () {
+                        sessionStorage.setItem('hideProfileReminder', 'true');
+                    });
+                }
+            }
+        });
+    </script>
 </body>
 </html>

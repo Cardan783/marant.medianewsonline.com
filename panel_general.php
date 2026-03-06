@@ -154,7 +154,8 @@ unset($equipo); // Romper referencia del foreach
                             </div>
                             
                             <div class="d-grid mt-3">
-                                <a href="Graficas.php?mac=<?php echo $eq['id']; ?>" class="btn btn-outline-primary btn-sm">Ver Gráfica Detallada</a>
+                                <a href="Graficas.php?equipo_id=<?php echo $eq['id']; ?>" class="btn btn-outline-primary btn-sm">Ver Gráfica Detallada</a>
+                                <a href="tabla.php?equipo_id=<?php echo $eq['id']; ?>" class="btn btn-outline-secondary btn-sm mt-2">Ver Historial de Datos</a>
                             </div>
                         </div>
                     </div>

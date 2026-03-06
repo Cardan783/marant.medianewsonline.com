@@ -903,9 +903,9 @@ function iniciarCountdown() {
 async function actualizarAlarmas() {
   console.log(">>> [actualizarAlarmas] Iniciando solicitud de alarmas...");
 
-  // Obtener el ID del equipo seleccionado (el parámetro 'mac' en la URL o el valor del selector contienen el ID)
+  // Obtener el ID del equipo seleccionado
   const urlParams = new URLSearchParams(window.location.search);
-  const currentEquipoId = urlParams.get('mac') || (selectorEquipo ? selectorEquipo.value : '');
+  const currentEquipoId = urlParams.get('equipo_id') || (selectorEquipo ? selectorEquipo.value : '');
 
   if (!currentEquipoId) {
     console.warn(">>> [actualizarAlarmas] No hay equipo seleccionado. Se omite la carga.");
@@ -978,12 +978,12 @@ async function actualizarGrafica(
 
   const params = new URLSearchParams();
 
-  // Obtener MAC de la URL (prioridad) o del selector
+  // Obtener ID de equipo de la URL (prioridad) o del selector
   const urlParams = new URLSearchParams(window.location.search);
-  const currentMac = urlParams.get('mac') || (selectorEquipo ? selectorEquipo.value : '');
+  const currentEquipoId = urlParams.get('equipo_id') || (selectorEquipo ? selectorEquipo.value : '');
   
-  if (currentMac) {
-      params.append("mac", currentMac);
+  if (currentEquipoId) {
+      params.append("equipo_id", currentEquipoId);
   }
 
   // AÑADIDO: Limitar siempre a las últimas 30 mediciones por defecto

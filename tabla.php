@@ -210,7 +210,7 @@ header("Expires: 0");
 
         <div class="mb-4">
           <label class="form-label fw-bold text-xs text-uppercase text-muted">Seleccionar Unidad (MAC)</label>
-          <select class="form-select mb-3" v-model="filtros.macAddress" @change="aplicarFiltros">
+          <select class="form-select mb-3" v-model="filtros.equipoId" @change="aplicarFiltros">
             <option value="">-- Seleccionar --</option>
             <option v-for="eq in listaEquipos" :key="eq.id" :value="eq.id">{{ eq.nombre_equipo }}</option>
           </select>
@@ -612,6 +612,10 @@ header("Expires: 0");
           const itemsPerPage = ref(10);
 
           // Filtros
+          // Obtener ID de la URL si existe (para enlaces directos desde Panel General)
+          const urlParams = new URLSearchParams(window.location.search);
+          const urlEquipoId = urlParams.get('equipo_id');
+
           const getTodayDate = () => {
             const hoy = new Date();
             const anio = hoy.getFullYear();
@@ -622,9 +626,7 @@ header("Expires: 0");
           const filtros = reactive({
             fechaInicio: getTodayDate(),
             fechaFin: getTodayDate(),
-            macAddress: localStorage.getItem('selectedMac') || "", // Cargar selección guardada
-            tempMin: 0,
-            tempMax: 150,
+            equipoId: 50,
             presionMin: 0,
             presionMax: 100,
             voltajeMin: 0,
@@ -664,8 +666,8 @@ header("Expires: 0");
                 params.append("fecha_inicio", filtros.fechaInicio);
                 params.append("fecha_fin", filtros.fechaFin);
               }
-              if (filtros.macAddress) {
-                params.append("mac", filtros.macAddress);
+              if (filtros.equipoId) {
+                params.append("equipo_id", filtros.equipoId);
               }
 
               // Añadir el resto de filtros a la petición
@@ -785,8 +787,8 @@ header("Expires: 0");
 
           const aplicarFiltros = () => {
             // Guardar selección para persistencia entre páginas
-            if (filtros.macAddress) {
-                localStorage.setItem('selectedMac', filtros.macAddress);
+            if (filtros.equipoId) {
+                localStorage.setItem('selectedEquipoId', filtros.equipoId);
             }
             currentPage.value = 1;
             obtenerDatos();
@@ -855,6 +857,12 @@ header("Expires: 0");
             if (savedColor) {
               cambiarColor(JSON.parse(savedColor));
             }
+            
+            // Si vino por URL, guardamos en localStorage para persistencia futura
+            if (urlEquipoId) {
+                localStorage.setItem('selectedEquipoId', urlEquipoId);
+            }
+
             cargarEquipos(); // Llamamos a la función al iniciar
             obtenerDatos();
             setupPolling();

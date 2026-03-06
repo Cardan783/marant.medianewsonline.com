@@ -15,7 +15,7 @@ if ($mac_recibida !== '' || $equipo_id_recibido !== '') {
             // Si recibimos ID directamente (desde la Web)
             $equipo_id = $equipo_id_recibido;
         } else {
-            // Si recibimos MAC (desde ESP8266), buscamos el ID
+            // Si recibimos MAC (desde ESP8266 o el esp32), buscamos el ID
             $query_equipo = "SELECT id FROM equipos WHERE mac_address = :mac_address LIMIT 1";
             $stmt_equipo = $conn->prepare($query_equipo);
             $stmt_equipo->bindParam(':mac_address', $mac_recibida, PDO::PARAM_STR);

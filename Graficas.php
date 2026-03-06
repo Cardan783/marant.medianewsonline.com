@@ -310,9 +310,9 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
 
         const selectMac = document.getElementById("selectMacAddress");
         
-        // Obtener MAC actual de la URL o LocalStorage
+        // Obtener ID de equipo actual de la URL o LocalStorage
         const urlParams = new URLSearchParams(window.location.search);
-        const currentMac = urlParams.get('mac') || localStorage.getItem('selectedMac');
+        const currentEquipoId = urlParams.get('equipo_id') || localStorage.getItem('selectedEquipoId');
         
         // --- CARGAR EQUIPOS DEL USUARIO ---
         fetch('php/obtener_equipos.php')
@@ -331,16 +331,16 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
                                     selectMac.appendChild(option);
                                 });
                 
-                                let macToSelect = currentMac;
+                                let equipoIdToSelect = currentEquipoId;
                 
                                 // Si no hay MAC pre-seleccionada, pero la lista de equipos no está vacía, seleccionamos el primero por defecto.
-                                if (!macToSelect && data.length > 0) {
-                                  macToSelect = data[0].id;
+                                if (!equipoIdToSelect && data.length > 0) {
+                                  equipoIdToSelect = data[0].id;
                                 }
                 
                                 // Establecer valor seleccionado si se determinó uno
-                                if (macToSelect) {
-                                    selectMac.value = macToSelect;
+                                if (equipoIdToSelect) {
+                                    selectMac.value = equipoIdToSelect;
                                 }
                                 
                                 // Una vez que los equipos están cargados y seleccionados, iniciamos la lógica de la gráfica
@@ -360,9 +360,9 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
             const selectedVal = this.value;
             if (selectedVal) {
                 // Guardar en localStorage
-                localStorage.setItem('selectedMac', selectedVal);
+                localStorage.setItem('selectedEquipoId', selectedVal);
                 // Recargar página con el parámetro MAC para que la gráfica se actualice
-                window.location.search = `?mac=${selectedVal}`;
+                window.location.search = `?equipo_id=${selectedVal}`;
             }
         });
 
@@ -390,6 +390,6 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
     </script>
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js?v=1.4"></script>
+    <script src="js/script.js?v=1.2"></script>
   </body>
 </html>

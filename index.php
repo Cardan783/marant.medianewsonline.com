@@ -317,6 +317,9 @@ if (isset($_SESSION['user_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Limpiar el estado del recordatorio de perfil al cargar la página de login
+            sessionStorage.removeItem('hideProfileReminder');
+
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('status');
             const msg = urlParams.get('msg');

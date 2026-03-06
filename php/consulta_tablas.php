@@ -39,8 +39,11 @@ if (isset($_GET['fecha_inicio']) && isset($_GET['fecha_fin'])) {
     $sql .= " AND DATE(created_at) = CURDATE()";
 }
 
-// 1.1 Filtro por Equipo (MAC/ID)
-if (isset($_GET['mac']) && !empty($_GET['mac'])) {
+// 1.1 Filtro por Equipo (ID)
+if (isset($_GET['equipo_id']) && !empty($_GET['equipo_id'])) {
+    $sql .= " AND equipo_id = ?";
+    $params[] = $_GET['equipo_id'];
+} elseif (isset($_GET['mac']) && !empty($_GET['mac'])) {
     $sql .= " AND equipo_id = ?";
     $params[] = $_GET['mac'];
 }
