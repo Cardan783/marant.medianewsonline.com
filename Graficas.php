@@ -336,8 +336,19 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
                 if (currentMac) {
                     selectMac.value = currentMac;
                 }
+
+                // Una vez que los equipos están cargados y seleccionados, iniciamos la lógica de la gráfica
+                if(typeof controlarActualizacion === 'function') {
+                    controlarActualizacion();
+                }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                // Iniciar la gráfica incluso si fallan los equipos, para que la UI no se quede en blanco
+                if(typeof controlarActualizacion === 'function') {
+                    controlarActualizacion();
+                }
+            });
 
         // --- EVENTO AL CAMBIAR SELECCIÓN ---
         selectMac.addEventListener('change', function() {
@@ -359,7 +370,7 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
           }
 
           // Agregamos un timestamp para evitar que el navegador use la caché y siempre traiga datos frescos
-          fetch(url)
+          return fetch(url)
             .then((response) => response.text())
             .then((data) => {
               console.log("Datos de alarmas recibidos (CSV):", data); // Para depuración en consola

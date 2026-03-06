@@ -1435,7 +1435,7 @@ const aplicarFiltros = () => {
  * Inicia o detiene la actualización automática de la gráfica
  * en función de si la fecha seleccionada es hoy y el intervalo.
  */
-const controlarActualizacion = () => {
+const controlarActualizacion = async () => {
   // Detener cualquier intervalo de actualización automático previo
   if (intervaloActualizacion) {
     clearInterval(intervaloActualizacion);
@@ -1453,7 +1453,7 @@ const controlarActualizacion = () => {
 
   // Cargar los umbrales de alarma y luego los datos de la gráfica
   if (typeof actualizarAlarmas === "function") {
-    actualizarAlarmas();
+    await actualizarAlarmas();
   }
   aplicarFiltros(); // Esto siempre llama a actualizarGrafica para la selección actual
 
@@ -1511,5 +1511,5 @@ document
 
 // Llama a las funciones de carga
 loadTheme();
-controlarActualizacion(); // Inicia la carga de datos y el intervalo si es hoy
+// controlarActualizacion(); // Se llama desde Graficas.php después de cargar los equipos
 cargarListaArchivos(); // Carga la lista de archivos para análisis
