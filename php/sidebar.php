@@ -124,11 +124,6 @@ $url_avatar_default = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION[
                     <i class="fa-solid fa-gear me-2" style="width: 20px;"></i> Configuración
                 </a>
             </li>
-            <li class="mb-1">
-                <a href="<?php echo $base_path; ?>php/gestion_equipos.php" class="nav-link text-white <?php echo $current_page == 'gestion_equipos.php' ? 'active' : ''; ?>">
-                    <i class="fa-solid fa-tools me-2" style="width: 20px;"></i> Gestión Equipos
-                </a>
-            </li>
         </ul>
         <hr class="border-secondary">
         <div class="dropdown">

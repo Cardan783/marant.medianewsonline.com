@@ -7,6 +7,17 @@ if (!isset($_SESSION['user_id'])) {
 
 require_once 'php/conexion.php';
 
+// --- SEGURIDAD: Verificar si el usuario sigue activo ---
+$stmt_status = $conn->prepare("SELECT estado FROM usuarios WHERE id = ?");
+$stmt_status->execute([$_SESSION['user_id']]);
+$status = $stmt_status->fetchColumn();
+
+if ($status !== 'activo') {
+    session_destroy();
+    header("Location: index.php?status=login_error&msg=" . urlencode("Su cuenta ha sido suspendida. Contacte al administrador."));
+    exit();
+}
+
 // Verificar si el perfil está completo y calcular progreso
 $perfil_incompleto = false;
 $progreso = 0;
@@ -163,16 +174,6 @@ try {
                         <div class="icon-wrapper bg-purple-light"><i class="fa-solid fa-gear"></i></div>
                         <h4 class="card-title">Configuración</h4>
                         <p class="card-text">Agregue nuevos equipos, configure WiFi, parámetros y notificaciones.</p>
-                    </div>
-                </a>
-            </div>
-            <!-- Gestión de Equipos -->
-            <div class="col-md-6 col-lg-4">
-                <a href="php/gestion_equipos.php" class="dashboard-card">
-                    <div class="card-body">
-                        <div class="icon-wrapper bg-cyan-light"><i class="fa-solid fa-tools"></i></div>
-                        <h4 class="card-title">Gestión de Equipos</h4>
-                        <p class="card-text">Edite alias, información del cliente, umbrales de alarma y estado del servicio.</p>
                     </div>
                 </a>
             </div>

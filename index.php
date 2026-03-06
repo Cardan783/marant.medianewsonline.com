@@ -195,6 +195,10 @@ if (isset($_SESSION['user_id'])) {
                 <a href="#" class="text-white"><i class="fa-brands fa-instagram fa-lg"></i></a>
             </div>
             <p class="mb-0">&copy; <?php echo date("Y"); ?> Marant Electronics C.A. Todos los derechos reservados.</p>
+            <!-- Enlace Admin Discreto -->
+            <div class="mt-2">
+                <a href="admin/login.php" class="text-white text-decoration-none" style="font-size: 0.8rem; opacity: 0.3;">Admin</a>
+            </div>
         </div>
     </footer>
 
