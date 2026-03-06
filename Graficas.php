@@ -30,6 +30,8 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
 
     <!-- Evitar error 404 de favicon usando un icono vacío -->
     <link rel="icon" href="data:," />
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css" />
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -105,45 +107,12 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
         gap: 10px;
         align-items: center;
       }
-
-      /* Estilos del Menú de Navegación */
-      .app-nav {
-        background-color: #0d6efd;
-        padding: 10px 20px;
-        margin-bottom: 15px;
-        border-radius: 0 0 8px 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: white;
-      }
-      .app-nav a {
-        color: white;
-        text-decoration: none;
-        margin-right: 20px;
-        font-weight: 500;
-        font-size: 1.05rem;
-      }
-      .app-nav a:hover {
-        text-decoration: underline;
-      }
     </style>
   </head>
   <body>
-    <!-- Menú de Navegación Principal -->
-    <nav class="app-nav">
-      <div class="nav-links">
-        <span style="font-weight: bold; margin-right: 20px;"><i class="fa-solid fa-chart-line"></i> SAMPATV</span>
-        <a href="Graficas.php" style="text-decoration: underline;"><i class="fa-solid fa-chart-area"></i> Gráficas</a>
-        <a href="tabla.php"><i class="fa-solid fa-table"></i> Tablas</a>
-        <a href="php/configuracion.php"><i class="fa-solid fa-gear"></i> Configuración</a>
-      </div>
-      <div class="user-controls">
-        <a href="#" onclick="confirmLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
-      </div>
-    </nav>
+    <?php $base_path = ''; include 'php/sidebar.php'; ?>
 
-    <div class="header-container">
+    <div class="header-container pt-5 pt-lg-0 ps-3 pe-3">
       <h1>Monitor de Sensores en Tiempo Real</h1>
       <div class="control-buttons-group">
         <!-- Selector de MAC Address -->
@@ -339,12 +308,8 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
             }
         }
 
-        const selectIntervalo = document.getElementById("selectIntervalo");
         const selectMac = document.getElementById("selectMacAddress");
-        const timerDisplay = document.getElementById("update-timer-display");
-        let alarmasIntervalId = null;
-        let countdownIntervalId = null;
-
+        
         // Obtener MAC actual de la URL o LocalStorage
         const urlParams = new URLSearchParams(window.location.search);
         const currentMac = urlParams.get('mac') || localStorage.getItem('selectedMac');
@@ -385,12 +350,12 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
             }
         });
 
-        // Función para obtener y actualizar las alarmas
+        // Función para obtener y actualizar las alarmas. Será llamada por script.js
         function actualizarAlarmas() {
           let url = "php/get_alarmas.php?t=" + new Date().getTime();
-          // Si hay una MAC seleccionada, la añadimos a la petición
+          // Si hay un equipo seleccionado (ID), lo añadimos a la petición
           if (currentMac) {
-              url += `&mac=${encodeURIComponent(currentMac)}`;
+              url += `&equipo_id=${encodeURIComponent(currentMac)}`;
           }
 
           // Agregamos un timestamp para evitar que el navegador use la caché y siempre traiga datos frescos
@@ -399,15 +364,15 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
             .then((data) => {
               console.log("Datos de alarmas recibidos (CSV):", data); // Para depuración en consola
               // Verificamos si recibimos datos y actualizamos los inputs
-              // Formato esperado: Temperatura,Temp_advertencia,Presion,Voltaje_Max,Voltaje_Min
+              // Formato que se recibe: id,equipo_id,Temperatura,Temp_advertencia,Presion,Voltaje_Max,Voltaje_Min
               const valores = data.split(',');
 
-              if (valores.length >= 2) {
-                // Index 1: Temp_advertencia -> umbral_advertencia_temp
-                document.getElementById("umbral_advertencia_temp").value = parseFloat(valores[1]);
-
-                // Index 0: Temperatura -> umbral_critico_temp
-                document.getElementById("umbral_critico_temp").value = parseFloat(valores[0]);
+              if (valores.length >= 4) { // Asegurarse de que hay suficientes datos
+                // valores[2] es 'Temperatura' (Umbral Crítico)
+                document.getElementById("umbral_critico_temp").value = parseFloat(valores[2]);
+                
+                // valores[3] es 'Temp_advertencia' (Umbral de Advertencia)
+                document.getElementById("umbral_advertencia_temp").value = parseFloat(valores[3]);
               }
             })
             .catch((error) =>
@@ -417,55 +382,6 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
               ),
             );
         }
-
-        // Función para manejar la cuenta regresiva visual
-        function iniciarCuentaRegresiva(duracionMs) {
-            if (countdownIntervalId) clearInterval(countdownIntervalId);
-            
-            let tiempoRestante = duracionMs;
-            
-            const actualizarDisplay = () => {
-                if (tiempoRestante <= 0) {
-                    timerDisplay.textContent = "Actualizando...";
-                    return;
-                }
-                const segundos = Math.ceil(tiempoRestante / 1000);
-                const min = Math.floor(segundos / 60);
-                const sec = segundos % 60;
-                timerDisplay.textContent = `Próxima actualización en: ${min}:${sec.toString().padStart(2, '0')}`;
-                tiempoRestante -= 1000;
-            };
-
-            actualizarDisplay(); // Mostrar inmediato
-            countdownIntervalId = setInterval(actualizarDisplay, 1000);
-        }
-
-        // Función para configurar el intervalo dinámicamente según el select
-        function configurarIntervaloAlarmas() {
-          if (alarmasIntervalId) clearInterval(alarmasIntervalId);
-          if (countdownIntervalId) clearInterval(countdownIntervalId);
-          
-          const tiempo = parseInt(selectIntervalo.value);
-          // Si el tiempo es válido y mayor a 0, iniciamos el intervalo
-          if (!isNaN(tiempo) && tiempo > 0) {
-            // Ejecutar inmediatamente
-            actualizarAlarmas();
-            iniciarCuentaRegresiva(tiempo);
-
-            alarmasIntervalId = setInterval(() => {
-                actualizarAlarmas();
-                iniciarCuentaRegresiva(tiempo); // Reiniciar cuenta regresiva
-            }, tiempo);
-          } else {
-              timerDisplay.textContent = "Actualización: Manual";
-          }
-        }
-
-        // 1. Carga inicial inmediata
-        configurarIntervaloAlarmas();
-
-        // 2. Escuchar cambios en el selector para actualizar la frecuencia
-        selectIntervalo.addEventListener("change", configurarIntervaloAlarmas);
       });
 
       // --- Confirmación de Salida (Logout) ---
@@ -487,6 +403,8 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
           });
       }
     </script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js?v=1.2"></script>
   </body>
 </html>

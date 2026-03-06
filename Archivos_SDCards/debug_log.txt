@@ -172,3 +172,5 @@
 [2026-03-04 04:00:41] Exito: Martes_3_de_Marzo_2026.txt guardado (31234 bytes).
 [2026-03-05 04:00:45] Iniciando carga: Miercoles_4_de_Marzo_2026.txt
 [2026-03-05 04:00:45] Exito: Miercoles_4_de_Marzo_2026.txt guardado (60564 bytes).
+[2026-03-06 04:00:34] Iniciando carga: Jueves_5_de_Marzo_2026.txt
+[2026-03-06 04:00:34] Exito: Jueves_5_de_Marzo_2026.txt guardado (51152 bytes).

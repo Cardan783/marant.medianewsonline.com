@@ -253,35 +253,19 @@ if ($is_equipo_selected) {
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="bi bi-speedometer2 me-2"></i>SAMPATV</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="../Graficas.php"><i class="bi bi-graph-up me-1"></i> Gráficas</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../tabla.php"><i class="bi bi-table me-1"></i> Tablas</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="configuracion.php"><i class="bi bi-gear-fill me-1"></i> Configuración</a></li>
-                </ul>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-light btn-sm" id="darkModeToggle">
-                        <i class="bi bi-moon-stars-fill"></i> Modo Oscuro
-                    </button>
-                    <a href="#" onclick="confirmLogout(event)" class="btn btn-danger btn-sm">
-                        <i class="bi bi-box-arrow-right me-1"></i> Salir
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <?php $base_path = '../'; include 'sidebar.php'; ?>
 
     <div class="toast-container position-fixed top-0 end-0 p-3">
       <!-- Las notificaciones push (toasts) se añadirán aquí -->
     </div>
 
-    <div class="container">
+    <div class="container pt-5 pt-lg-4">
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-outline-secondary btn-sm" id="darkModeToggle">
+                <i class="bi bi-moon-stars-fill"></i> Modo Oscuro
+            </button>
+        </div>
+
         <?php if (!empty($error_db)): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>¡Error de Base de Datos!</strong> No se pudo cargar la configuración.<br>

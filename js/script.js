@@ -1,4 +1,5 @@
 // 1. --- SELECCIONAR ELEMENTOS DEL DOM ---
+const selectorEquipo = document.getElementById("selectMacAddress");
 const ctx = document.getElementById("myChart").getContext("2d");
 const contenedorAlerta = document.getElementById("contenedor-alerta");
 const fechaDiaInput = document.getElementById("fecha_dia");    
@@ -849,7 +850,6 @@ function detenerCountdown() {
     clearInterval(intervaloCountdown);
     intervaloCountdown = null;
   }
-  updateTimerDisplay.textContent = "Próxima actualización en: --:--";
 }
 
 /**
@@ -865,25 +865,28 @@ function iniciarCountdown() {
     return;
   }
 
-  // El tiempo restante inicial debe ser el tiempo total del intervalo
-  let tiempoRestanteSegundos = INTERVALO_ACTUALIZACION_MS / 1000;
+  // Se establece un punto final en el tiempo para evitar desviaciones
+  const endTime = Date.now() + INTERVALO_ACTUALIZACION_MS;
 
   const actualizarDisplay = () => {
-    // CORRECCIÓN: Asegurar que el display se reinicie correctamente
-    if (tiempoRestanteSegundos < 0) {
-      // Esto puede ocurrir justo después de un fetch. Se resetea.
-      tiempoRestanteSegundos = INTERVALO_ACTUALIZACION_MS / 1000;
+    // Se calcula el tiempo restante real en cada tick
+    const tiempoRestante = endTime - Date.now();
+
+    if (tiempoRestante < 1) {
+      updateTimerDisplay.textContent = "Actualizando...";
+      if (intervaloCountdown) clearInterval(intervaloCountdown);
+      return;
     }
 
-    const segundos = tiempoRestanteSegundos % 60;
-    const minutos = Math.floor(tiempoRestanteSegundos / 60);
+    const totalSegundos = Math.floor(tiempoRestante / 1000);
+    const minutos = Math.floor(totalSegundos / 60);
+    const segundos = totalSegundos % 60;
 
+    // Formato de dos dígitos para minutos y segundos
     const display = `${minutos.toString().padStart(2, "0")}:${segundos
       .toString()
       .padStart(2, "0")}`;
     updateTimerDisplay.textContent = `Próxima actualización en: ${display}`;
-
-    tiempoRestanteSegundos--;
   };
 
   // Ejecuta inmediatamente y luego cada segundo
@@ -917,6 +920,9 @@ async function actualizarGrafica(
   if (currentMac) {
       params.append("mac", currentMac);
   }
+
+  // AÑADIDO: Limitar siempre a las últimas 30 mediciones por defecto
+  params.append("limit", "30");
 
   if (fechaInicio && fechaFin) {
     // El backend local espera YYYY-MM-DD (formato estándar del input date)
@@ -1169,10 +1175,8 @@ async function actualizarGrafica(
       );
     }
 
-    // 5. Reiniciamos el cronómetro si el intervalo de auto-actualización está activo (INTERVALO_ACTUALIZACION_MS > 0).
-    if (intervaloActualizacion) {
-      iniciarCountdown();
-    }
+    // 5. Reiniciamos el cronómetro incondicionalmente.
+    iniciarCountdown();
   } catch (error) {
     // Lógica de manejo de errores
     console.error("No se pudieron cargar los datos de la gráfica:", error);
@@ -1211,12 +1215,8 @@ async function actualizarGrafica(
     valorTempActualElem.classList.remove("rojo", "amarillo", "titilando-texto");
     detenerAlarmaSonora(null, null, null);
 
-    // Si hay actualización automática activa, reiniciamos el contador para reintentar
-    if (intervaloActualizacion) {
-      iniciarCountdown();
-    } else {
-      detenerCountdown();
-    }
+    // Reiniciamos el contador para el próximo reintento.
+    iniciarCountdown();
   }
 }
 
@@ -1436,49 +1436,50 @@ const aplicarFiltros = () => {
  * en función de si la fecha seleccionada es hoy y el intervalo.
  */
 const controlarActualizacion = () => {
-  // 1. Obtener el nuevo valor del intervalo de actualización
-  // El valor del select es en milisegundos.
-  INTERVALO_ACTUALIZACION_MS = parseInt(selectIntervalo.value, 10);
-
-  // 2. Detener el intervalo de actualización existente
+  // Detener cualquier intervalo de actualización automático previo
   if (intervaloActualizacion) {
     clearInterval(intervaloActualizacion);
     intervaloActualizacion = null;
-    detenerCountdown();
-    console.log("Actualización automática detenida.");
   }
 
   const fechaSeleccionada = fechaDiaInput.value;
   const hoy = new Date().toISOString().slice(0, 10);
+  INTERVALO_ACTUALIZACION_MS = parseInt(selectIntervalo.value, 10);
 
-  // Siempre realiza una carga de datos inicial al cambiar filtros/intervalo
-  aplicarFiltros();
-
-  // NUEVA LÓGICA: Iniciar actualización si NO hay fecha seleccionada O si la fecha es hoy, Y el intervalo > 0.
+  // Determinar si la actualización automática debe estar activa
   const debeActualizarAutomaticamente =
     (!fechaSeleccionada || fechaSeleccionada === hoy) &&
     INTERVALO_ACTUALIZACION_MS > 0;
 
-  // 3. Evaluar si se debe iniciar la actualización automática
+  // Cargar los umbrales de alarma y luego los datos de la gráfica
+  if (typeof actualizarAlarmas === "function") {
+    actualizarAlarmas();
+  }
+  aplicarFiltros(); // Esto siempre llama a actualizarGrafica para la selección actual
+
   if (debeActualizarAutomaticamente) {
+    // Si la auto-actualización debe estar activa, se inicia el ciclo.
+    // La función `iniciarCountdown` será llamada desde `actualizarGrafica`.
     console.log(
-      `✅ Fecha de hoy o sin selección y intervalo activo, iniciando actualización automática (cada ${
+      `✅ Iniciando actualización automática (cada ${
         INTERVALO_ACTUALIZACION_MS / 1000
       }s).`,
     );
-
     intervaloActualizacion = setInterval(() => {
-      console.log(">>> AUTO-UPDATE: Buscando nuevos datos...");
+      // Las llamadas subsecuentes también cargan filtros.
       aplicarFiltros();
     }, INTERVALO_ACTUALIZACION_MS);
-
-    // iniciarCountdown() se llama dentro de actualizarGrafica() después del fetch.
   } else {
-    // Si la fecha es pasada o el intervalo es 0 (Deshabilitar)
-    console.log(
-      "Actualización automática deshabilitada por fecha pasada o intervalo 0.",
-    );
-    detenerCountdown();
+    // Si no debe haber auto-actualización (fecha pasada o intervalo 0).
+    console.log("ℹ️ Actualización automática deshabilitada para esta vista.");
+    detenerCountdown(); // Detiene el contador.
+    
+    // Se establece un mensaje estático claro para el usuario.
+    if (fechaSeleccionada) {
+        updateTimerDisplay.textContent = "Mostrando datos históricos";
+    } else { // El único otro caso es que el intervalo sea 0.
+        updateTimerDisplay.textContent = "Actualización automática deshabilitada";
+    }
   }
 };
 

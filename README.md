@@ -53,4 +53,3 @@ SELECT * from sensores WHERE Fecha >= '22-11-2022' AND Fecha <= '28-11-2022' AND
 SELECT * from sensores WHERE Fecha >= '01-03-2024' AND Fecha <= '31-03-2024' AND Temperatura >= '25' AND Presion <= '5' AND Voltaje >= '12' ORDER BY `No` DESC LIMIT 7200
 
 SELECT * from sensores WHERE Fecha >= '31-03-2024' AND Fecha <= '31-03-2024' AND Temperatura >= '24' AND Presion <= '6.5' AND Voltaje >= '12' ORDER BY `No` DESC LIMIT 200
-# marant.medianewsonline.com

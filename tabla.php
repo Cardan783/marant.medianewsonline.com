@@ -208,13 +208,6 @@ header("Expires: 0");
           <i class="fa-solid fa-chart-line me-2"></i>SAMPATV
         </h4>
 
-        <!-- Menú de Navegación Interno -->
-        <div class="mb-4 border-bottom pb-3">
-            <a href="Graficas.php" class="nav-link-custom"><i class="fa-solid fa-chart-area me-2"></i> Ir a Gráficas</a>
-            <a href="php/configuracion.php" class="nav-link-custom"><i class="fa-solid fa-gear me-2"></i> Configuración</a>
-            <a href="php/logout.php" class="nav-link-custom text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión</a>
-        </div>
-
         <div class="mb-4">
           <label class="form-label fw-bold text-xs text-uppercase text-muted">Seleccionar Unidad (MAC)</label>
           <select class="form-select mb-3" v-model="filtros.macAddress" @change="aplicarFiltros">
@@ -573,6 +566,8 @@ header("Expires: 0");
         </div>
       </div>
     </div>
+
+    <?php $base_path = ''; include 'php/sidebar.php'; ?>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

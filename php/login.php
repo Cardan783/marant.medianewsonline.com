@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         // Buscar usuario por email
         // NOTA: Asegúrate de que tu tabla se llame 'usuarios' y tenga columnas 'email', 'password', 'id', 'nombre'
-        $stmt = $conn->prepare("SELECT id, password, nombre, estado FROM usuarios WHERE email = ?");
+        $stmt = $conn->prepare("SELECT id, password, nombre, apellido, estado, foto FROM usuarios WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -29,10 +29,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // ¡Login Exitoso! Guardamos datos en sesión
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['nombre'];
+                $_SESSION['user_lastname'] = $user['apellido']; // Guardamos apellido también
+                $_SESSION['user_photo'] = !empty($user['foto']) ? $user['foto'] : 'default.png';
                 $_SESSION['just_logged_in'] = true; // Bandera para mostrar bienvenida
                 
                 // Redirigir al dashboard
-                header("Location: ../Graficas.php");
+                header("Location: ../panel_control.php");
                 exit();
             } else {
                 header("Location: ../index.php?status=login_error&msg=" . urlencode("Contraseña incorrecta."));

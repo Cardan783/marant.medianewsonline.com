@@ -3,7 +3,7 @@
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    header("Location: Graficas.php");
+    header("Location: panel_control.php");
     exit();
 }
 ?>
@@ -27,15 +27,11 @@ if (isset($_SESSION['user_id'])) {
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        /* Hero Section con imagen de fondo */
-        .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+        /* Estilos para el Carrusel Hero */
+        .hero-slide {
             background-size: cover;
             background-position: center;
             height: 100vh;
-            display: flex;
-            align-items: center;
-            color: white;
         }
         .feature-icon {
             font-size: 3rem;
@@ -77,15 +73,62 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="inicio" class="hero-section">
-        <div class="container text-center">
-            <h1 class="display-3 fw-bold mb-4">Monitoreo Inteligente en Tiempo Real</h1>
-            <p class="lead mb-5">Sistema Auxiliar de Medición de Presión, Temperatura y Voltaje para el transporte y la industria.</p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="#nosotros" class="btn btn-lg btn-outline-light">Conocer Más</a>
-                <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Acceder al Sistema</button>
+    <!-- Hero Section (Carrusel) -->
+    <section id="inicio" class="p-0">
+        <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                    <div class="container h-100 d-flex align-items-center justify-content-center text-center">
+                        <div class="text-white">
+                            <h1 class="display-3 fw-bold mb-4">Monitoreo Inteligente en Tiempo Real</h1>
+                            <p class="lead mb-5">Sistema Auxiliar de Medición de Presión, Temperatura y Voltaje para el transporte y la industria.</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <a href="#nosotros" class="btn btn-lg btn-outline-light">Conocer Más</a>
+                                <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Acceder al Sistema</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="carousel-item hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                    <div class="container h-100 d-flex align-items-center justify-content-center text-center">
+                        <div class="text-white">
+                            <h1 class="display-3 fw-bold mb-4">Protección Total para tus Activos</h1>
+                            <p class="lead mb-5">Evita fallas críticas con alertas tempranas y reportes detallados.</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <a href="#servicios" class="btn btn-lg btn-outline-light">Nuestros Servicios</a>
+                                <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar Ahora</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="carousel-item hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                    <div class="container h-100 d-flex align-items-center justify-content-center text-center">
+                        <div class="text-white">
+                            <h1 class="display-3 fw-bold mb-4">Tecnología al Servicio de tu Flota</h1>
+                            <p class="lead mb-5">Accede a gráficas y estadísticas desde cualquier lugar y dispositivo.</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Crear Cuenta</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
         </div>
     </section>
 

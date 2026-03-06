@@ -71,8 +71,11 @@ if (isset($_GET['presion_max']) && is_numeric($_GET['presion_max'])) {
     $params[] = (float)$_GET['presion_max'];
 }
 
-// 5. Ordenar por la marca de tiempo más reciente
-$sql .= " ORDER BY created_at DESC LIMIT 2000";
+// 5. Ordenar y Limitar
+// Se prioriza el límite que venga por GET, sino, se usa un default.
+$limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : 2000;
+
+$sql .= " ORDER BY created_at DESC LIMIT " . $limit;
 
 try {
     $stmt = $conn->prepare($sql);
