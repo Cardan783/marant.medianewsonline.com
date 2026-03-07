@@ -12,7 +12,6 @@ const umbralAdvertenciaInput = document.getElementById(
 const umbralCriticoInput = document.getElementById("umbral_critico_temp");
 
 const tempCriticaInput = document.getElementById("temp_critica");
-const themeToggleButton = document.getElementById("toggle-theme");
 
 // Botones de exportación (deshabilitados al inicio)
 const btnExportarPDF = document.getElementById("btnExportarPDF");
@@ -147,25 +146,41 @@ const myChart = new Chart(ctx, {
         data: [],
         borderColor: (context) => getTemperatureGradient(context, 1),
         backgroundColor: (context) => getTemperatureGradient(context, 0.2),
-        borderWidth: 2,
+        borderWidth: 3,
+        tension: 0.4, // Líneas curvas suaves
+        fill: true,   // Relleno bajo la línea
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: (context) => getTemperatureGradient(context, 1),
+        pointRadius: 4,
+        pointHoverRadius: 7,
         yAxisID: "y",
-        pointRadius: 3,
-        pointHoverRadius: 5,
       },
       {
         label: "Presión (Bar)",
         data: [],
         borderColor: "rgba(54, 162, 235, 1)",
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        borderWidth: 2,
+        backgroundColor: "rgba(54, 162, 235, 0.1)",
+        borderWidth: 3,
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: "rgba(54, 162, 235, 1)",
+        pointRadius: 4,
+        pointHoverRadius: 7,
         yAxisID: "y1",
       },
       {
         label: "Voltaje (V)",
         data: [],
         borderColor: "rgba(255, 206, 86, 1)",
-        backgroundColor: "rgba(255, 206, 86, 0.2)",
-        borderWidth: 2,
+        backgroundColor: "rgba(255, 206, 86, 0.1)",
+        borderWidth: 3,
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: "rgba(255, 206, 86, 1)",
+        pointRadius: 4,
+        pointHoverRadius: 7,
         yAxisID: "y",
       },
     ],
@@ -1353,35 +1368,11 @@ function updateChartTheme(isDarkMode) {
 }
 
 /**
- * Alterna entre el modo claro y oscuro y guarda la preferencia.
- */
-function toggleTheme() {
-  const body = document.body;
-  body.classList.toggle("dark-mode");
-  const isDarkMode = body.classList.contains("dark-mode");
-
-  themeToggleButton.innerHTML = isDarkMode
-    ? '<i class="fa-solid fa-sun"></i> Tema Claro'
-    : '<i class="fa-solid fa-moon"></i> Tema Oscuro';
-
-  localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-  updateChartTheme(isDarkMode);
-}
-
-/**
  * Carga la preferencia de tema guardada al iniciar.
  */
 function loadTheme() {
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-  }
+  // El tema ya se carga en sidebar.php, aquí solo actualizamos la gráfica
   const isDarkMode = document.body.classList.contains("dark-mode");
-  if (themeToggleButton) {
-    themeToggleButton.innerHTML = isDarkMode
-      ? '<i class="fa-solid fa-sun"></i> Tema Claro'
-      : '<i class="fa-solid fa-moon"></i> Tema Oscuro';
-  }
   updateChartTheme(isDarkMode);
 }
 
@@ -1622,7 +1613,11 @@ umbralAdvertenciaInput.addEventListener("change", aplicarFiltros);
 umbralCriticoInput.addEventListener("change", aplicarFiltros);
 tempCriticaInput.addEventListener("change", aplicarFiltros);
 
-themeToggleButton.addEventListener("click", toggleTheme);
+// Escuchar evento global de cambio de tema
+window.addEventListener('themeChanged', () => {
+    updateChartTheme(document.body.classList.contains('dark-mode'));
+});
+
 document
   .getElementById("btnExportarPDF")
   .addEventListener("click", exportChartToPDF);

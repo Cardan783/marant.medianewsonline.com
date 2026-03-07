@@ -47,6 +47,17 @@ header("Expires: 0");
           transition: transform 0.2s;
       }
       .recommendation-card:hover { transform: translateX(5px); }
+
+      /* Dark Mode Styles */
+      body.dark-mode { background-color: #121212; color: #e0e0e0; }
+      body.dark-mode .chart-card { background-color: #1e1e1e; color: #e0e0e0; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+      body.dark-mode .card { background-color: #1e1e1e; border-color: #333; color: #e0e0e0; }
+      body.dark-mode .text-secondary { color: #a0a0a0 !important; }
+      body.dark-mode h1 { color: #6ea8fe; }
+      body.dark-mode .form-select { background-color: #2c2c2c; border-color: #444; color: #fff; }
+      body.dark-mode .btn-outline-primary { color: #6ea8fe; border-color: #6ea8fe; }
+      body.dark-mode .btn-outline-primary:hover { background-color: #6ea8fe; color: #000; }
+      body.dark-mode .btn-check:checked + .btn-outline-primary { background-color: #6ea8fe; border-color: #6ea8fe; color: #000; }
     </style>
   </head>
   <body>
@@ -147,6 +158,29 @@ header("Expires: 0");
         let globalModoTexto = '';
 
         document.addEventListener("DOMContentLoaded", function () {
+            // --- Lógica de Modo Oscuro ---
+            const toggleBtn = document.getElementById('darkModeToggle');
+            const applyTheme = (isDark) => {
+                if (isDark) {
+                    document.body.classList.add('dark-mode');
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-sun me-2"></i>Modo Claro';
+                    toggleBtn.classList.replace('btn-outline-secondary', 'btn-outline-light');
+                    Chart.defaults.color = '#e0e0e0';
+                    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-moon me-2"></i>Modo Oscuro';
+                    toggleBtn.classList.replace('btn-outline-light', 'btn-outline-secondary');
+                    Chart.defaults.color = '#666';
+                    Chart.defaults.borderColor = 'rgba(0, 0, 0, 0.1)';
+                }
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                [chartTemp, chartPres, chartVolt].forEach(c => { if(c) c.update(); });
+            };
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') applyTheme(true);
+            toggleBtn.addEventListener('click', () => applyTheme(!document.body.classList.contains('dark-mode')));
+
             cargarEquipos();
         });
 

@@ -15,6 +15,41 @@ $ruta_img_sidebar = $base_path . 'img/usuarios/' . $user_photo;
 $url_avatar_default = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION['user_name'] ?? 'U') . "&background=random&color=fff";
 ?>
 <style>
+    /* --- Estilos Globales de Tema Personalizado --- */
+    :root {
+        --bs-primary: #0d6efd; /* Valor por defecto */
+        --bs-primary-rgb: 13, 110, 253;
+        --placeholder-color: #6c757d;
+    }
+    
+    /* Sobrescribir componentes de Bootstrap para usar la variable dinámica */
+    .btn-primary {
+        background-color: var(--bs-primary) !important;
+        border-color: var(--bs-primary) !important;
+    }
+    .btn-outline-primary {
+        color: var(--bs-primary) !important;
+        border-color: var(--bs-primary) !important;
+    }
+    .btn-outline-primary:hover {
+        background-color: var(--bs-primary) !important;
+        color: #fff !important;
+    }
+    .text-primary {
+        color: var(--bs-primary) !important;
+    }
+    .bg-primary {
+        background-color: var(--bs-primary) !important;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--bs-primary) !important;
+        box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25) !important;
+    }
+    ::placeholder {
+        color: var(--placeholder-color) !important;
+        opacity: 0.7;
+    }
+
     /* --- Estilos del Sidebar Global --- */
     .sidebar-global {
         width: 280px;
@@ -58,7 +93,7 @@ $url_avatar_default = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION[
 
     /* Estilo activo para los enlaces */
     .sidebar-global .nav-link.active {
-        background-color: #0d6efd !important; /* Azul Bootstrap */
+        background-color: var(--bs-primary) !important; /* Azul Bootstrap / Personalizado */
         color: white !important;
     }
     
@@ -124,6 +159,11 @@ $url_avatar_default = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION[
                     <i class="fa-solid fa-gear me-2" style="width: 20px;"></i> Configuración
                 </a>
             </li>
+            <li class="mb-1">
+                <a href="#" class="nav-link text-white darkModeToggleBtn">
+                    <i class="fa-solid fa-moon me-2" style="width: 20px;"></i> Modo Oscuro
+                </a>
+            </li>
         </ul>
         <hr class="border-secondary">
         <div class="dropdown">
@@ -144,3 +184,76 @@ $url_avatar_default = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION[
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtns = document.querySelectorAll('.darkModeToggleBtn');
+    const body = document.body;
+
+    // --- Lógica Global de Colores Personalizados ---
+    const applyCustomColors = () => {
+        // 1. Color del Tema (Primario)
+        const savedColor = localStorage.getItem('themeColor');
+        if (savedColor) {
+            try {
+                const color = JSON.parse(savedColor);
+                if (color.hex && color.rgb) {
+                    document.documentElement.style.setProperty('--bs-primary', color.hex);
+                    document.documentElement.style.setProperty('--bs-primary-rgb', color.rgb);
+                }
+            } catch (e) { console.error("Error parsing themeColor", e); }
+        }
+
+        // 2. Color del Placeholder
+        const savedPlaceholder = localStorage.getItem('placeholderColor');
+        if (savedPlaceholder) {
+            try {
+                const color = JSON.parse(savedPlaceholder);
+                if (color.hex) {
+                    document.documentElement.style.setProperty('--placeholder-color', color.hex);
+                }
+            } catch (e) { console.error("Error parsing placeholderColor", e); }
+        }
+    };
+    applyCustomColors();
+
+    const applyTheme = (isDark) => {
+        if (isDark) {
+            body.classList.add('dark-mode');
+            toggleBtns.forEach(btn => {
+                btn.innerHTML = '<i class="fa-solid fa-sun me-2" style="width: 20px;"></i>' + (btn.tagName === 'A' ? 'Modo Claro' : '');
+                if(btn.tagName === 'BUTTON') {
+                    btn.style.backgroundColor = '#333';
+                    btn.style.color = '#fff';
+                    btn.style.borderColor = '#555';
+                }
+            });
+        } else {
+            body.classList.remove('dark-mode');
+            toggleBtns.forEach(btn => {
+                btn.innerHTML = '<i class="fa-solid fa-moon me-2" style="width: 20px;"></i>' + (btn.tagName === 'A' ? 'Modo Oscuro' : '');
+                if(btn.tagName === 'BUTTON') {
+                    btn.style.backgroundColor = 'white';
+                    btn.style.color = '';
+                    btn.style.borderColor = '#dee2e6';
+                }
+            });
+        }
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        // Disparar evento para que gráficas y tablas se actualicen
+        window.dispatchEvent(new Event('themeChanged'));
+    };
+
+    // Cargar tema guardado
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') applyTheme(true);
+
+    // Event Listeners para todos los botones de toggle (Desktop y Móvil)
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            applyTheme(!body.classList.contains('dark-mode'));
+        });
+    });
+});
+</script>

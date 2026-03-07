@@ -345,9 +345,6 @@ if ($equipo_seleccionado_id) {
     <div class="container pt-5 pt-lg-4"></div></div>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0"><i class="bi bi-tools me-2"></i>Gestión de Equipos</h2>
-            <button class="btn btn-outline-secondary btn-sm" id="darkModeToggle">
-                <i class="bi bi-moon-stars-fill"></i>
-            </button>
         </div>
 
         <!-- Mensajes de Alerta -->
@@ -535,22 +532,6 @@ if ($equipo_seleccionado_id) {
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // --- Lógica de Modo Oscuro ---
-        const toggleBtn = document.getElementById('darkModeToggle');
-        const applyTheme = (isDark) => {
-            if (isDark) {
-                document.body.classList.add('dark-mode');
-                toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
-            } else {
-                document.body.classList.remove('dark-mode');
-                toggleBtn.innerHTML = '<i class="bi bi-moon-stars-fill"></i>';
-            }
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        };
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') applyTheme(true);
-        toggleBtn.addEventListener('click', () => applyTheme(!document.body.classList.contains('dark-mode')));
-
         // --- Lógica de Paleta de Colores ---
         const colors = [
             { hex: "#0d6efd", rgb: "13, 110, 253" }, // Azul (Default)

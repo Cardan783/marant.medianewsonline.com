@@ -328,17 +328,6 @@ header("Expires: 0");
               Auto-actualizar (20s)
             </label>
           </div>
-          <div class="form-check form-switch mt-2">
-            <input
-              class="form-check-input cursor-pointer"
-              type="checkbox"
-              id="darkMode"
-              v-model="darkMode"
-            />
-            <label class="form-check-label small fw-bold" for="darkMode">
-              Modo Oscuro
-            </label>
-          </div>
 
           <hr class="my-3" />
           <label class="form-label small fw-bold text-uppercase text-muted mb-2"
@@ -614,7 +603,7 @@ header("Expires: 0");
           const archivoSeleccionado = ref(""); // Archivo seleccionado actualmente
           const cargando = ref(false);
           const autoRefresh = ref(true);
-          const darkMode = ref(localStorage.getItem("theme") === "dark");
+          // const darkMode = ref(localStorage.getItem("theme") === "dark"); // Ya no controlamos esto aquí
           const pollingInterval = ref(null);
 
           // Colores
@@ -1018,17 +1007,13 @@ header("Expires: 0");
 
           watch(autoRefresh, setupPolling);
 
-          watch(
-            darkMode,
-            (val) => {
-              document.documentElement.setAttribute(
-                "data-bs-theme",
-                val ? "dark" : "light",
-              );
-              localStorage.setItem("theme", val ? "dark" : "light");
-            },
-            { immediate: true },
-          );
+          // Escuchar evento global
+          window.addEventListener('themeChanged', () => {
+             const isDark = document.body.classList.contains('dark-mode');
+             document.documentElement.setAttribute("data-bs-theme", isDark ? "dark" : "light");
+          });
+          // Inicializar
+          document.documentElement.setAttribute("data-bs-theme", document.body.classList.contains('dark-mode') ? "dark" : "light");
 
           onMounted(() => {
             const savedColor = localStorage.getItem("themeColor");
@@ -1066,7 +1051,6 @@ header("Expires: 0");
             maxTemp,
             avgTemp,
             autoRefresh,
-            darkMode,
             colors,
             selectedColor,
             cambiarColor,

@@ -108,6 +108,21 @@ try {
             margin-bottom: 2.5rem;
             box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
         }
+
+        /* --- Estilos Modo Oscuro --- */
+        body.dark-mode { background-color: #121212; color: #e0e0e0; }
+        body.dark-mode .dashboard-card { background-color: #1e1e1e; color: #e0e0e0; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        body.dark-mode .dashboard-card:hover { background-color: #252525; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        body.dark-mode .card-title { color: #fff; }
+        body.dark-mode .card-text { color: #b0b0b0; }
+        
+        /* Ajuste de iconos en modo oscuro para que brillen */
+        body.dark-mode .icon-wrapper.bg-blue-light { background-color: rgba(13, 110, 253, 0.2); color: #6ea8fe; }
+        body.dark-mode .icon-wrapper.bg-green-light { background-color: rgba(25, 135, 84, 0.2); color: #75b798; }
+        body.dark-mode .icon-wrapper.bg-yellow-light { background-color: rgba(255, 193, 7, 0.2); color: #ffda6a; }
+        body.dark-mode .icon-wrapper.bg-purple-light { background-color: rgba(111, 66, 193, 0.2); color: #c5b3e6; }
+        body.dark-mode .icon-wrapper.bg-cyan-light { background-color: rgba(13, 202, 240, 0.2); color: #6edff6; }
+        body.dark-mode .icon-wrapper.bg-light { background-color: rgba(255, 255, 255, 0.1) !important; color: #e0e0e0 !important; }
     </style>
 </head>
 <body>
@@ -203,6 +218,7 @@ try {
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -87,6 +87,20 @@ unset($equipo); // Romper referencia del foreach
         .bg-status-normal { background-color: #198754; color: white; }
         .bg-status-warning { background-color: #ffc107; color: black; }
         .bg-status-danger { background-color: #dc3545; color: white; }
+
+        /* --- Estilos Modo Oscuro --- */
+        body.dark-mode { background-color: #121212; color: #e0e0e0; }
+        body.dark-mode .text-dark { color: #e0e0e0 !important; } /* Título */
+        body.dark-mode .equipment-card { background-color: #1e1e1e; color: #e0e0e0; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        body.dark-mode .equipment-card:hover { background-color: #252525; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        body.dark-mode .data-row { border-bottom-color: #333; }
+        body.dark-mode .text-secondary { color: #a0a0a0 !important; }
+        body.dark-mode .last-update { color: #888; }
+        body.dark-mode .btn-outline-primary { color: #6ea8fe; border-color: #6ea8fe; }
+        body.dark-mode .btn-outline-primary:hover { background-color: #6ea8fe; color: #000; }
+        body.dark-mode .btn-outline-secondary { color: #adb5bd; border-color: #adb5bd; }
+        body.dark-mode .btn-outline-secondary:hover { background-color: #adb5bd; color: #000; }
+        body.dark-mode .card-header.bg-secondary { background-color: #495057 !important; }
     </style>
 </head>
 <body>

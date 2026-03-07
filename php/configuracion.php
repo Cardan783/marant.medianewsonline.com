@@ -260,12 +260,6 @@ if ($is_equipo_selected) {
     </div>
 
     <div class="container pt-5 pt-lg-4">
-        <div class="d-flex justify-content-end mb-3">
-            <button class="btn btn-outline-secondary btn-sm" id="darkModeToggle">
-                <i class="bi bi-moon-stars-fill"></i> Modo Oscuro
-            </button>
-        </div>
-
         <?php if (!empty($error_db)): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>¡Error de Base de Datos!</strong> No se pudo cargar la configuración.<br>
@@ -567,30 +561,6 @@ if ($is_equipo_selected) {
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // --- Lógica de Modo Oscuro ---
-        const toggleBtn = document.getElementById('darkModeToggle');
-        
-        // Función para aplicar tema
-        const applyTheme = (isDark) => {
-            if (isDark) {
-                document.body.classList.add('dark-mode');
-                toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Modo Claro';
-            } else {
-                document.body.classList.remove('dark-mode');
-                toggleBtn.innerHTML = '<i class="bi bi-moon-stars-fill"></i> Modo Oscuro';
-            }
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        };
-
-        // Cargar preferencia guardada
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') applyTheme(true);
-
-        toggleBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Evita que el botón haga submit si está dentro del form (aunque está fuera)
-            applyTheme(!document.body.classList.contains('dark-mode'));
-        });
-
         // --- Lógica de Paleta de Colores ---
         const colors = [
             { hex: "#0d6efd", rgb: "13, 110, 253" }, // Azul (Default)

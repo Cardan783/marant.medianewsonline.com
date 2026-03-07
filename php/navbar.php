@@ -26,6 +26,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo $base_path; ?>php/configuracion.php"><i class="fa-solid fa-gear me-2"></i>Configuración</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link darkModeToggleBtn" href="#"><i class="fa-solid fa-moon me-2"></i>Modo Oscuro</a>
+                </li>
             </ul>
             <div class="d-flex align-items-center border-top pt-3 mt-2 pb-2">
                 <div class="text-white me-3 ms-2">
