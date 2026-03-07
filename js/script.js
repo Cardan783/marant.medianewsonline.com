@@ -1359,9 +1359,8 @@ function procesarDatosArchivo(texto) {
     linea = linea.trim();
     if (!linea) return;
 
-    // Intenta separar por coma, punto y coma o tabulación
-    // Ajusta esta expresión regular según el formato exacto de tu archivo .txt
-    const partes = linea.split(/[,;\t]+/);
+    // Separar por coma según el formato: Fecha, Temp, Presion, Voltaje
+    const partes = linea.split(',');
 
     // Validación básica: necesitamos al menos fecha y 3 valores
     if (partes.length >= 4) {
@@ -1446,22 +1445,39 @@ async function cargarArchivoSeleccionado() {
 }
 
 /**
- * Carga la lista de archivos .txt disponibles en el servidor
- * y llena el selector correspondiente.
+ * Carga la lista de archivos .txt disponibles para una MAC específica.
  */
-function cargarListaArchivos() {
+function cargarArchivosHistoricos(macAddress) {
   const selector = document.getElementById("selector-archivo-analisis");
+  // Buscar el contenedor padre para ocultarlo/mostrarlo
+  const container = selector ? selector.closest('.intervalo-group') : null;
+  
   if (!selector) return;
 
-  fetch('php/listar_archivos.php')
+  // Limpiar y reiniciar
+  selector.innerHTML = '<option value="">-- Seleccionar Archivo --</option>';
+  if (container) container.style.display = 'none'; // Ocultar por defecto
+
+  if (!macAddress) return;
+
+  fetch(`php/listar_archivos_por_mac.php?mac=${encodeURIComponent(macAddress)}`)
     .then(response => response.json())
     .then(files => {
-      files.forEach(file => {
-        const option = document.createElement('option');
-        option.value = file;
-        option.textContent = file;
-        selector.appendChild(option);
-      });
+      if (files.length > 0) {
+          files.forEach(file => {
+            const option = document.createElement('option');
+            option.value = file;
+            // Formatear nombre: quitar prefijo MAC=..._ para que se vea profesional
+            option.textContent = file.replace(/^MAC=.*?_/, ''); 
+            selector.appendChild(option);
+          });
+          // Mostrar el selector solo si hay archivos
+          if (container) {
+              container.style.display = 'flex';
+              // Agregar animación si se desea
+              container.classList.add('animate__animated', 'animate__fadeIn');
+          }
+      }
     })
     .catch(error => console.error('Error cargando lista de archivos:', error));
 }
@@ -1577,4 +1593,4 @@ document
 // Llama a las funciones de carga
 loadTheme();
 // controlarActualizacion(); // Se llama desde Graficas.php después de cargar los equipos
-cargarListaArchivos(); // Carga la lista de archivos para análisis
+// cargarListaArchivos(); // ELIMINADO: Se llama dinámicamente desde Graficas.php

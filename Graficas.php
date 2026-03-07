@@ -200,7 +200,7 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
         </select>
       </div>
       
-      <div class="intervalo-group">
+      <div class="intervalo-group" style="display: none;">
         <label for="selector-archivo-analisis"><i class="fa-solid fa-folder-open"></i> Análisis Histórico:</label>
         <select id="selector-archivo-analisis">
             <option value="">-- Seleccionar Archivo --</option>
@@ -328,6 +328,7 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
                                     const option = document.createElement('option');
                                     option.value = equipo.id; 
                                     option.textContent = equipo.nombre_equipo;
+                                    option.dataset.mac = equipo.mac_address; // Guardamos la MAC en el dataset
                                     selectMac.appendChild(option);
                                 });
                 
@@ -341,6 +342,14 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
                                 // Establecer valor seleccionado si se determinó uno
                                 if (equipoIdToSelect) {
                                     selectMac.value = equipoIdToSelect;
+                                }
+
+                                // Buscar archivos históricos para el equipo seleccionado
+                                const selectedOption = selectMac.querySelector(`option[value="${selectMac.value}"]`);
+                                if (selectedOption && selectedOption.dataset.mac) {
+                                    if (typeof cargarArchivosHistoricos === 'function') {
+                                        cargarArchivosHistoricos(selectedOption.dataset.mac);
+                                    }
                                 }
                                 
                                 // Una vez que los equipos están cargados y seleccionados, iniciamos la lógica de la gráfica
@@ -390,6 +399,5 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
     </script>
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js?v=1.2"></script>
-  </body>
+    <script src="js/script.js?v=1.3"></script>
 </html>

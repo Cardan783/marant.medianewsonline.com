@@ -26,11 +26,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
         try {
             $uid = $_POST['usuario_id'];
             $nuevo_estado = $_POST['estado_usuario'];
+            
+            $conn->beginTransaction();
+
             $stmt = $conn->prepare("UPDATE usuarios SET estado = ? WHERE id = ?");
             $stmt->execute([$nuevo_estado, $uid]);
+
+            // Sincronizar estado de equipos con el usuario (Activo -> 1, Suspendido -> 0)
+            $nuevo_flag = ($nuevo_estado === 'activo') ? 1 : 0;
+            $sql_equipos = "UPDATE desactivaciones d JOIN equipos e ON d.equipo_id = e.id SET d.flag = ? WHERE e.usuario_id = ?";
+            $stmt_eq = $conn->prepare($sql_equipos);
+            $stmt_eq->execute([$nuevo_flag, $uid]);
+
+            $conn->commit();
             $mensaje = "Estado del usuario actualizado correctamente.";
             $tipo_alerta = "success";
         } catch (PDOException $e) {
+            if ($conn->inTransaction()) $conn->rollBack();
             $mensaje = "Error: " . $e->getMessage();
             $tipo_alerta = "danger";
         }
@@ -325,9 +337,3 @@ if (isset($_GET['editar_equipo'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-```
-
-### 2. Modificar `panel_control.php` para Seguridad
-Agregamos una verificación al inicio del archivo. Si el administrador cambia el estado del usuario a "suspendido", la próxima vez que el usuario intente cargar el panel, su sesión se destruirá automáticamente.
-
-```diff

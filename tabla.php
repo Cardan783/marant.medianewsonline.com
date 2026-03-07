@@ -30,6 +30,9 @@ header("Expires: 0");
 
     <!-- Vue 3 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <!-- jsPDF & AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
     <style>
       body {
@@ -214,6 +217,15 @@ header("Expires: 0");
             <option value="">-- Seleccionar --</option>
             <option v-for="eq in listaEquipos" :key="eq.id" :value="eq.id">{{ eq.nombre_equipo }}</option>
           </select>
+
+          <!-- Selector de Archivos Históricos (Solo visible si hay archivos) -->
+          <div v-if="archivosDisponibles.length > 0" class="mb-3 animate__animated animate__fadeIn">
+            <label class="form-label fw-bold text-xs text-uppercase text-muted">Archivos Históricos</label>
+            <select class="form-select form-select-sm border-info" v-model="archivoSeleccionado" @change="cargarDatosArchivo">
+                <option value="">-- Ver Datos en Vivo (BD) --</option>
+                <option v-for="file in archivosDisponibles" :key="file" :value="file">{{ formatearNombreArchivo(file) }}</option>
+            </select>
+          </div>
 
           <label class="form-label fw-bold text-xs text-uppercase text-muted"
             >Rango de Fechas</label
@@ -451,8 +463,8 @@ header("Expires: 0");
               <button class="btn btn-sm btn-success me-2" @click="exportarCSV">
                 <i class="fa-solid fa-file-excel me-1"></i> Excel
               </button>
-              <button class="btn btn-sm btn-secondary" @click="imprimir">
-                <i class="fa-solid fa-print me-1"></i> PDF
+              <button class="btn btn-sm btn-secondary" @click="exportarPDF">
+                <i class="fa-solid fa-file-pdf me-1"></i> PDF
               </button>
             </div>
           </div>
@@ -498,8 +510,7 @@ header("Expires: 0");
                   <!-- ESTADO: DATOS -->
                   <tr v-for="(item, index) in datosPaginados" :key="index">
                     <td class="ps-4 fw-bold">
-                      {{ esMismoDia && item.fecha && item.fecha.includes(' ') ? item.fecha.split(' ')[1] :
-                      item.fecha }}
+                      {{ !archivoSeleccionado && esMismoDia && item.fecha && item.fecha.includes(' ') ? item.fecha.split(' ')[1] : item.fecha }}
                     </td>
                     <td
                       class="text-center"
@@ -592,6 +603,8 @@ header("Expires: 0");
           // Estado
           const datosTabla = shallowRef([]);
           const listaEquipos = shallowRef([]); // Nueva variable para la lista
+          const archivosDisponibles = shallowRef([]); // Lista de archivos TXT
+          const archivoSeleccionado = ref(""); // Archivo seleccionado actualmente
           const cargando = ref(false);
           const autoRefresh = ref(true);
           const darkMode = ref(localStorage.getItem("theme") === "dark");
@@ -615,6 +628,7 @@ header("Expires: 0");
           // Obtener ID de la URL si existe (para enlaces directos desde Panel General)
           const urlParams = new URLSearchParams(window.location.search);
           const urlEquipoId = urlParams.get('equipo_id');
+          const savedId = localStorage.getItem('selectedEquipoId');
 
           const getTodayDate = () => {
             const hoy = new Date();
@@ -626,7 +640,7 @@ header("Expires: 0");
           const filtros = reactive({
             fechaInicio: getTodayDate(),
             fechaFin: getTodayDate(),
-            equipoId: 50,
+            equipoId: urlEquipoId || savedId || 50,
             presionMin: 0,
             presionMax: 100,
             voltajeMin: 0,
@@ -642,14 +656,92 @@ header("Expires: 0");
             );
           });
 
+          // --- FUNCION: Buscar archivos ---
+          const buscarArchivos = async (id) => {
+              archivosDisponibles.value = [];
+              if (!id) return;
+              
+              const equipo = listaEquipos.value.find(e => e.id == id);
+              if (equipo && equipo.mac_address) {
+                  console.log("Buscando archivos para MAC:", equipo.mac_address);
+                  try {
+                      const res = await fetch(`php/listar_archivos_por_mac.php?mac=${encodeURIComponent(equipo.mac_address)}`);
+                      if (res.ok) {
+                          const files = await res.json();
+                          console.log("Archivos encontrados:", files);
+                          archivosDisponibles.value = files;
+                      }
+                  } catch (e) { console.error("Error buscando archivos", e); }
+              } else {
+                  console.log("Equipo no encontrado o sin MAC para ID:", id);
+              }
+          };
+
           // --- CARGAR LISTA DE EQUIPOS ---
           const cargarEquipos = async () => {
             try {
                 const res = await fetch('php/obtener_equipos.php');
                 if(res.ok) {
-                    listaEquipos.value = await res.json();
+                    const equipos = await res.json();
+                    listaEquipos.value = equipos;
+                    
+                    // Validar si el equipoId actual existe en la lista
+                    const existe = equipos.some(e => e.id == filtros.equipoId);
+                    
+                    if (!existe && equipos.length > 0) {
+                        // Si no existe (o es el default 50 inválido), seleccionar el primero
+                        filtros.equipoId = equipos[0].id;
+                        // El watcher se encargará de llamar a buscarArchivos
+                    } else if (filtros.equipoId) {
+                        // Si existe, llamamos manualmente
+                        buscarArchivos(filtros.equipoId);
+                    }
                 }
             } catch (e) { console.error("Error cargando equipos", e); }
+          };
+
+          // --- WATCHER: Buscar archivos cuando cambia el equipo ---
+          watch(() => filtros.equipoId, async (newId) => {
+              archivoSeleccionado.value = "";
+              // Volver a cargar datos de BD al cambiar equipo
+              obtenerDatos();
+              await buscarArchivos(newId);
+          });
+
+          // --- CARGAR DATOS DE ARCHIVO TXT ---
+          const cargarDatosArchivo = async () => {
+              // Si se selecciona la opción por defecto (vacía), volver a BD
+              if (!archivoSeleccionado.value) {
+                  obtenerDatos();
+                  return;
+              }
+
+              cargando.value = true;
+              try {
+                  const res = await fetch(`Archivos_SDCards/uploads/${archivoSeleccionado.value}`);
+                  if (res.ok) {
+                      const text = await res.text();
+                      const lines = text.split('\n');
+                      const parsedData = [];
+
+                      lines.forEach(line => {
+                          // Formato: Jueves 12 Febrero 2026 12:00 AM,27.25,4.86,25.55
+                          // Separamos estrictamente por coma
+                          const parts = line.trim().split(',');
+                          if (parts.length >= 4) {
+                              parsedData.push({
+                                  fecha: parts[0].trim(),
+                                  temperatura: parts[1].trim(),
+                                  presion: parts[2].trim(),
+                                  voltaje: parts[3].trim()
+                              });
+                          }
+                      });
+                      // Invertimos para mostrar los más recientes primero (si el archivo es cronológico)
+                      datosTabla.value = parsedData.reverse();
+                  }
+              } catch (e) { console.error(e); alert("Error al leer el archivo."); } 
+              finally { cargando.value = false; }
           };
 
           // --- LÓGICA DE DATOS ---
@@ -764,6 +856,11 @@ header("Expires: 0");
             localStorage.setItem("themeColor", JSON.stringify(color));
           };
 
+          const formatearNombreArchivo = (nombre) => {
+            // Elimina el prefijo MAC=XX:XX:XX:XX:XX:XX_ para mostrar solo la fecha
+            return nombre.replace(/^MAC=.*?_/, '');
+          };
+
           const getBadgeClass = (temp) => {
             const t = parseFloat(temp);
             if (t >= 90) return "bg-danger";
@@ -825,11 +922,67 @@ header("Expires: 0");
             link.click();
           };
 
-          const imprimir = () => window.print();
+          const exportarPDF = () => {
+            if (datosFiltrados.value.length === 0) return alert("Sin datos para exportar");
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Encabezado
+            doc.setFontSize(16);
+            doc.text("Reporte de Datos Históricos", 14, 20);
+            
+            doc.setFontSize(10);
+            doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 28);
+
+            // Info del equipo
+            if (filtros.equipoId) {
+                const equipo = listaEquipos.value.find(e => e.id == filtros.equipoId);
+                if (equipo) {
+                    doc.text(`Equipo: ${equipo.nombre_equipo} (${equipo.mac_address})`, 14, 34);
+                }
+            }
+
+            const headers = [["Fecha", "Temperatura", "Presión", "Voltaje", "Estado"]];
+            const data = datosFiltrados.value.map(item => [
+                item.fecha,
+                item.temperatura + " °C",
+                item.presion + " kPa",
+                item.voltaje + " V",
+                getStatusLabel(item.temperatura)
+            ]);
+
+            doc.autoTable({
+                head: headers,
+                body: data,
+                startY: 40,
+                theme: 'striped',
+                headStyles: { fillColor: [13, 110, 253] },
+                didParseCell: function(data) {
+                    if (data.section === 'body' && data.column.index === 4) {
+                        const text = data.cell.raw;
+                        if (text === 'CRÍTICO') {
+                            data.cell.styles.textColor = [220, 53, 69];
+                            data.cell.styles.fontStyle = 'bold';
+                        } else if (text === 'ALERTA') {
+                            data.cell.styles.textColor = [200, 150, 0];
+                            data.cell.styles.fontStyle = 'bold';
+                        } else {
+                            data.cell.styles.textColor = [25, 135, 84];
+                        }
+                    }
+                }
+            });
+
+            doc.save("reporte_historial.pdf");
+          };
 
           // --- AUTO REFRESH ---
           const setupPolling = () => {
             if (pollingInterval.value) clearInterval(pollingInterval.value);
+            // No auto-refrescar si estamos viendo un archivo estático
+            if (archivoSeleccionado.value) return; 
+
             if (autoRefresh.value) {
               pollingInterval.value = setInterval(
                 () => obtenerDatos(true),
@@ -876,6 +1029,9 @@ header("Expires: 0");
             filtros,
             esMismoDia,
             listaEquipos, // Retornamos para usar en el HTML
+            archivosDisponibles,
+            archivoSeleccionado,
+            cargarDatosArchivo,
             datosFiltrados,
             datosPaginados,
             cargando,
@@ -889,10 +1045,11 @@ header("Expires: 0");
             colors,
             selectedColor,
             cambiarColor,
+            formatearNombreArchivo,
             aplicarFiltros,
             limpiarFiltros,
             exportarCSV,
-            imprimir,
+            exportarPDF,
             getBadgeClass,
             getStatusLabel,
             getTempTextClass,

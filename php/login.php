@@ -1,88 +1,56 @@
 <?php
 session_start();
-if (isset($_SESSION['admin_id'])) {
-    header("Location: index.php");
+require_once 'conexion.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Limpiar datos de entrada
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $password = $_POST['password'];
+
+    try {
+        // Buscar usuario por email
+        // NOTA: Asegúrate de que tu tabla se llame 'usuarios' y tenga columnas 'email', 'password', 'id', 'nombre'
+        $stmt = $conn->prepare("SELECT id, password, nombre, apellido, estado, foto FROM usuarios WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            // Verificar si el usuario está activo (asumiendo valor 'activo' o 1)
+            if ($user['estado'] != 'activo' && $user['estado'] != 1) {
+                header("Location: ../index.php?status=login_error&msg=" . urlencode("Tu cuenta está inactiva. Contacta al administrador."));
+                exit();
+            }
+
+            // Verificar contraseña
+            // Si guardaste las contraseñas en texto plano (sin encriptar), usa: if ($password == $user['password'])
+            // Si usaste password_hash(), usa: password_verify($password, $user['password'])
+            if (password_verify($password, $user['password']) || $password == $user['password']) {
+                
+                // ¡Login Exitoso! Guardamos datos en sesión
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['nombre'];
+                $_SESSION['user_lastname'] = $user['apellido']; // Guardamos apellido también
+                $_SESSION['user_photo'] = !empty($user['foto']) ? $user['foto'] : 'default.png';
+                $_SESSION['just_logged_in'] = true; // Bandera para mostrar bienvenida
+                
+                // Redirigir al dashboard
+                header("Location: ../panel_control.php");
+                exit();
+            } else {
+                header("Location: ../index.php?status=login_error&msg=" . urlencode("Contraseña incorrecta."));
+                exit();
+            }
+        } else {
+            header("Location: ../index.php?status=login_error&msg=" . urlencode("El usuario no existe o el email es incorrecto."));
+            exit();
+        }
+    } catch (PDOException $e) {
+        header("Location: ../index.php?status=login_error&msg=" . urlencode("Error de base de datos."));
+        exit();
+    }
+} else {
+    // Redirigir si se accede directamente
+    header("Location: ../index.php");
     exit();
 }
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAMPATV - Administración</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            overflow: hidden;
-            width: 100%;
-            max-width: 400px;
-        }
-        .login-header {
-            background-color: #0d6efd;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #0d6efd;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="login-card">
-        <div class="login-header">
-            <h3 class="mb-0"><i class="fa-solid fa-user-shield me-2"></i>Admin Panel</h3>
-            <small>SAMPATV System</small>
-        </div>
-        <div class="card-body p-4">
-            <?php if(isset($_GET['error'])): ?>
-                <div class="alert alert-danger text-center p-2 small">
-                    <?php echo htmlspecialchars($_GET['error']); ?>
-                </div>
-            <?php endif; ?>
-
-            <form action="auth.php" method="POST">
-                <div class="mb-3">
-                    <label class="form-label fw-bold text-secondary">Usuario / Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" name="usuario" class="form-control" placeholder="Ingrese su usuario" required autofocus>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="form-label fw-bold text-secondary">Contraseña</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light"><i class="fa-solid fa-lock"></i></span>
-                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-                    </div>
-                </div>
-
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg fw-bold">
-                        Ingresar <i class="fa-solid fa-arrow-right ms-2"></i>
-                    </button>
-                </div>
-            </form>
-            <div class="text-center mt-3">
-                <a href="../index.php" class="text-decoration-none small text-muted"><i class="fa-solid fa-house me-1"></i> Volver al sitio principal</a>
-            </div>
-        </div>
-    </div>
-
-</body>
-</html>

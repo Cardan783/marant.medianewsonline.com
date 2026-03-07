@@ -1,7 +1,7 @@
 <?php
 // Silenciar errores de E_NOTICE para no interferir con la respuesta al ESP32
-error_reporting(E_ALL & ~E_NOTICE);
-header("Content-Type: text/plain");
+error_reporting(0);
+header("Content-Type: application/json");
 
 // 1. Incluir el archivo de conexión a la base de datos
 require_once 'conexion.php';
@@ -11,8 +11,7 @@ $mac_address = isset($_GET['mac']) ? trim($_GET['mac']) : '';
 
 // 3. Validar que la dirección MAC fue proporcionada
 if (empty($mac_address)) {
-    http_response_code(400); // Bad Request
-    echo "ERROR_MAC_VACIA";
+    echo json_encode(["flag" => 0]);
     exit();
 }
 
@@ -36,19 +35,17 @@ try {
     // 6. Enviar la respuesta al dispositivo
     if ($resultado) {
         // Si se encuentra un registro, se devuelve el valor del flag (ej: '0' o '1')
-        echo $resultado['flag'];
+        echo json_encode(["flag" => (int)$resultado['flag']]);
     } else {
         // Si no se encuentra el equipo o no tiene registros de desactivación,
-        // se devuelve una respuesta clara para que el ESP32 pueda manejar el caso.
-        echo "NO_ENCONTRADO";
+        // se devuelve 0 (desactivado) por seguridad.
+        echo json_encode(["flag" => 0]);
     }
 
 } catch (PDOException $e) {
     // En caso de un error con la base de datos, se registra para depuración
-    // y se envía una respuesta de error genérica al dispositivo.
-    http_response_code(500); // Internal Server Error
-    error_log("Error en verificar_estado.php: " . $e->getMessage());
-    echo "ERROR_BD";
+    // y se envía 0.
+    echo json_encode(["flag" => 0]);
     exit();
 }
 
