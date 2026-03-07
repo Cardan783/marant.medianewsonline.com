@@ -80,11 +80,6 @@ $url_avatar_default = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION[
     }
 </style>
 
-<!-- Botón Toggle para Móviles (La pestaña pequeña) -->
-<button class="btn btn-primary mobile-nav-toggle d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#globalSidebar" aria-controls="globalSidebar">
-    <i class="fa-solid fa-bars fs-5"></i>
-</button>
-
 <!-- Sidebar Offcanvas -->
 <div class="offcanvas-lg offcanvas-start bg-dark text-white sidebar-global" tabindex="-1" id="globalSidebar" aria-labelledby="globalSidebarLabel">
     <div class="offcanvas-header border-bottom border-secondary">
@@ -139,7 +134,7 @@ $url_avatar_default = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION[
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                 <li><a class="dropdown-item" href="<?php echo $base_path; ?>php/perfil.php"><i class="fa-solid fa-user-gear me-2"></i>Mi Perfil</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="<?php echo $base_path; ?>php/logout.php"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión</a></li>
+                <li><a class="dropdown-item" href="<?php echo $base_path; ?>php/logout.php" onclick="confirmLogout(event)"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión</a></li>
             </ul>
         </div>
     </div>

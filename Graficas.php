@@ -110,7 +110,7 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
     </style>
   </head>
   <body>
-    <?php $base_path = ''; include 'php/sidebar.php'; ?>
+    <?php $base_path = ''; include 'php/sidebar.php'; include 'php/navbar.php'; ?>
 
     <div class="header-container pt-5 pt-lg-0 ps-3 pe-3">
       <h1>Monitor de Sensores en Tiempo Real</h1>

@@ -253,7 +253,7 @@ if ($is_equipo_selected) {
 </head>
 <body>
 
-    <?php $base_path = '../'; include 'sidebar.php'; ?>
+    <?php $base_path = '../'; include 'sidebar.php'; include 'navbar.php'; ?>
 
     <div class="toast-container position-fixed top-0 end-0 p-3">
       <!-- Las notificaciones push (toasts) se añadirán aquí -->

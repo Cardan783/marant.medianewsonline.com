@@ -4,6 +4,10 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../index.php");
     exit();
 }
+// Cabeceras para evitar que el navegador guarde la página en caché (Seguridad botón Atrás)
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+header("Pragma: no-cache"); // HTTP 1.0.
+header("Expires: 0"); // Proxies.
 
 // Incluir conexión a la base de datos
 require_once 'conexion.php';
@@ -326,9 +330,9 @@ if ($equipo_seleccionado_id) {
     </style>
 </head>
 <body>
-    <?php $base_path = '../'; include 'sidebar.php'; ?>
+    <?php $base_path = '../'; include 'sidebar.php'; include 'navbar.php'; ?>
 
-    <div class="container pt-5 pt-lg-4">
+    <div class="container pt-5 pt-lg-4"></div></div>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0"><i class="bi bi-tools me-2"></i>Gestión de Equipos</h2>
             <button class="btn btn-outline-secondary btn-sm" id="darkModeToggle">
