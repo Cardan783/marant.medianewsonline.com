@@ -33,6 +33,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['user_photo'] = !empty($user['foto']) ? $user['foto'] : 'default.png';
                 $_SESSION['just_logged_in'] = true; // Bandera para mostrar bienvenida
                 
+                // --- Lógica "Recordarme" ---
+                if (isset($_POST['remember'])) {
+                    // Generar token aleatorio seguro (64 caracteres hex)
+                    $token = bin2hex(random_bytes(32)); 
+                    $token_hash = hash('sha256', $token); // Guardamos el hash en BD por seguridad
+                    
+                    // Guardar hash en BD y token plano en cookie (30 días)
+                    $conn->prepare("UPDATE usuarios SET remember_token = ? WHERE id = ?")->execute([$token_hash, $user['id']]);
+                    setcookie('remember_me', $token, time() + (86400 * 30), "/", "", false, true);
+                }
+
                 // Redirigir al dashboard
                 header("Location: ../panel_control.php");
                 exit();

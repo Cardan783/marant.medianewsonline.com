@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'conexion.php'; 
 
 $mac_recibida = isset($_GET['mac']) ? $_GET['mac'] : '';
@@ -6,6 +7,20 @@ $mac_recibida = isset($_GET['mac']) ? $_GET['mac'] : '';
 if ($mac_recibida !== '') {
     try {
         // 1. Buscamos el ID y AHORA TAMBIÉN el nombre_equipo
+        
+        // SEGURIDAD: Verificar sesión
+        if (!isset($_SESSION['user_id'])) {
+            echo "Error: Acceso no autorizado";
+            exit;
+        }
+        // SEGURIDAD: Verificar propiedad de la MAC
+        $stmt_check = $conn->prepare("SELECT id FROM equipos WHERE mac_address = ? AND usuario_id = ?");
+        $stmt_check->execute([$mac_recibida, $_SESSION['user_id']]);
+        if ($stmt_check->rowCount() === 0) {
+            echo "Error: Equipo no encontrado o acceso denegado";
+            exit;
+        }
+
         $query_equipo = "SELECT id, nombre_equipo FROM equipos WHERE mac_address = :mac_address LIMIT 1";
         $stmt_equipo = $conn->prepare($query_equipo);
         $stmt_equipo->bindParam(':mac_address', $mac_recibida, PDO::PARAM_STR);

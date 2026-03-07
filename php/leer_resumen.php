@@ -1,4 +1,5 @@
 <?php
+session_start(); // 1. Iniciar sesión
 header('Content-Type: application/json');
 
 // Obtener la MAC enviada por parámetro
@@ -7,6 +8,22 @@ $modo = isset($_GET['modo']) ? $_GET['modo'] : 'mes'; // 'mes' (default) o 'gene
 
 if (empty($mac)) {
     echo json_encode(["error" => "MAC no proporcionada"]);
+    exit;
+}
+
+// 2. SEGURIDAD: Verificar que el usuario esté logueado
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(["error" => "Acceso no autorizado. Inicie sesión."]);
+    exit;
+}
+
+// 3. SEGURIDAD: Verificar que la MAC pertenezca al usuario logueado
+require_once 'conexion.php'; // Asegúrate de tener este archivo accesible
+$stmt_check = $conn->prepare("SELECT id FROM equipos WHERE mac_address = ? AND usuario_id = ?");
+$stmt_check->execute([$mac, $_SESSION['user_id']]);
+
+if ($stmt_check->rowCount() === 0) {
+    echo json_encode(["error" => "Acceso denegado. Este equipo no le pertenece."]);
     exit;
 }
 

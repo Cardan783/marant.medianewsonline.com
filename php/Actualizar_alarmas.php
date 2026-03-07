@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'conexion.php';
 
 // Asegurar que la respuesta sea siempre JSON para que el JS la pueda leer
@@ -17,6 +18,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validar que los datos no estén vacíos
     if ($equipo_id !== null && $temperatura !== null && $temp_advertencia !== null && $presion !== null && $voltaje_max !== null && $voltaje_min !== null) {
+        
+        // SEGURIDAD: Verificar sesión y propiedad
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Inicie sesión.']);
+            exit;
+        }
+
+        $stmt_check = $conn->prepare("SELECT id FROM equipos WHERE id = ? AND usuario_id = ?");
+        $stmt_check->execute([$equipo_id, $_SESSION['user_id']]);
+        if ($stmt_check->rowCount() === 0) {
+            echo json_encode(['success' => false, 'error' => 'Acceso denegado. Este equipo no le pertenece.']);
+            exit;
+        }
+
         try {
             // Verificar si ya existe un registro para este equipo
             $stmt = $conn->prepare("SELECT id FROM alarmas WHERE equipo_id = ?");

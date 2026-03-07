@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Permitir el acceso desde cualquier origen (CORS)
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -10,6 +11,13 @@ if (!isset($conn)) {
     // Si la conexión falla, se devuelve un JSON con el error 500
     http_response_code(500);
     echo json_encode(["error" => "Error de conexión a la base de datos"]);
+    die();
+}
+
+// SEGURIDAD: Verificar sesión
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(403);
+    echo json_encode(["error" => "Acceso no autorizado"]);
     die();
 }
 

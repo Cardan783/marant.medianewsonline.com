@@ -2,6 +2,29 @@
 // Iniciar sesión para manejo futuro de usuarios
 session_start();
 
+// --- Lógica de "Recordarme" (Auto-login) ---
+if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_me'])) {
+    require_once 'php/conexion.php';
+    $token_cookie = $_COOKIE['remember_me'];
+    // Hash del token para comparar con BD
+    $token_hash = hash('sha256', $token_cookie);
+    
+    $stmt = $conn->prepare("SELECT id, nombre, apellido, foto, estado FROM usuarios WHERE remember_token = ? AND estado = 'activo'");
+    $stmt->execute([$token_hash]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($user) {
+        // Restaurar sesión
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['nombre'];
+        $_SESSION['user_lastname'] = $user['apellido'];
+        $_SESSION['user_photo'] = !empty($user['foto']) ? $user['foto'] : 'default.png';
+        $_SESSION['just_logged_in'] = true;
+        header("Location: panel_control.php");
+        exit();
+    }
+}
+
 if (isset($_SESSION['user_id'])) {
     header("Location: panel_control.php");
     exit();
@@ -91,7 +114,7 @@ $usar_local = count($imagenes_carrusel) > 0;
 
     <!-- Hero Section (Carrusel) -->
     <section id="inicio" class="p-0">
-        <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -274,6 +297,10 @@ $usar_local = count($imagenes_carrusel) > 0;
                                         <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                                         <input type="password" name="password" class="form-control" placeholder="******" required>
                                     </div>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                                    <label class="form-check-label" for="remember">Recordarme en este dispositivo</label>
                                 </div>
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>

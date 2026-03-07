@@ -12,6 +12,11 @@ header("Expires: 0"); // Proxies.
 // Incluir conexión a la base de datos
 require_once 'conexion.php';
 
+// Generar Token CSRF si no existe
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 $user_id = $_SESSION['user_id'];
 $mensaje = '';
 $tipo_alerta = '';
@@ -43,6 +48,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 // 3. PROCESAR FORMULARIO (GUARDAR DATOS)
 // ---------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
+    // Verificar Token CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("Error de seguridad: Token CSRF inválido.");
+    }
+
     if ($_POST['accion'] === 'guardar' && $equipo_seleccionado_id) {
         try {
             $conn->beginTransaction();
@@ -387,6 +397,7 @@ if ($equipo_seleccionado_id) {
         <!-- Formulario de Edición -->
         <?php if ($datos): ?>
         <form id="form-gestion" method="POST" action="gestion_equipos.php">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <input type="hidden" name="accion" value="guardar">
             <input type="hidden" name="equipo_id" value="<?php echo htmlspecialchars($equipo_seleccionado_id); ?>">
             <!-- Campos ocultos para validación de email -->
@@ -514,6 +525,7 @@ if ($equipo_seleccionado_id) {
 
         <!-- Formulario oculto para eliminar -->
         <form id="form-eliminar" method="POST" action="gestion_equipos.php">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <input type="hidden" name="accion" value="eliminar">
             <input type="hidden" name="equipo_id" value="<?php echo htmlspecialchars($equipo_seleccionado_id); ?>">
         </form>

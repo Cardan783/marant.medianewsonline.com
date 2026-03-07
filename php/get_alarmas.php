@@ -1,4 +1,6 @@
 <?php
+session_start(); // Iniciar sesión para verificar permisos
+
 // 1. Incluimos tu archivo de conexión PDO
 include 'conexion.php'; 
 
@@ -8,13 +10,34 @@ $equipo_id_recibido = isset($_GET['equipo_id']) ? $_GET['equipo_id'] : '';
 
 if ($mac_recibida !== '' || $equipo_id_recibido !== '') {
     
+
     try {
         $equipo_id = null;
 
         if ($equipo_id_recibido !== '') {
             // Si recibimos ID directamente (desde la Web)
+            
+            if (!isset($_SESSION['user_id'])) {
+                echo "Error: Acceso no autorizado";
+                exit;
+            }
+            $stmt_check = $conn->prepare("SELECT id FROM equipos WHERE id = ? AND usuario_id = ?");
+            $stmt_check->execute([$equipo_id_recibido, $_SESSION['user_id']]);
+            if (!$stmt_check->fetch()) {
+                echo "Error: Equipo no encontrado o acceso denegado";
+                exit;
+            }
+
             $equipo_id = $equipo_id_recibido;
         } else {
+             // SEGURIDAD: Verificar que el usuario esté logueado
+            if (!isset($_SESSION['user_id'])) {
+                echo "Error: Acceso no autorizado";
+                exit;
+            }
+
+
+
             // Si recibimos MAC (desde ESP8266 o el esp32), buscamos el ID
             $query_equipo = "SELECT id FROM equipos WHERE mac_address = :mac_address LIMIT 1";
             $stmt_equipo = $conn->prepare($query_equipo);
@@ -24,7 +47,18 @@ if ($mac_recibida !== '' || $equipo_id_recibido !== '') {
             if ($stmt_equipo->rowCount() > 0) {
                 $fila = $stmt_equipo->fetch(); 
                 $equipo_id = $fila['id']; 
+
+                     // SEGURIDAD: Adicional verificar si la mac pertenece al usuario
+                     $stmt_check_mac = $conn->prepare("SELECT id FROM equipos WHERE mac_address = ? AND usuario_id = ?");
+                     $stmt_check_mac->execute([$mac_recibida, $_SESSION['user_id']]);
+
+                         if ($stmt_check_mac->rowCount() === 0) {
+                             echo "Error: Equipo no encontrado o acceso denegado";
+                             exit;
+                         }
+
             } else {
+
                 echo "Error: Equipo no registrado";
                 exit;
             }

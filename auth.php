@@ -28,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // 2. Verificar Contraseña
             if (password_verify($password_input, $admin['password'])) {
                 // Login Exitoso
+                session_regenerate_id(true);
                 $_SESSION['admin_id'] = $admin['id'];
                 $_SESSION['admin_nombre'] = $admin['nombre'];
                 $_SESSION['admin_rol'] = $admin['rol']; // 'superadmin' o 'admin'
