@@ -171,6 +171,16 @@ try {
                     </div>
                 </a>
             </div>
+            <!-- Análisis operacional diario -->
+            <div class="col-md-6 col-lg-4">
+                <a href="analisis_operacional.php" class="dashboard-card">
+                    <div class="card-body">
+                        <div class="icon-wrapper bg-cyan-light"><i class="fa-solid fa-sd-card"></i></div>
+                        <h4 class="card-title">Análisis operacional diario</h4>
+                        <p class="card-text">Visualice los resúmenes diarios almacenados en la tarjeta SD del equipo.</p>
+                    </div>
+                </a>
+            </div>
             <!-- Configuración -->
             <div class="col-md-6 col-lg-4">
                 <a href="php/configuracion.php" class="dashboard-card">

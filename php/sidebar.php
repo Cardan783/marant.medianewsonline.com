@@ -115,6 +115,11 @@ $url_avatar_default = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION[
                 </a>
             </li>
             <li class="mb-1">
+                <a href="<?php echo $base_path; ?>analisis_operacional.php" class="nav-link text-white <?php echo $current_page == 'analisis_operacional.php' ? 'active' : ''; ?>">
+                    <i class="fa-solid fa-sd-card me-2" style="width: 20px;"></i> Análisis operacional diario
+                </a>
+            </li>
+            <li class="mb-1">
                 <a href="<?php echo $base_path; ?>php/configuracion.php" class="nav-link text-white <?php echo $current_page == 'configuracion.php' ? 'active' : ''; ?>">
                     <i class="fa-solid fa-gear me-2" style="width: 20px;"></i> Configuración
                 </a>

@@ -6,6 +6,22 @@ if (isset($_SESSION['user_id'])) {
     header("Location: panel_control.php");
     exit();
 }
+
+// --- Lógica para cargar imágenes del carrusel ---
+$ruta_carrusel = 'img/carrusel/';
+$imagenes_carrusel = [];
+
+if (is_dir($ruta_carrusel)) {
+    $archivos = scandir($ruta_carrusel);
+    foreach ($archivos as $archivo) {
+        $ext = strtolower(pathinfo($archivo, PATHINFO_EXTENSION));
+        if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $imagenes_carrusel[] = $ruta_carrusel . $archivo;
+        }
+    }
+}
+// Si no hay imágenes locales, usar las de Unsplash por defecto
+$usar_local = count($imagenes_carrusel) > 0;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -80,15 +96,18 @@ if (isset($_SESSION['user_id'])) {
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
             </div>
             <div class="carousel-inner">
                 <!-- Slide 1 -->
-                <div class="carousel-item active hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                <div class="carousel-item active hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('<?php echo $usar_local ? ($imagenes_carrusel[0] ?? $imagenes_carrusel[0]) : 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'; ?>');">
                     <div class="container h-100 d-flex align-items-center justify-content-center text-center">
-                        <div class="text-white">
+                        <!-- Ajuste de altura: margin-bottom positivo sube el texto, margin-top lo baja -->
+                        <div class="text-white" style="margin-bottom: 10px;">
                             <h1 class="display-3 fw-bold mb-4">Monitoreo Inteligente en Tiempo Real</h1>
                             <p class="lead mb-5">Sistema Auxiliar de Medición de Presión, Temperatura y Voltaje para el transporte y la industria.</p>
-                            <div class="d-flex justify-content-center gap-3">
+                            <!-- Ajuste para bajar solo los botones: aumenta el valor de margin-top -->
+                            <div class="d-flex justify-content-center gap-3" style="margin-top: 270px;">
                                 <a href="#nosotros" class="btn btn-lg btn-outline-light">Conocer Más</a>
                                 <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Acceder al Sistema</button>
                             </div>
@@ -96,12 +115,12 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                 </div>
                 <!-- Slide 2 -->
-                <div class="carousel-item hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                <div class="carousel-item hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('<?php echo $usar_local ? ($imagenes_carrusel[1] ?? $imagenes_carrusel[0]) : 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'; ?>');">
                     <div class="container h-100 d-flex align-items-center justify-content-center text-center">
-                        <div class="text-white">
+                        <div class="text-white" style="margin-bottom: 10px;">
                             <h1 class="display-3 fw-bold mb-4">Protección Total para tus Activos</h1>
                             <p class="lead mb-5">Evita fallas críticas con alertas tempranas y reportes detallados.</p>
-                            <div class="d-flex justify-content-center gap-3">
+                            <div class="d-flex justify-content-center gap-3" style="margin-top: 270px;">
                                 <a href="#servicios" class="btn btn-lg btn-outline-light">Nuestros Servicios</a>
                                 <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar Ahora</button>
                             </div>
@@ -109,13 +128,25 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                 </div>
                 <!-- Slide 3 -->
-                <div class="carousel-item hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                <div class="carousel-item hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('<?php echo $usar_local ? ($imagenes_carrusel[2] ?? $imagenes_carrusel[0]) : 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'; ?>');">
                     <div class="container h-100 d-flex align-items-center justify-content-center text-center">
-                        <div class="text-white">
+                        <div class="text-white" style="margin-bottom: 10px;">
                             <h1 class="display-3 fw-bold mb-4">Tecnología al Servicio de tu Flota</h1>
                             <p class="lead mb-5">Accede a gráficas y estadísticas desde cualquier lugar y dispositivo.</p>
-                            <div class="d-flex justify-content-center gap-3">
+                            <div class="d-flex justify-content-center gap-3" style="margin-top: 270px;">
                                 <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Crear Cuenta</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 4 -->
+                <div class="carousel-item hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('<?php echo $usar_local ? ($imagenes_carrusel[3] ?? $imagenes_carrusel[0]) : 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'; ?>');">
+                    <div class="container h-100 d-flex align-items-center justify-content-center text-center">
+                        <div class="text-white" style="margin-bottom: -350px;">
+                            <h1 class="display-3 fw-bold mb-4">Innovación y Seguridad</h1>
+                            <p class="lead mb-5">Soluciones avanzadas para el control total de tus operaciones.</p>
+                            <div class="d-flex justify-content-center gap-3" style="margin-top: -30px;">
+                                <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Únete Ahora</button>
                             </div>
                         </div>
                     </div>
