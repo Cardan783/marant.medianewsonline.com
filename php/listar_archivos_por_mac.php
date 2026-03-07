@@ -11,7 +11,9 @@ if (empty($mac)) {
 
 $dir = __DIR__ . '/../Archivos_SDCards/uploads';
 $files = [];
-$prefix = "MAC=" . $mac; // El prefijo que buscamos
+// Adaptar formato: Reemplazar ':' por '-' para coincidir con el nuevo formato de archivos
+$mac_archivo = str_replace(':', '-', $mac);
+$prefix = "MAC=" . $mac_archivo; // El prefijo que buscamos
 
 if (is_dir($dir)) {
     $allFiles = scandir($dir);

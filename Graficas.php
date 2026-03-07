@@ -270,6 +270,10 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
       </div>
     </div>
     <script>
+      // Variable global para el nombre del usuario (usada en reportes PDF)
+      const NOMBRE_USUARIO_SESION = "<?php echo isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) . ' ' . (isset($_SESSION['user_lastname']) ? htmlspecialchars($_SESSION['user_lastname']) : '') : 'Usuario'; ?>";
+    </script>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
         // --- SweetAlert2 para Bienvenida de Usuario ---
         const showWelcome = <?php echo json_encode($show_welcome_message); ?>;

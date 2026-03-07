@@ -379,7 +379,18 @@ function exportChartToPDF() {
   });
   doc.text(`Generado el: ${now}`, width / 2, 27, { align: "center" });
 
-  const startY = 35;
+  // --- DATOS DEL USUARIO Y EQUIPO ---
+  const selectedOption = selectorEquipo.options[selectorEquipo.selectedIndex];
+  const alias = selectedOption ? selectedOption.textContent : "Desconocido";
+  const mac = selectedOption && selectedOption.dataset.mac ? selectedOption.dataset.mac : "N/A";
+  const usuario = (typeof NOMBRE_USUARIO_SESION !== 'undefined') ? NOMBRE_USUARIO_SESION : "Usuario";
+
+  doc.setFontSize(11);
+  doc.text(`Cliente: ${usuario}`, 15, 35);
+  doc.text(`Equipo: ${alias}`, 15, 40);
+  doc.text(`MAC: ${mac}`, 15, 45);
+
+  const startY = 50; // Bajamos la gráfica para dar espacio a los datos
   doc.addImage(
     chartImage,
     "PNG",
@@ -458,6 +469,17 @@ function exportarReporteCritico() {
     timeStyle: "short",
   });
   doc.text(`Generado el: ${now}`, marginX, 30);
+
+  // --- DATOS DEL USUARIO Y EQUIPO ---
+  const selectedOption = selectorEquipo.options[selectorEquipo.selectedIndex];
+  const alias = selectedOption ? selectedOption.textContent : "Desconocido";
+  const mac = selectedOption && selectedOption.dataset.mac ? selectedOption.dataset.mac : "N/A";
+  const usuario = (typeof NOMBRE_USUARIO_SESION !== 'undefined') ? NOMBRE_USUARIO_SESION : "Usuario";
+
+  doc.text(`Cliente: ${usuario}`, marginX, 36);
+  doc.text(`Equipo: ${alias}`, marginX, 42);
+  doc.text(`MAC: ${mac}`, marginX + 80, 42);
+
   doc.text(
     `Umbral Advertencia: ${umbralAdvertenciaUsuario}°C`,
     marginX + 80,
@@ -511,7 +533,7 @@ function exportarReporteCritico() {
 
   // 3. Generar la tabla con jsPDF-AutoTable
   doc.autoTable({
-    startY: 38,
+    startY: 48, // Ajustado para dar espacio a los datos del usuario
     head: head,
     body: body,
     theme: "striped",
@@ -529,40 +551,35 @@ function exportarReporteCritico() {
       fontStyle: "bold",
     },
     didParseCell: (data) => {
-      if (data.cell.section === "body") {
-        const status = data.row.raw[4];
+      if (data.cell.section !== 'body') return;
 
-        // Lógica de coloración para la columna ESTADO (basada en umbrales dinámicos del usuario)
-        if (status === "CRÍTICO") {
-          data.cell.styles.fillColor = [255, 230, 230];
-          data.cell.styles.textColor = [200, 0, 0];
-          data.cell.styles.fontStyle = "bold";
-        } else if (status === "ADVERTENCIA") {
-          data.cell.styles.fillColor = [255, 255, 204];
-          data.cell.styles.textColor = [204, 102, 0];
-          data.cell.styles.fontStyle = "bold";
-        }
+      const tempValue = parseFloat(data.row.raw[1]);
+      const status = data.row.raw[4]; // 'CRÍTICO', 'ADVERTENCIA', 'NORMAL'
 
-        // NUEVA LÓGICA: Colorear solo la celda de TEMPERATURA (columna 1, índice 1)
-        if (data.column.index === 1) {
-          // Obtener el valor original de la temperatura de los datos del cuerpo
-          const tempStr = data.row.raw[1];
-          const tempValue = parseFloat(tempStr);
-
-          // CRÍTICO (T > 90°C) - Resaltado Rojo y Fuente más grande
-          if (tempValue > 90) {
-            data.cell.styles.fillColor = [255, 100, 100]; // Rojo más claro
-            data.cell.styles.textColor = [150, 0, 0]; // Rojo oscuro
-            data.cell.styles.fontStyle = "bold";
-            data.cell.styles.fontSize = 11; // Letra más grande
-            // ADVERTENCIA (85°C <= T <= 90°C) - Resaltado Naranja SUTIL (CAMBIADO)
-          } else if (tempValue >= 85) {
-            data.cell.styles.fillColor = [248, 222, 126]; // Amarillo Jazmin
-            data.cell.styles.textColor = [204, 102, 0]; // Naranja oscuro para el texto
-            data.cell.styles.fontStyle = "bold";
+      // Colorear el valor de la Temperatura (columna 1)
+      if (data.column.index === 1) {
+          if (tempValue >= umbralCriticoUsuario) {
+              data.cell.styles.textColor = [220, 53, 69]; // Rojo
+              data.cell.styles.fontStyle = 'bold';
+          } else if (tempValue >= umbralAdvertenciaUsuario) {
+              data.cell.styles.textColor = [253, 126, 20]; // Naranja
+              data.cell.styles.fontStyle = 'bold';
           }
-        }
       }
+
+      // Colorear el texto de la columna Estado (columna 4)
+      if (data.column.index === 4) {
+          if (status === 'CRÍTICO') {
+              data.cell.styles.textColor = [220, 53, 69]; // Rojo
+              data.cell.styles.fontStyle = 'bold';
+          } else if (status === 'ADVERTENCIA') {
+              data.cell.styles.textColor = [253, 126, 20]; // Naranja
+              data.cell.styles.fontStyle = 'bold';
+          } else {
+              data.cell.styles.textColor = [25, 135, 84]; // Verde para Normal
+          }
+      }
+      // Las otras columnas (Fecha, Presión, Voltaje) se quedan con el color por defecto (negro).
     },
   });
 
@@ -652,6 +669,17 @@ function exportarReporteSoloCritico() {
     timeStyle: "short",
   });
   doc.text(`Generado el: ${now}`, marginX, 30);
+
+  // --- DATOS DEL USUARIO Y EQUIPO ---
+  const selectedOption = selectorEquipo.options[selectorEquipo.selectedIndex];
+  const alias = selectedOption ? selectedOption.textContent : "Desconocido";
+  const mac = selectedOption && selectedOption.dataset.mac ? selectedOption.dataset.mac : "N/A";
+  const usuario = (typeof NOMBRE_USUARIO_SESION !== 'undefined') ? NOMBRE_USUARIO_SESION : "Usuario";
+
+  doc.text(`Cliente: ${usuario}`, marginX, 36);
+  doc.text(`Equipo: ${alias}`, marginX, 42);
+  doc.text(`MAC: ${mac}`, marginX + 80, 42);
+
   doc.text(
     `Umbral Advertencia: ${umbralAdvertenciaUsuario}°C`,
     marginX + 80,
@@ -713,7 +741,7 @@ function exportarReporteSoloCritico() {
 
   // 3. Generar la tabla con jsPDF-AutoTable
   doc.autoTable({
-    startY: 38,
+    startY: 48, // Ajustado para dar espacio a los datos del usuario
     head: head,
     body: body,
     theme: "striped",
@@ -730,18 +758,33 @@ function exportarReporteSoloCritico() {
       fontStyle: "bold",
     },
     didParseCell: (data) => {
-      if (data.cell.section === "body") {
-        const status = data.row.raw[4];
-        if (status === "CRÍTICO") {
-          data.cell.styles.fillColor = [255, 230, 230];
-          data.cell.styles.textColor = [200, 0, 0];
-          data.cell.styles.fontStyle = "bold";
-        } else if (status === "ADVERTENCIA") {
-          data.cell.styles.fillColor = [255, 255, 204];
-          data.cell.styles.textColor = [204, 102, 0];
-          data.cell.styles.fontStyle = "bold";
-        }
+      if (data.cell.section !== 'body') return;
+
+      const tempValue = parseFloat(data.row.raw[1]);
+      const status = data.row.raw[4]; // 'CRÍTICO', 'ADVERTENCIA'
+
+      // Colorear el valor de la Temperatura (columna 1)
+      if (data.column.index === 1) {
+          if (tempValue >= umbralCriticoUsuario) {
+              data.cell.styles.textColor = [220, 53, 69]; // Rojo
+              data.cell.styles.fontStyle = 'bold';
+          } else if (tempValue >= umbralAdvertenciaUsuario) {
+              data.cell.styles.textColor = [253, 126, 20]; // Naranja
+              data.cell.styles.fontStyle = 'bold';
+          }
       }
+
+      // Colorear el texto de la columna Estado (columna 4)
+      if (data.column.index === 4) {
+          if (status === 'CRÍTICO') {
+              data.cell.styles.textColor = [220, 53, 69]; // Rojo
+              data.cell.styles.fontStyle = 'bold';
+          } else if (status === 'ADVERTENCIA') {
+              data.cell.styles.textColor = [253, 126, 20]; // Naranja
+              data.cell.styles.fontStyle = 'bold';
+          }
+      }
+      // Las otras columnas se quedan con el color por defecto (negro).
     },
   });
 
@@ -1467,8 +1510,8 @@ function cargarArchivosHistoricos(macAddress) {
           files.forEach(file => {
             const option = document.createElement('option');
             option.value = file;
-            // Formatear nombre: quitar prefijo MAC=..._ para que se vea profesional
-            option.textContent = file.replace(/^MAC=.*?_/, ''); 
+            // Formatear nombre: quitar prefijo MAC=XX-XX..._ (Soporta separador _ o -)
+            option.textContent = file.replace(/^MAC=.{17}[-_]/, ''); 
             selector.appendChild(option);
           });
           // Mostrar el selector solo si hay archivos

@@ -202,6 +202,10 @@ header("Expires: 0");
   </head>
   <body>
     <?php $base_path = ''; include 'php/navbar.php'; ?>
+    <script>
+      // Variable global para el nombre del usuario (usada en reportes PDF/Excel)
+      const NOMBRE_USUARIO_SESION = "<?php echo isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) . ' ' . (isset($_SESSION['user_lastname']) ? htmlspecialchars($_SESSION['user_lastname']) : '') : 'Usuario'; ?>";
+    </script>
     <div id="app" class="d-flex">
       <!-- 1. SIDEBAR DE FILTROS (Izquierda) -->
       <div
@@ -860,8 +864,8 @@ header("Expires: 0");
           };
 
           const formatearNombreArchivo = (nombre) => {
-            // Elimina el prefijo MAC=XX:XX:XX:XX:XX:XX_ para mostrar solo la fecha
-            return nombre.replace(/^MAC=.*?_/, '');
+            // Elimina el prefijo MAC=XX-XX..._ para mostrar solo la fecha (Soporta _ o -)
+            return nombre.replace(/^MAC=.{17}[-_]/, '');
           };
 
           const getBadgeClass = (temp) => {
@@ -907,15 +911,31 @@ header("Expires: 0");
             if (datosFiltrados.value.length === 0)
               return alert("Sin datos para exportar");
 
-            const headers = ["Fecha", "Temperatura", "Presion", "Voltaje"];
+            // Obtener datos del equipo y usuario
+            const equipo = listaEquipos.value.find(e => e.id == filtros.equipoId);
+            const alias = equipo ? equipo.nombre_equipo : "Desconocido";
+            const mac = equipo ? equipo.mac_address : "N/A";
+            const usuario = (typeof NOMBRE_USUARIO_SESION !== 'undefined') ? NOMBRE_USUARIO_SESION : "Usuario";
+
+            // Metadatos al inicio
+            const meta = [
+                `Reporte de Datos Históricos`,
+                `Generado el:;${new Date().toLocaleString()}`,
+                `Cliente:;${usuario}`,
+                `Equipo:;${alias}`,
+                `MAC:;${mac}`,
+                "" // Separador
+            ];
+
+            const headers = ["Fecha", "Temperatura", "Presion", "Voltaje", "Estado"];
             const rows = datosFiltrados.value.map((d) =>
-              [`"${d.fecha}"`, d.temperatura, d.presion, d.voltaje].join(
+              [`"${d.fecha}"`, d.temperatura, d.presion, d.voltaje, getStatusLabel(d.temperatura)].join(
                 ";",
               ),
             );
 
             const csvContent =
-              "\ufeff" + [headers.join(";"), ...rows].join("\n");
+              "\ufeff" + [...meta, headers.join(";"), ...rows].join("\n");
             const blob = new Blob([csvContent], {
               type: "text/csv;charset=utf-8;",
             });
@@ -931,6 +951,12 @@ header("Expires: 0");
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
+            // Obtener datos
+            const equipo = listaEquipos.value.find(e => e.id == filtros.equipoId);
+            const alias = equipo ? equipo.nombre_equipo : "Desconocido";
+            const mac = equipo ? equipo.mac_address : "N/A";
+            const usuario = (typeof NOMBRE_USUARIO_SESION !== 'undefined') ? NOMBRE_USUARIO_SESION : "Usuario";
+
             // Encabezado
             doc.setFontSize(16);
             doc.text("Reporte de Datos Históricos", 14, 20);
@@ -938,13 +964,9 @@ header("Expires: 0");
             doc.setFontSize(10);
             doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 28);
 
-            // Info del equipo
-            if (filtros.equipoId) {
-                const equipo = listaEquipos.value.find(e => e.id == filtros.equipoId);
-                if (equipo) {
-                    doc.text(`Equipo: ${equipo.nombre_equipo} (${equipo.mac_address})`, 14, 34);
-                }
-            }
+            doc.text(`Cliente: ${usuario}`, 14, 36);
+            doc.text(`Equipo: ${alias}`, 14, 42);
+            doc.text(`MAC: ${mac}`, 14, 48);
 
             const headers = [["Fecha", "Temperatura", "Presión", "Voltaje", "Estado"]];
             const data = datosFiltrados.value.map(item => [
@@ -958,7 +980,7 @@ header("Expires: 0");
             doc.autoTable({
                 head: headers,
                 body: data,
-                startY: 40,
+                startY: 55,
                 theme: 'striped',
                 headStyles: { fillColor: [13, 110, 253] },
                 didParseCell: function(data) {
