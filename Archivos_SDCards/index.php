@@ -9,46 +9,55 @@ function log_debug($msg) {
     file_put_contents(__DIR__ . "/debug_log.txt", date('[Y-m-d H:i:s] ') . $msg . PHP_EOL, FILE_APPEND);
 }
 
-$upload_directory = __DIR__ . "/uploads/";
+// 1. Obtener el nombre del archivo (desde GET o Headers)
+$filename = isset($_GET['filename']) ? basename($_GET['filename']) : null;
 
-// Verificar si el archivo viene de la memoria interna (SPIFFS)
-if (isset($_GET['source']) && $_GET['source'] === 'spiffs') {
-    $upload_directory = __DIR__ . "/uploads_spiffs/";
+if (!$filename) {
+    $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+    if (isset($headers['file-name'])) {
+        $filename = basename($headers['file-name']);
+    }
 }
 
-// Crear directorio
+// Fallback por si no hay nombre
+if (!$filename) {
+    $filename = "archivo_desconocido_" . time() . ".bin";
+}
+
+// --- LÓGICA DE EXTRACCIÓN DE MAC Y DIRECTORIO ---
+
+$base_directory = __DIR__ . "/uploads/";
+
+// Si viene de SPIFFS, cambiamos la base
+if (isset($_GET['source']) && $_GET['source'] === 'spiffs') {
+    $base_directory = __DIR__ . "/uploads_spiffs/";
+}
+
+// Extraer la MAC (Ejemplo: MAC=9C-9C-1F-C6-30-66_Domingo... -> 9C-9C-1F-C6-30-66)
+// Buscamos lo que esté entre "MAC=" y el primer guion bajo "_"
+if (preg_match('/MAC=([a-fA-F0-9-]{17})/', $filename, $matches)) {
+    $mac_folder = $matches[1]; // Contiene solo la MAC
+    $upload_directory = $base_directory . $mac_folder . "/";
+} else {
+    // Si no tiene el formato esperado, lo ponemos en una carpeta 'otros' o en la base
+    $upload_directory = $base_directory . "sin_mac/";
+}
+
+// Crear el directorio específico de la MAC si no existe
 if (!is_dir($upload_directory)) {
     if (!mkdir($upload_directory, 0755, true)) {
-        log_debug("Error: No se pudo crear el directorio uploads.");
+        log_debug("Error: No se pudo crear el directorio: $upload_directory");
         http_response_code(500);
-        echo "Error: No se pudo crear directorio.";
+        echo "Error: Permisos de escritura en servidor.";
         exit;
     }
 }
 
-// 1. Intentar obtener nombre por GET (más seguro)
-$filename = isset($_GET['filename']) ? basename($_GET['filename']) : null;
-
-// 2. Si no, intentar por Headers (manejando mayúsculas/minúsculas)
-if (!$filename) {
-    $headers = getallheaders();
-    // Normalizar headers a minúsculas para buscar 'file-name'
-    $headers_lower = array_change_key_case($headers, CASE_LOWER);
-    if (isset($headers_lower['file-name'])) {
-        $filename = basename($headers_lower['file-name']);
-    }
-}
-
-// 3. Fallback
-if (!$filename) {
-    $filename = "archivo_desconocido_" . time() . ".bin";
-    log_debug("Advertencia: No se detectó nombre de archivo, usando genérico.");
-}
+// --- PROCESO DE GUARDADO ---
 
 $target_path = $upload_directory . $filename;
-log_debug("Iniciando carga: $filename");
+log_debug("Iniciando carga en carpeta de MAC: $filename");
 
-// Leer entrada
 $input = fopen("php://input", "rb");
 $file = fopen($target_path, "wb");
 
@@ -62,20 +71,18 @@ if ($input && $file) {
     
     if ($bytes_written > 0) {
         http_response_code(200);
-        $msg = "Exito: $filename guardado ($bytes_written bytes).";
+        $msg = "Exito: $filename guardado en $upload_directory ($bytes_written bytes).";
         log_debug($msg);
         echo $msg;
     } else {
-        // Si el archivo se creó pero tiene 0 bytes
-        http_response_code(200); // Sigue siendo 200 OK HTTP, pero avisamos
-        $msg = "Alerta: Archivo $filename creado pero vacio (0 bytes recibidos).";
+        http_response_code(200); 
+        $msg = "Alerta: Archivo vacio en $upload_directory.";
         log_debug($msg);
         echo $msg;
     }
 } else {
     http_response_code(500);
-    $err = "Error al abrir flujos de archivo. Permisos?";
-    log_debug($err);
-    echo $err;
+    log_debug("Error al abrir flujos. Ruta: $target_path");
+    echo "Error de servidor al guardar.";
 }
 ?>

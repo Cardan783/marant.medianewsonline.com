@@ -126,7 +126,7 @@ usort($equipos_final, function($a, $b) {
 
     <div class="container pt-5 pt-lg-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1><i class="fa-solid fa-sd-card me-2"></i>Análisis operacional diario</h1>
+            <h1><i class="fa-solid fa-sd-card me-2"></i>Análisis diario de operación</h1>
         </div>
 
         <!-- Selector de Equipo -->

@@ -209,15 +209,15 @@ unset($equipo); // Romper referencia del foreach
                             
                             <div class="data-row">
                                 <span class="text-secondary"><i class="fa-solid fa-temperature-half me-2"></i>Temperatura</span>
-                                <span class="data-value <?php echo $classTemp; ?>"><?php echo $temp !== null ? number_format($temp, 1) . ' °C' : '--'; ?></span>
+                                <span class="data-value val-temp <?php echo $classTemp; ?>"><?php echo $temp !== null ? number_format($temp, 1) . ' °C' : '--'; ?></span>
                             </div>
                             <div class="data-row">
                                 <span class="text-secondary"><i class="fa-solid fa-gauge me-2"></i>Presión</span>
-                                <span class="data-value <?php echo $classPres; ?>"><?php echo isset($eq['datos']['presion']) ? number_format($eq['datos']['presion'], 1) . ' hPa' : '--'; ?></span>
+                                <span class="data-value val-pres <?php echo $classPres; ?>"><?php echo isset($eq['datos']['presion']) ? number_format($eq['datos']['presion'], 1) . ' hPa' : '--'; ?></span>
                             </div>
                             <div class="data-row">
                                 <span class="text-secondary"><i class="fa-solid fa-bolt me-2"></i>Voltaje</span>
-                                <span class="data-value <?php echo $classVolt; ?>"><?php echo isset($eq['datos']['voltaje']) ? number_format($eq['datos']['voltaje'], 2) . ' V' : '--'; ?></span>
+                                <span class="data-value val-volt <?php echo $classVolt; ?>"><?php echo isset($eq['datos']['voltaje']) ? number_format($eq['datos']['voltaje'], 2) . ' V' : '--'; ?></span>
                             </div>
 
                             <div class="last-update">
@@ -350,7 +350,7 @@ unset($equipo); // Romper referencia del foreach
             let algunCritico = false;
 
             for (const card of cards) {
-                const mac = card.dataset.mac;
+                const mac = card.dataset.mac ? card.dataset.mac.trim() : null;
                 if (!mac) continue;
 
                 // Leer umbrales guardados en el HTML
@@ -365,37 +365,45 @@ unset($equipo); // Romper referencia del foreach
 
                 try {
                     const response = await fetch(url);
-                    if (!response.ok) continue;
+                    if (!response.ok) {
+                        console.warn(`[Modo Alerta] No se encontró archivo para el equipo con MAC: ${mac}. Verifique la BD.`);
+                        continue;
+                    }
                     const data = await response.json();
                     
-                    const temp = parseFloat(data.temperatura);
-                    const pres = parseFloat(data.presion);
-                    const volt = parseFloat(data.voltaje);
+                    // CORRECCIÓN: Usar las claves exactas que genera ajax.php (temp, pres, volt)
+                    const temp = parseFloat(data.temp);
+                    const pres = parseFloat(data.pres);
+                    const volt = parseFloat(data.volt);
 
                     if (isNaN(temp)) continue;
 
                     // Actualizar valores en la tarjeta (Buscamos por orden en data-row)
-                    const values = card.querySelectorAll('.data-value');
-                    if(values.length >= 3) {
-                        values[0].textContent = `${temp.toFixed(1)} °C`;
-                        values[1].textContent = `${pres.toFixed(1)} hPa`;
-                        values[2].textContent = `${volt.toFixed(2)} V`;
+                    // MEJORA: Usar selectores específicos por clase para evitar errores de orden
+                    const elTemp = card.querySelector('.val-temp');
+                    const elPres = card.querySelector('.val-pres');
+                    const elVolt = card.querySelector('.val-volt');
+
+                    if(elTemp && elPres && elVolt) {
+                        elTemp.textContent = `${temp.toFixed(1)} °C`;
+                        elPres.textContent = `${pres.toFixed(1)} hPa`;
+                        elVolt.textContent = `${volt.toFixed(2)} V`;
                         
                         // Resetear clases visuales de valores
-                        values.forEach(v => v.className = 'data-value');
+                        [elTemp, elPres, elVolt].forEach(v => v.className = v.className.replace(/\b(text-danger-custom|blink-active|text-warning|fw-bold)\b/g, '').trim());
 
                         let isCritical = false;
                         let isWarning = false;
 
                         // Evaluar Temperatura
-                        if (temp >= critTemp) { isCritical = true; values[0].classList.add('text-danger-custom', 'blink-active'); }
-                        else if (temp >= advTemp) { isWarning = true; values[0].classList.add('text-warning', 'fw-bold'); }
+                        if (temp >= critTemp) { isCritical = true; elTemp.classList.add('text-danger-custom', 'blink-active'); }
+                        else if (temp >= advTemp) { isWarning = true; elTemp.classList.add('text-warning', 'fw-bold'); }
 
                         // Evaluar Presión
-                        if (minPres > 0 && pres < minPres) { isCritical = true; values[1].classList.add('text-danger-custom', 'blink-active'); }
+                        if (minPres > 0 && pres < minPres) { isCritical = true; elPres.classList.add('text-danger-custom', 'blink-active'); }
 
                         // Evaluar Voltaje
-                        if ((maxVolt > 0 && volt > maxVolt) || (minVolt > 0 && volt < minVolt)) { isCritical = true; values[2].classList.add('text-danger-custom', 'blink-active'); }
+                        if ((maxVolt > 0 && volt > maxVolt) || (minVolt > 0 && volt < minVolt)) { isCritical = true; elVolt.classList.add('text-danger-custom', 'blink-active'); }
 
                         // Actualizar estado general de la tarjeta
                         actualizarEstadoTarjeta(card, isCritical, isWarning);
@@ -404,7 +412,8 @@ unset($equipo); // Romper referencia del foreach
                 } catch (e) { console.error("Error leyendo JSON:", e); }
             }
 
-            if (!algunCritico) desactivarModoEmergencia();
+            // Si ya no hay críticos, volvemos al modo normal (BD)
+            if (!algunCritico && isEmergencyMode) desactivarModoEmergencia();
             else verificarAlarmas(); // Para mantener el sonido
         }
 

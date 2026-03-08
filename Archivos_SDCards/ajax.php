@@ -1,6 +1,9 @@
 <?php
 // ajax.php - Puente para recibir datos críticos del ESP32
 
+// Establecer la zona horaria a Venezuela
+date_default_timezone_set('America/Caracas');
+
 // Habilitar CORS para que tu página web pueda leer el archivo generado desde cualquier dominio
 header("Access-Control-Allow-Origin: *");
 
@@ -41,7 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 4. Definir el nombre del archivo puente
     // Ejemplo: MAC=AABBCCDDEEFF_ajax.txt
     // Se guardará en el mismo directorio donde está este script.
-    $filename = "MAC=" . $mac . "_ajax.txt";
+    // Reemplazamos ':' por '-' para asegurar compatibilidad con Windows y consistencia con otros scripts
+    $mac_safe = str_replace(':', '-', $mac);
+    $filename = "MAC=" . $mac_safe . "_ajax.txt";
 
     // 5. Guardar el archivo (Sobrescribe el anterior para tener siempre el último dato)
     if (file_put_contents($filename, $json_content) !== false) {
