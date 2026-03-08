@@ -1,0 +1,112 @@
+[12-02-2026]
+Maxima temperatura alcanzada: 30.75
+Maxima presion alcanzada: 4.96
+Minima presion alcanzada: 4.85
+Maximo voltaje alcanzado: 26.04
+Minimo voltaje alcanzado: 25.52
+----------------------------------------
+[13-02-2026]
+Maxima temperatura alcanzada: 28.44
+Maxima presion alcanzada: 3.49
+Minima presion alcanzada: 0.00
+Maximo voltaje alcanzado: 23.72
+Minimo voltaje alcanzado: 23.72
+----------------------------------------
+[14-02-2026]
+Maxima temperatura alcanzada: 31.94
+Maxima presion alcanzada: 3.56
+Minima presion alcanzada: 3.29
+Maximo voltaje alcanzado: 30.24
+Minimo voltaje alcanzado: 26.04
+----------------------------------------
+[15-02-2026]
+Maxima temperatura alcanzada: 89.56
+Maxima presion alcanzada: 3.55
+Minima presion alcanzada: 3.28
+Maximo voltaje alcanzado: 31.55
+Minimo voltaje alcanzado: 24.07
+----------------------------------------
+[17-02-2026]
+Maxima temperatura alcanzada: 31.69
+Maxima presion alcanzada: 3.62
+Minima presion alcanzada: 3.53
+Maximo voltaje alcanzado: 31.55
+Minimo voltaje alcanzado: 30.55
+----------------------------------------
+[18-02-2026]
+Maxima temperatura alcanzada: 117.94
+Maxima presion alcanzada: 3.54
+Minima presion alcanzada: 2.82
+Maximo voltaje alcanzado: 31.21
+Minimo voltaje alcanzado: 27.58
+----------------------------------------
+[19-02-2026]
+Maxima temperatura alcanzada: 85.69
+Maxima presion alcanzada: 3.51
+Minima presion alcanzada: 3.34
+Maximo voltaje alcanzado: 29.68
+Minimo voltaje alcanzado: 28.30
+----------------------------------------
+[27-02-2026]
+Maxima temperatura alcanzada: 31.94
+Maxima presion alcanzada: 7.48
+Minima presion alcanzada: 6.99
+Maximo voltaje alcanzado: 28.10
+Minimo voltaje alcanzado: 26.20
+----------------------------------------
+[28-02-2026]
+Maxima temperatura alcanzada: 93.31
+Maxima presion alcanzada: 7.57
+Minima presion alcanzada: 7.34
+Maximo voltaje alcanzado: 28.45
+Minimo voltaje alcanzado: 25.76
+----------------------------------------
+[01-03-2026]
+Maxima temperatura alcanzada: 31.94
+Maxima presion alcanzada: 7.56
+Minima presion alcanzada: 7.35
+Maximo voltaje alcanzado: 26.86
+Minimo voltaje alcanzado: 25.16
+----------------------------------------
+[02-03-2026]
+Maxima temperatura alcanzada: 42.19
+Maxima presion alcanzada: 7.54
+Minima presion alcanzada: 7.37
+Maximo voltaje alcanzado: 29.88
+Minimo voltaje alcanzado: 26.88
+----------------------------------------
+[03-03-2026]
+Maxima temperatura alcanzada: 26.88
+Maxima presion alcanzada: 7.38
+Minima presion alcanzada: 0.00
+Maximo voltaje alcanzado: 26.64
+Minimo voltaje alcanzado: 26.64
+----------------------------------------
+[04-03-2026]
+Maxima temperatura alcanzada: 31.88
+Maxima presion alcanzada: 7.58
+Minima presion alcanzada: 7.38
+Maximo voltaje alcanzado: 26.61
+Minimo voltaje alcanzado: 25.06
+----------------------------------------
+[05-03-2026]
+Maxima temperatura alcanzada: 93.31
+Maxima presion alcanzada: 7.58
+Minima presion alcanzada: 7.29
+Maximo voltaje alcanzado: 27.75
+Minimo voltaje alcanzado: 24.79
+----------------------------------------
+[06-03-2026]
+Maxima temperatura alcanzada: 28.25
+Maxima presion alcanzada: 7.43
+Minima presion alcanzada: 0.00
+Maximo voltaje alcanzado: 25.43
+Minimo voltaje alcanzado: 25.43
+----------------------------------------
+[07-03-2026]
+Maxima temperatura alcanzada: 30.19
+Maxima presion alcanzada: 7.38
+Minima presion alcanzada: 0.00
+Maximo voltaje alcanzado: 25.52
+Minimo voltaje alcanzado: 25.52
+----------------------------------------

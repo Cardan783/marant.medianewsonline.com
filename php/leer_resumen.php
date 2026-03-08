@@ -1,5 +1,9 @@
 <?php
 session_start(); // 1. Iniciar sesión
+// Cabeceras anti-caché
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 header('Content-Type: application/json');
 
 // Obtener la MAC enviada por parámetro
@@ -11,27 +15,23 @@ if (empty($mac)) {
     exit;
 }
 
-// 2. SEGURIDAD: Verificar que el usuario esté logueado
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(["error" => "Acceso no autorizado. Inicie sesión."]);
-    exit;
-}
-
-// 3. SEGURIDAD: Verificar que la MAC pertenezca al usuario logueado
-require_once 'conexion.php'; // Asegúrate de tener este archivo accesible
-$stmt_check = $conn->prepare("SELECT id FROM equipos WHERE mac_address = ? AND usuario_id = ?");
-$stmt_check->execute([$mac, $_SESSION['user_id']]);
-
-if ($stmt_check->rowCount() === 0) {
-    echo json_encode(["error" => "Acceso denegado. Este equipo no le pertenece."]);
-    exit;
-}
+$debug = [];
+$debug['mac_recibida'] = $mac;
 
 // Directorio donde están los archivos (Mismo que en listar_archivos)
 $dir = __DIR__ . '/../Archivos_SDCards/uploads';
 
+if (!is_dir($dir)) {
+    $dir = __DIR__ . '/../ArchivosSDCards/uploads';
+}
+
+if (!is_dir($dir)) {
+    echo json_encode(["error" => "No se encuentra la carpeta de archivos: " . basename($dir), "debug" => $debug]);
+    exit;
+}
+
 // Adaptar formato MAC para el nombre del archivo (Reemplazar ':' por '-')
-$mac_archivo = str_replace(':', '-', $mac);
+$mac_archivo = strtoupper(str_replace(':', '-', $mac)); // Forzar mayúsculas para coincidir con el archivo
 $prefix = "MAC=" . $mac_archivo;
 $suffix = "_Registro_normal_de_operacion.txt";
 
@@ -43,7 +43,7 @@ if (is_dir($dir)) {
     foreach ($files as $file) {
         // Buscamos un archivo que empiece con la MAC y contenga el nombre específico
         // Esto maneja casos como MAC=XX-XX..._Registro_normal_de_operacion.txt
-        if (strpos($file, $prefix) === 0 && strpos($file, $suffix) !== false) {
+        if (stripos($file, $prefix) === 0 && stripos($file, $suffix) !== false) {
             $archivo_encontrado = $dir . '/' . $file;
             break;
         }
@@ -51,12 +51,18 @@ if (is_dir($dir)) {
 }
 
 if (!$archivo_encontrado || !file_exists($archivo_encontrado)) {
-    echo json_encode(["error" => "No se encontró el archivo _Registro_normal_de_operacion.txt para esta MAC"]);
+    echo json_encode(["error" => "No se encontró el archivo para esta MAC", "debug" => $debug]);
     exit;
 }
 
 // Leer contenido
 $contenido = file_get_contents($archivo_encontrado);
+// Convertir a UTF-8 si el archivo viene en formato Windows/ANSI (común en logs de SD)
+// Usamos function_exists para evitar errores si la extensión mbstring no está instalada
+if (function_exists('mb_check_encoding') && !mb_check_encoding($contenido, 'UTF-8')) {
+    // Intentamos convertir, silenciando errores por si acaso
+    $contenido = @mb_convert_encoding($contenido, 'UTF-8', 'ISO-8859-1');
+}
 
 // Separar por bloques de guiones
 $bloques = explode('----------------------------------------', $contenido);
@@ -79,7 +85,7 @@ foreach ($bloques as $bloque) {
     $item = [];
 
     // Extraer Fecha [DD-MM-YYYY]
-    if (preg_match('/\[(\d{2}-\d{2}-\d{4})\]/', $bloque, $matches)) {
+    if (preg_match('/\[\s*(\d{2}-\d{2}-\d{4})\s*\]/', $bloque, $matches)) {
         $fecha_str = $matches[1];
         $fecha_dt = DateTime::createFromFormat('d-m-Y', $fecha_str);
         
@@ -93,7 +99,7 @@ foreach ($bloques as $bloque) {
             $fin_rango = (clone $hoy)->modify('last day of this month')->setTime(23,59,59);
 
             if ($fecha_dt < $inicio_rango || $fecha_dt > $fin_rango) {
-                continue;
+                continue; 
             }
         } else {
             // Filtrar: Solo mes actual
@@ -193,5 +199,5 @@ if (empty($recomendaciones) && count($datos) > 0) {
     $recomendaciones[] = ["tipo" => "info", "icono" => "fa-info-circle", "titulo" => "Sin Datos", "mensaje" => "No se encontraron registros para el periodo seleccionado."];
 }
 
-echo json_encode(['datos' => $datos, 'recomendaciones' => $recomendaciones]);
+echo json_encode(['datos' => $datos, 'recomendaciones' => $recomendaciones, 'debug' => $debug]);
 ?>

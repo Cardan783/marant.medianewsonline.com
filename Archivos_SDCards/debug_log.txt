@@ -174,3 +174,9 @@
 [2026-03-05 04:00:45] Exito: Miercoles_4_de_Marzo_2026.txt guardado (60564 bytes).
 [2026-03-06 04:00:34] Iniciando carga: Jueves_5_de_Marzo_2026.txt
 [2026-03-06 04:00:34] Exito: Jueves_5_de_Marzo_2026.txt guardado (51152 bytes).
+[2026-03-07 15:50:29] Iniciando carga: MAC=9C-9C-1F-C6-30-66_Viernes_6_de_Marzo_2026.txt
+[2026-03-07 15:50:29] Exito: MAC=9C-9C-1F-C6-30-66_Viernes_6_de_Marzo_2026.txt guardado (51136 bytes).
+[2026-03-07 16:02:19] Iniciando carga: MAC=9C-9C-1F-C6-30-66_Registro_normal_de_operacion.txt
+[2026-03-07 16:02:19] Exito: MAC=9C-9C-1F-C6-30-66_Registro_normal_de_operacion.txt guardado (3457 bytes).
+[2026-03-08 04:00:38] Iniciando carga: MAC=9C-9C-1F-C6-30-66_Sabado_7_de_Marzo_2026.txt
+[2026-03-08 04:00:38] Exito: MAC=9C-9C-1F-C6-30-66_Sabado_7_de_Marzo_2026.txt guardado (2300 bytes).

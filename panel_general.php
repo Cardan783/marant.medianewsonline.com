@@ -189,9 +189,17 @@ unset($equipo); // Romper referencia del foreach
                         $icon = 'bi-question-circle-fill';
                         $estadoTexto = 'Sin Conexión';
                     }
+
+                    // PREPARAR ATRIBUTOS DE DATOS PARA JS (MODO EMERGENCIA)
+                    $dataAttrs = "data-mac='" . htmlspecialchars($eq['mac_address']) . "' " .
+                                 "data-crit-temp='" . $crit . "' " .
+                                 "data-adv-temp='" . $adv . "' " .
+                                 "data-min-pres='" . $min_pres . "' " .
+                                 "data-max-volt='" . $max_volt . "' " .
+                                 "data-min-volt='" . $min_volt . "'";
                 ?>
                 <div class="col">
-                    <div class="card equipment-card h-100 shadow-sm <?php echo $statusClass; ?>">
+                    <div class="card equipment-card h-100 shadow-sm <?php echo $statusClass; ?>" <?php echo $dataAttrs; ?>>
                         <div class="card-header <?php echo $headerClass; ?>">
                             <span><?php echo htmlspecialchars($eq['nombre_equipo']); ?></span>
                             <i class="bi <?php echo $icon; ?>"></i>
@@ -238,6 +246,11 @@ unset($equipo); // Romper referencia del foreach
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        console.log(">>> Panel General JS cargado");
+        let intervaloPanel = null;
+        let isEmergencyMode = false;
+        let emergencyInterval = null;
+
         // --- Lógica de Audio ---
         const audioCritico = new Audio('http://marant.medianewsonline.com/Sonidos/bip-temp-critica.wav');
         const audioAdvertencia = new Audio('http://marant.medianewsonline.com/Sonidos/alarm-door-chime.wav');
@@ -270,6 +283,7 @@ unset($equipo); // Romper referencia del foreach
         updateMuteUI();
 
         function verificarAlarmas() {
+            console.log(">>> Verificando alarmas...");
             const hayPeligro = document.querySelector('.status-danger');
             const hayAdvertencia = document.querySelector('.status-warning');
             const btn = document.getElementById('btnMute');
@@ -284,6 +298,11 @@ unset($equipo); // Romper referencia del foreach
                 return;
             }
             
+            // Si hay peligro y NO estamos en modo emergencia, activarlo
+            if ((hayPeligro || hayAdvertencia) && !isEmergencyMode) {
+                activarModoEmergencia();
+            }
+            
             if (hayPeligro) {
                 audioCritico.play().catch(e => console.log("Audio play blocked", e));
             } else if (hayAdvertencia) {
@@ -291,9 +310,132 @@ unset($equipo); // Romper referencia del foreach
             }
         }
 
+        // --- FUNCIONES MODO EMERGENCIA (Lectura JSON) ---
+        function activarModoEmergencia() {
+            if (isEmergencyMode) return;
+            isEmergencyMode = true;
+            console.warn("⚠️ ALERTA DETECTADA: Cambiando a lectura desde archivos JSON (4s)");
+            
+            // Detener actualización normal (BD)
+            if (intervaloPanel) clearInterval(intervaloPanel);
+            
+            // Indicador visual en título
+            const title = document.querySelector('h2');
+            if(title && !document.getElementById('badge-emergencia')) {
+                title.innerHTML += ' <span id="badge-emergencia" class="badge bg-danger blink-active fs-6 align-middle">MODO ALERTA (JSON)</span>';
+            }
+
+            // Iniciar lectura de archivos cada 4 segundos
+            emergencyInterval = setInterval(leerArchivosEmergencia, 4000);
+            leerArchivosEmergencia(); // Ejecutar inmediatamente
+        }
+
+        function desactivarModoEmergencia() {
+            if (!isEmergencyMode) return;
+            isEmergencyMode = false;
+            console.log("✅ VALORES ESTABLES: Retornando a modo normal (BD)");
+            
+            if (emergencyInterval) clearInterval(emergencyInterval);
+            
+            const badge = document.getElementById('badge-emergencia');
+            if(badge) badge.remove();
+
+            // Reiniciar ciclo normal de BD
+            intervaloPanel = setInterval(actualizarPanel, 5000);
+            actualizarPanel();
+        }
+
+        async function leerArchivosEmergencia() {
+            const cards = document.querySelectorAll('.equipment-card');
+            let algunCritico = false;
+
+            for (const card of cards) {
+                const mac = card.dataset.mac;
+                if (!mac) continue;
+
+                // Leer umbrales guardados en el HTML
+                const critTemp = parseFloat(card.dataset.critTemp);
+                const advTemp = parseFloat(card.dataset.advTemp);
+                const minPres = parseFloat(card.dataset.minPres);
+                const maxVolt = parseFloat(card.dataset.maxVolt);
+                const minVolt = parseFloat(card.dataset.minVolt);
+
+                const macFormatted = mac.replace(/:/g, '-');
+                const url = `Archivos_SDCards/MAC=${macFormatted}_ajax.txt?_=${Date.now()}`;
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) continue;
+                    const data = await response.json();
+                    
+                    const temp = parseFloat(data.temperatura);
+                    const pres = parseFloat(data.presion);
+                    const volt = parseFloat(data.voltaje);
+
+                    if (isNaN(temp)) continue;
+
+                    // Actualizar valores en la tarjeta (Buscamos por orden en data-row)
+                    const values = card.querySelectorAll('.data-value');
+                    if(values.length >= 3) {
+                        values[0].textContent = `${temp.toFixed(1)} °C`;
+                        values[1].textContent = `${pres.toFixed(1)} hPa`;
+                        values[2].textContent = `${volt.toFixed(2)} V`;
+                        
+                        // Resetear clases visuales de valores
+                        values.forEach(v => v.className = 'data-value');
+
+                        let isCritical = false;
+                        let isWarning = false;
+
+                        // Evaluar Temperatura
+                        if (temp >= critTemp) { isCritical = true; values[0].classList.add('text-danger-custom', 'blink-active'); }
+                        else if (temp >= advTemp) { isWarning = true; values[0].classList.add('text-warning', 'fw-bold'); }
+
+                        // Evaluar Presión
+                        if (minPres > 0 && pres < minPres) { isCritical = true; values[1].classList.add('text-danger-custom', 'blink-active'); }
+
+                        // Evaluar Voltaje
+                        if ((maxVolt > 0 && volt > maxVolt) || (minVolt > 0 && volt < minVolt)) { isCritical = true; values[2].classList.add('text-danger-custom', 'blink-active'); }
+
+                        // Actualizar estado general de la tarjeta
+                        actualizarEstadoTarjeta(card, isCritical, isWarning);
+                        if (isCritical || isWarning) algunCritico = true;
+                    }
+                } catch (e) { console.error("Error leyendo JSON:", e); }
+            }
+
+            if (!algunCritico) desactivarModoEmergencia();
+            else verificarAlarmas(); // Para mantener el sonido
+        }
+
+        function actualizarEstadoTarjeta(card, isCritical, isWarning) {
+            const header = card.querySelector('.card-header');
+            const icon = header.querySelector('i');
+            
+            card.className = 'card equipment-card h-100 shadow-sm'; // Reset base
+            header.className = 'card-header';
+            icon.className = 'bi';
+
+            if (isCritical) {
+                card.classList.add('status-danger', 'card-danger-glow');
+                header.classList.add('bg-status-danger');
+                icon.classList.add('bi-exclamation-octagon-fill');
+            } else if (isWarning) {
+                card.classList.add('status-warning');
+                header.classList.add('bg-status-warning');
+                icon.classList.add('bi-exclamation-triangle-fill');
+            } else {
+                card.classList.add('status-normal');
+                header.classList.add('bg-status-normal');
+                icon.classList.add('bi-check-circle-fill');
+            }
+        }
+
         // Función para actualizar el contenido sin recargar la página (evita flash)
         function actualizarPanel() {
-            fetch(window.location.href)
+            // Añadir timestamp para evitar caché del navegador
+            const url = window.location.href.split('#')[0] + (window.location.href.includes('?') ? '&' : '?') + '_=' + new Date().getTime();
+            fetch(url)
                 .then(response => response.text())
                 .then(html => {
                     const parser = new DOMParser();
@@ -307,8 +449,8 @@ unset($equipo); // Romper referencia del foreach
                 .catch(err => console.error('Error al actualizar panel:', err));
         }
 
-        // Ejecutar cada 60 segundos
-        setInterval(actualizarPanel, 60000);
+        // Ejecutar cada 5 segundos para mantener los datos frescos
+        intervaloPanel = setInterval(actualizarPanel, 5000);
         // Verificar al cargar
         setTimeout(verificarAlarmas, 1000);
     </script>

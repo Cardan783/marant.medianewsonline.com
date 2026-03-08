@@ -1529,7 +1529,10 @@ function cargarArchivosHistoricos(macAddress) {
 
   fetch(`php/listar_archivos_por_mac.php?mac=${encodeURIComponent(macAddress)}`)
     .then(response => response.json())
-    .then(files => {
+    .then(data => {
+      console.log("🔍 DEBUG LISTAR ARCHIVOS:", data.debug); // <--- AHORA SÍ APARECERÁ ESTO
+      const files = data.files || []; // Extraer la lista de archivos del objeto
+
       if (files.length > 0) {
           files.forEach(file => {
             const option = document.createElement('option');

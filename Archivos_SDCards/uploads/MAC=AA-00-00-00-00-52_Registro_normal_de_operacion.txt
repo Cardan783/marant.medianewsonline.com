@@ -1,0 +1,720 @@
+[08-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 98.03
+Presión Mínima = 1.92
+Voltaje Máximo = 30.35
+Voltaje Mínimo = 20.25
+Máxima temperatura alcanzada: 99.09
+Máxima presión alcanzada: 5.44
+Mínima presión alcanzada: 1.58
+Máximo voltaje alcanzado: 26.49
+Mínimo voltaje alcanzado: 23.88
+----------------------------------------
+[09-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 87.33
+Presión Mínima = 1.92
+Voltaje Máximo = 25.36
+Voltaje Mínimo = 22.8
+Máxima temperatura alcanzada: 97.51
+Máxima presión alcanzada: 4.81
+Mínima presión alcanzada: 1.77
+Máximo voltaje alcanzado: 25.05
+Mínimo voltaje alcanzado: 21.79
+----------------------------------------
+[10-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 95.66
+Presión Mínima = 1.88
+Voltaje Máximo = 29.35
+Voltaje Mínimo = 22.39
+Máxima temperatura alcanzada: 90.63
+Máxima presión alcanzada: 4.67
+Mínima presión alcanzada: 2.0
+Máximo voltaje alcanzado: 26.7
+Mínimo voltaje alcanzado: 23.97
+----------------------------------------
+[11-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 86.33
+Presión Mínima = 1.79
+Voltaje Máximo = 25.18
+Voltaje Mínimo = 21.65
+Máxima temperatura alcanzada: 94.58
+Máxima presión alcanzada: 4.19
+Mínima presión alcanzada: 1.45
+Máximo voltaje alcanzado: 24.75
+Mínimo voltaje alcanzado: 22.43
+----------------------------------------
+[12-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 103.13
+Presión Mínima = 1.72
+Voltaje Máximo = 26.17
+Voltaje Mínimo = 20.44
+Máxima temperatura alcanzada: 86.19
+Máxima presión alcanzada: 5.98
+Mínima presión alcanzada: 2.46
+Máximo voltaje alcanzado: 27.66
+Mínimo voltaje alcanzado: 21.44
+----------------------------------------
+[13-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 87.79
+Presión Mínima = 2.09
+Voltaje Máximo = 24.7
+Voltaje Mínimo = 20.47
+Máxima temperatura alcanzada: 93.99
+Máxima presión alcanzada: 5.64
+Mínima presión alcanzada: 0.93
+Máximo voltaje alcanzado: 26.94
+Mínimo voltaje alcanzado: 23.84
+----------------------------------------
+[14-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 90.2
+Presión Mínima = 1.73
+Voltaje Máximo = 29.37
+Voltaje Mínimo = 20.48
+Máxima temperatura alcanzada: 103.4
+Máxima presión alcanzada: 3.82
+Mínima presión alcanzada: 1.19
+Máximo voltaje alcanzado: 25.74
+Mínimo voltaje alcanzado: 21.82
+----------------------------------------
+[15-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 102.92
+Presión Mínima = 1.89
+Voltaje Máximo = 29.38
+Voltaje Mínimo = 20.95
+Máxima temperatura alcanzada: 89.35
+Máxima presión alcanzada: 4.16
+Mínima presión alcanzada: 1.73
+Máximo voltaje alcanzado: 26.79
+Mínimo voltaje alcanzado: 21.33
+----------------------------------------
+[16-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 95.29
+Presión Mínima = 1.83
+Voltaje Máximo = 30.23
+Voltaje Mínimo = 21.29
+Máxima temperatura alcanzada: 82.61
+Máxima presión alcanzada: 4.27
+Mínima presión alcanzada: 1.16
+Máximo voltaje alcanzado: 28.18
+Mínimo voltaje alcanzado: 23.49
+----------------------------------------
+[17-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 103.58
+Presión Mínima = 1.72
+Voltaje Máximo = 30.18
+Voltaje Mínimo = 21.82
+Máxima temperatura alcanzada: 85.95
+Máxima presión alcanzada: 7.03
+Mínima presión alcanzada: 1.25
+Máximo voltaje alcanzado: 26.11
+Mínimo voltaje alcanzado: 23.16
+----------------------------------------
+[18-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 98.31
+Presión Mínima = 2.02
+Voltaje Máximo = 28.02
+Voltaje Mínimo = 20.77
+Máxima temperatura alcanzada: 96.13
+Máxima presión alcanzada: 6.4
+Mínima presión alcanzada: 0.84
+Máximo voltaje alcanzado: 27.16
+Mínimo voltaje alcanzado: 23.15
+----------------------------------------
+[19-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 98.77
+Presión Mínima = 2.04
+Voltaje Máximo = 26.07
+Voltaje Mínimo = 23.29
+Máxima temperatura alcanzada: 87.05
+Máxima presión alcanzada: 4.74
+Mínima presión alcanzada: 1.85
+Máximo voltaje alcanzado: 24.97
+Mínimo voltaje alcanzado: 23.17
+----------------------------------------
+[20-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 95.12
+Presión Mínima = 1.81
+Voltaje Máximo = 26.21
+Voltaje Mínimo = 22.67
+Máxima temperatura alcanzada: 91.28
+Máxima presión alcanzada: 3.6
+Mínima presión alcanzada: 1.64
+Máximo voltaje alcanzado: 24.83
+Mínimo voltaje alcanzado: 23.3
+----------------------------------------
+[21-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 95.02
+Presión Mínima = 1.76
+Voltaje Máximo = 27.08
+Voltaje Mínimo = 20.89
+Máxima temperatura alcanzada: 83.2
+Máxima presión alcanzada: 6.44
+Mínima presión alcanzada: 1.84
+Máximo voltaje alcanzado: 29.58
+Mínimo voltaje alcanzado: 21.58
+----------------------------------------
+[22-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 95.98
+Presión Mínima = 1.99
+Voltaje Máximo = 26.24
+Voltaje Mínimo = 21.6
+Máxima temperatura alcanzada: 83.22
+Máxima presión alcanzada: 5.63
+Mínima presión alcanzada: 2.49
+Máximo voltaje alcanzado: 25.5
+Mínimo voltaje alcanzado: 21.85
+----------------------------------------
+[23-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 89.26
+Presión Mínima = 2.06
+Voltaje Máximo = 24.54
+Voltaje Mínimo = 20.1
+Máxima temperatura alcanzada: 81.49
+Máxima presión alcanzada: 3.82
+Mínima presión alcanzada: 1.93
+Máximo voltaje alcanzado: 28.61
+Mínimo voltaje alcanzado: 23.23
+----------------------------------------
+[24-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 91.42
+Presión Mínima = 1.9
+Voltaje Máximo = 26.4
+Voltaje Mínimo = 22.3
+Máxima temperatura alcanzada: 93.74
+Máxima presión alcanzada: 7.03
+Mínima presión alcanzada: 1.62
+Máximo voltaje alcanzado: 24.86
+Mínimo voltaje alcanzado: 22.55
+----------------------------------------
+[25-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 100.75
+Presión Mínima = 1.67
+Voltaje Máximo = 28.31
+Voltaje Mínimo = 21.49
+Máxima temperatura alcanzada: 87.5
+Máxima presión alcanzada: 4.35
+Mínima presión alcanzada: 2.28
+Máximo voltaje alcanzado: 26.19
+Mínimo voltaje alcanzado: 23.09
+----------------------------------------
+[26-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 90.57
+Presión Mínima = 1.86
+Voltaje Máximo = 27.31
+Voltaje Mínimo = 20.41
+Máxima temperatura alcanzada: 81.2
+Máxima presión alcanzada: 6.34
+Mínima presión alcanzada: 2.37
+Máximo voltaje alcanzado: 26.58
+Mínimo voltaje alcanzado: 22.77
+----------------------------------------
+[27-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 100.08
+Presión Mínima = 1.98
+Voltaje Máximo = 25.08
+Voltaje Mínimo = 21.01
+Máxima temperatura alcanzada: 86.29
+Máxima presión alcanzada: 7.07
+Mínima presión alcanzada: 1.33
+Máximo voltaje alcanzado: 26.9
+Mínimo voltaje alcanzado: 22.23
+----------------------------------------
+[28-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 103.88
+Presión Mínima = 1.56
+Voltaje Máximo = 25.06
+Voltaje Mínimo = 22.92
+Máxima temperatura alcanzada: 85.49
+Máxima presión alcanzada: 7.48
+Mínima presión alcanzada: 1.83
+Máximo voltaje alcanzado: 29.64
+Mínimo voltaje alcanzado: 23.26
+----------------------------------------
+[29-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 88.35
+Presión Mínima = 1.83
+Voltaje Máximo = 27.38
+Voltaje Mínimo = 21.41
+Máxima temperatura alcanzada: 86.87
+Máxima presión alcanzada: 4.49
+Mínima presión alcanzada: 1.65
+Máximo voltaje alcanzado: 28.6
+Mínimo voltaje alcanzado: 22.12
+----------------------------------------
+[30-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 103.89
+Presión Mínima = 1.59
+Voltaje Máximo = 27.33
+Voltaje Mínimo = 21.35
+Máxima temperatura alcanzada: 80.11
+Máxima presión alcanzada: 5.68
+Mínima presión alcanzada: 1.97
+Máximo voltaje alcanzado: 29.53
+Mínimo voltaje alcanzado: 21.25
+----------------------------------------
+[31-01-2026]
+Alarmas establecidas:
+Temperatura Crítica = 93.12
+Presión Mínima = 1.78
+Voltaje Máximo = 27.78
+Voltaje Mínimo = 22.88
+Máxima temperatura alcanzada: 80.79
+Máxima presión alcanzada: 6.59
+Mínima presión alcanzada: 1.13
+Máximo voltaje alcanzado: 26.77
+Mínimo voltaje alcanzado: 22.86
+----------------------------------------
+[01-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 86.06
+Presión Mínima = 2.05
+Voltaje Máximo = 27.32
+Voltaje Mínimo = 20.8
+Máxima temperatura alcanzada: 85.01
+Máxima presión alcanzada: 5.06
+Mínima presión alcanzada: 0.99
+Máximo voltaje alcanzado: 29.15
+Mínimo voltaje alcanzado: 21.0
+----------------------------------------
+[02-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 91.86
+Presión Mínima = 1.51
+Voltaje Máximo = 26.05
+Voltaje Mínimo = 21.45
+Máxima temperatura alcanzada: 98.02
+Máxima presión alcanzada: 5.91
+Mínima presión alcanzada: 1.86
+Máximo voltaje alcanzado: 27.87
+Mínimo voltaje alcanzado: 22.76
+----------------------------------------
+[03-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 95.33
+Presión Mínima = 1.85
+Voltaje Máximo = 24.84
+Voltaje Mínimo = 21.66
+Máxima temperatura alcanzada: 89.28
+Máxima presión alcanzada: 7.09
+Mínima presión alcanzada: 2.09
+Máximo voltaje alcanzado: 27.82
+Mínimo voltaje alcanzado: 22.59
+----------------------------------------
+[04-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 93.68
+Presión Mínima = 1.66
+Voltaje Máximo = 28.32
+Voltaje Mínimo = 21.09
+Máxima temperatura alcanzada: 93.95
+Máxima presión alcanzada: 4.01
+Mínima presión alcanzada: 1.12
+Máximo voltaje alcanzado: 27.48
+Mínimo voltaje alcanzado: 21.56
+----------------------------------------
+[05-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 90.22
+Presión Mínima = 2.1
+Voltaje Máximo = 29.42
+Voltaje Mínimo = 22.43
+Máxima temperatura alcanzada: 95.49
+Máxima presión alcanzada: 7.23
+Mínima presión alcanzada: 1.9
+Máximo voltaje alcanzado: 25.54
+Mínimo voltaje alcanzado: 21.38
+----------------------------------------
+[06-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 86.01
+Presión Mínima = 1.74
+Voltaje Máximo = 29.29
+Voltaje Mínimo = 22.77
+Máxima temperatura alcanzada: 82.13
+Máxima presión alcanzada: 6.46
+Mínima presión alcanzada: 2.03
+Máximo voltaje alcanzado: 25.89
+Mínimo voltaje alcanzado: 23.16
+----------------------------------------
+[07-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 86.5
+Presión Mínima = 2.05
+Voltaje Máximo = 26.44
+Voltaje Mínimo = 23.11
+Máxima temperatura alcanzada: 83.48
+Máxima presión alcanzada: 6.53
+Mínima presión alcanzada: 1.76
+Máximo voltaje alcanzado: 25.63
+Mínimo voltaje alcanzado: 21.05
+----------------------------------------
+[08-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 94.99
+Presión Mínima = 1.77
+Voltaje Máximo = 26.6
+Voltaje Mínimo = 21.95
+Máxima temperatura alcanzada: 88.43
+Máxima presión alcanzada: 5.66
+Mínima presión alcanzada: 1.16
+Máximo voltaje alcanzado: 24.69
+Mínimo voltaje alcanzado: 22.73
+----------------------------------------
+[09-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 85.82
+Presión Mínima = 1.74
+Voltaje Máximo = 25.04
+Voltaje Mínimo = 21.39
+Máxima temperatura alcanzada: 90.72
+Máxima presión alcanzada: 5.08
+Mínima presión alcanzada: 2.1
+Máximo voltaje alcanzado: 24.74
+Mínimo voltaje alcanzado: 21.14
+----------------------------------------
+[10-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 98.71
+Presión Mínima = 2.01
+Voltaje Máximo = 29.19
+Voltaje Mínimo = 20.85
+Máxima temperatura alcanzada: 92.61
+Máxima presión alcanzada: 5.24
+Mínima presión alcanzada: 1.53
+Máximo voltaje alcanzado: 25.87
+Mínimo voltaje alcanzado: 23.17
+----------------------------------------
+[11-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 85.95
+Presión Mínima = 2.01
+Voltaje Máximo = 29.16
+Voltaje Mínimo = 20.3
+Máxima temperatura alcanzada: 86.14
+Máxima presión alcanzada: 3.81
+Mínima presión alcanzada: 2.33
+Máximo voltaje alcanzado: 28.42
+Mínimo voltaje alcanzado: 22.42
+----------------------------------------
+[12-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 103.31
+Presión Mínima = 1.96
+Voltaje Máximo = 26.87
+Voltaje Mínimo = 21.84
+Máxima temperatura alcanzada: 93.02
+Máxima presión alcanzada: 7.27
+Mínima presión alcanzada: 2.16
+Máximo voltaje alcanzado: 26.1
+Mínimo voltaje alcanzado: 23.65
+----------------------------------------
+[13-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 88.63
+Presión Mínima = 1.66
+Voltaje Máximo = 25.77
+Voltaje Mínimo = 20.34
+Máxima temperatura alcanzada: 97.43
+Máxima presión alcanzada: 4.25
+Mínima presión alcanzada: 1.38
+Máximo voltaje alcanzado: 27.93
+Mínimo voltaje alcanzado: 22.3
+----------------------------------------
+[14-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 94.07
+Presión Mínima = 1.8
+Voltaje Máximo = 26.19
+Voltaje Mínimo = 21.34
+Máxima temperatura alcanzada: 93.3
+Máxima presión alcanzada: 6.36
+Mínima presión alcanzada: 1.68
+Máximo voltaje alcanzado: 25.49
+Mínimo voltaje alcanzado: 21.79
+----------------------------------------
+[15-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 91.27
+Presión Mínima = 2.0
+Voltaje Máximo = 26.63
+Voltaje Mínimo = 21.65
+Máxima temperatura alcanzada: 86.48
+Máxima presión alcanzada: 3.92
+Mínima presión alcanzada: 1.52
+Máximo voltaje alcanzado: 27.58
+Mínimo voltaje alcanzado: 23.4
+----------------------------------------
+[16-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 93.4
+Presión Mínima = 1.61
+Voltaje Máximo = 30.4
+Voltaje Mínimo = 20.34
+Máxima temperatura alcanzada: 87.7
+Máxima presión alcanzada: 7.46
+Mínima presión alcanzada: 1.15
+Máximo voltaje alcanzado: 26.31
+Mínimo voltaje alcanzado: 23.11
+----------------------------------------
+[17-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 98.06
+Presión Mínima = 1.59
+Voltaje Máximo = 27.47
+Voltaje Mínimo = 21.77
+Máxima temperatura alcanzada: 101.19
+Máxima presión alcanzada: 4.57
+Mínima presión alcanzada: 2.0
+Máximo voltaje alcanzado: 25.59
+Mínimo voltaje alcanzado: 23.94
+----------------------------------------
+[18-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 88.58
+Presión Mínima = 1.76
+Voltaje Máximo = 27.35
+Voltaje Mínimo = 22.28
+Máxima temperatura alcanzada: 93.06
+Máxima presión alcanzada: 5.7
+Mínima presión alcanzada: 1.72
+Máximo voltaje alcanzado: 26.35
+Mínimo voltaje alcanzado: 21.01
+----------------------------------------
+[19-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 88.97
+Presión Mínima = 2.07
+Voltaje Máximo = 29.02
+Voltaje Mínimo = 22.55
+Máxima temperatura alcanzada: 94.52
+Máxima presión alcanzada: 7.33
+Mínima presión alcanzada: 2.09
+Máximo voltaje alcanzado: 25.09
+Mínimo voltaje alcanzado: 22.2
+----------------------------------------
+[20-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 90.25
+Presión Mínima = 1.53
+Voltaje Máximo = 29.55
+Voltaje Mínimo = 22.61
+Máxima temperatura alcanzada: 87.34
+Máxima presión alcanzada: 6.67
+Mínima presión alcanzada: 1.57
+Máximo voltaje alcanzado: 24.86
+Mínimo voltaje alcanzado: 21.85
+----------------------------------------
+[21-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 95.33
+Presión Mínima = 1.93
+Voltaje Máximo = 29.03
+Voltaje Mínimo = 20.61
+Máxima temperatura alcanzada: 87.69
+Máxima presión alcanzada: 3.76
+Mínima presión alcanzada: 1.2
+Máximo voltaje alcanzado: 29.26
+Mínimo voltaje alcanzado: 23.79
+----------------------------------------
+[22-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 88.94
+Presión Mínima = 1.89
+Voltaje Máximo = 28.7
+Voltaje Mínimo = 21.14
+Máxima temperatura alcanzada: 83.97
+Máxima presión alcanzada: 4.95
+Mínima presión alcanzada: 0.89
+Máximo voltaje alcanzado: 28.3
+Mínimo voltaje alcanzado: 21.51
+----------------------------------------
+[23-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 89.65
+Presión Mínima = 1.64
+Voltaje Máximo = 26.63
+Voltaje Mínimo = 22.4
+Máxima temperatura alcanzada: 86.07
+Máxima presión alcanzada: 7.41
+Mínima presión alcanzada: 1.25
+Máximo voltaje alcanzado: 27.0
+Mínimo voltaje alcanzado: 22.44
+----------------------------------------
+[24-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 93.37
+Presión Mínima = 1.56
+Voltaje Máximo = 25.92
+Voltaje Mínimo = 20.58
+Máxima temperatura alcanzada: 87.76
+Máxima presión alcanzada: 5.89
+Mínima presión alcanzada: 1.89
+Máximo voltaje alcanzado: 27.45
+Mínimo voltaje alcanzado: 21.56
+----------------------------------------
+[25-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 103.54
+Presión Mínima = 1.84
+Voltaje Máximo = 29.43
+Voltaje Mínimo = 23.48
+Máxima temperatura alcanzada: 102.83
+Máxima presión alcanzada: 4.78
+Mínima presión alcanzada: 1.72
+Máximo voltaje alcanzado: 26.65
+Mínimo voltaje alcanzado: 21.35
+----------------------------------------
+[26-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 87.01
+Presión Mínima = 1.69
+Voltaje Máximo = 29.51
+Voltaje Mínimo = 21.46
+Máxima temperatura alcanzada: 84.54
+Máxima presión alcanzada: 4.72
+Mínima presión alcanzada: 1.09
+Máximo voltaje alcanzado: 27.03
+Mínimo voltaje alcanzado: 21.64
+----------------------------------------
+[27-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 103.97
+Presión Mínima = 1.52
+Voltaje Máximo = 28.64
+Voltaje Mínimo = 22.5
+Máxima temperatura alcanzada: 89.89
+Máxima presión alcanzada: 5.64
+Mínima presión alcanzada: 0.83
+Máximo voltaje alcanzado: 27.21
+Mínimo voltaje alcanzado: 22.98
+----------------------------------------
+[28-02-2026]
+Alarmas establecidas:
+Temperatura Crítica = 85.22
+Presión Mínima = 1.89
+Voltaje Máximo = 26.9
+Voltaje Mínimo = 23.18
+Máxima temperatura alcanzada: 86.68
+Máxima presión alcanzada: 3.7
+Mínima presión alcanzada: 0.99
+Máximo voltaje alcanzado: 25.6
+Mínimo voltaje alcanzado: 23.03
+----------------------------------------
+[01-03-2026]
+Alarmas establecidas:
+Temperatura Crítica = 95.21
+Presión Mínima = 1.96
+Voltaje Máximo = 29.66
+Voltaje Mínimo = 22.77
+Máxima temperatura alcanzada: 84.77
+Máxima presión alcanzada: 6.75
+Mínima presión alcanzada: 1.3
+Máximo voltaje alcanzado: 27.51
+Mínimo voltaje alcanzado: 22.49
+----------------------------------------
+[02-03-2026]
+Alarmas establecidas:
+Temperatura Crítica = 90.89
+Presión Mínima = 1.72
+Voltaje Máximo = 24.94
+Voltaje Mínimo = 20.05
+Máxima temperatura alcanzada: 81.27
+Máxima presión alcanzada: 5.54
+Mínima presión alcanzada: 1.35
+Máximo voltaje alcanzado: 25.61
+Mínimo voltaje alcanzado: 22.15
+----------------------------------------
+[03-03-2026]
+Alarmas establecidas:
+Temperatura Crítica = 89.41
+Presión Mínima = 1.56
+Voltaje Máximo = 28.94
+Voltaje Mínimo = 23.41
+Máxima temperatura alcanzada: 91.72
+Máxima presión alcanzada: 6.53
+Mínima presión alcanzada: 1.14
+Máximo voltaje alcanzado: 29.16
+Mínimo voltaje alcanzado: 22.01
+----------------------------------------
+[04-03-2026]
+Alarmas establecidas:
+Temperatura Crítica = 91.65
+Presión Mínima = 1.6
+Voltaje Máximo = 26.66
+Voltaje Mínimo = 21.54
+Máxima temperatura alcanzada: 90.8
+Máxima presión alcanzada: 5.44
+Mínima presión alcanzada: 1.53
+Máximo voltaje alcanzado: 24.97
+Mínimo voltaje alcanzado: 21.12
+----------------------------------------
+[05-03-2026]
+Alarmas establecidas:
+Temperatura Crítica = 91.58
+Presión Mínima = 1.91
+Voltaje Máximo = 30.44
+Voltaje Mínimo = 20.22
+Máxima temperatura alcanzada: 84.26
+Máxima presión alcanzada: 6.55
+Mínima presión alcanzada: 1.05
+Máximo voltaje alcanzado: 25.17
+Mínimo voltaje alcanzado: 23.21
+----------------------------------------
+[06-03-2026]
+Alarmas establecidas:
+Temperatura Crítica = 93.9
+Presión Mínima = 1.95
+Voltaje Máximo = 26.19
+Voltaje Mínimo = 21.64
+Máxima temperatura alcanzada: 93.21
+Máxima presión alcanzada: 7.42
+Mínima presión alcanzada: 1.26
+Máximo voltaje alcanzado: 24.7
+Mínimo voltaje alcanzado: 23.06
+----------------------------------------
+[07-03-2026]
+Alarmas establecidas:
+Temperatura Crítica = 102.38
+Presión Mínima = 1.91
+Voltaje Máximo = 29.44
+Voltaje Mínimo = 22.42
+Máxima temperatura alcanzada: 94.7
+Máxima presión alcanzada: 6.43
+Mínima presión alcanzada: 2.41
+Máximo voltaje alcanzado: 24.95
+Mínimo voltaje alcanzado: 21.81
+----------------------------------------
+[08-03-2026]
+Alarmas establecidas:
+Temperatura Crítica = 89.84
+Presión Mínima = 1.8
+Voltaje Máximo = 24.59
+Voltaje Mínimo = 20.97
+Máxima temperatura alcanzada: 86.76
+Máxima presión alcanzada: 5.34
+Mínima presión alcanzada: 0.81
+Máximo voltaje alcanzado: 25.03
+Mínimo voltaje alcanzado: 21.92
+----------------------------------------
