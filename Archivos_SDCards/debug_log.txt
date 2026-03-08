@@ -180,3 +180,13 @@
 [2026-03-07 16:02:19] Exito: MAC=9C-9C-1F-C6-30-66_Registro_normal_de_operacion.txt guardado (3457 bytes).
 [2026-03-08 04:00:38] Iniciando carga: MAC=9C-9C-1F-C6-30-66_Sabado_7_de_Marzo_2026.txt
 [2026-03-08 04:00:38] Exito: MAC=9C-9C-1F-C6-30-66_Sabado_7_de_Marzo_2026.txt guardado (2300 bytes).
+[2026-03-08 16:00:43] Iniciando carga en carpeta de MAC: MAC=9C-9C-1F-C6-30-66_Alarmas_log.txt
+[2026-03-08 16:00:43] Exito: MAC=9C-9C-1F-C6-30-66_Alarmas_log.txt guardado en /srv/disk26/4698095/www/marant.medianewsonline.com/Archivos_SDCards/uploads/9C-9C-1F-C6-30-66/ (6382 bytes).
+[2026-03-08 16:14:53] Iniciando carga en carpeta de MAC: MAC=9C-9C-1F-C6-30-66_Confirmaciones_Nube.txt
+[2026-03-08 16:14:53] Exito: MAC=9C-9C-1F-C6-30-66_Confirmaciones_Nube.txt guardado en /srv/disk26/4698095/www/marant.medianewsonline.com/Archivos_SDCards/uploads/9C-9C-1F-C6-30-66/ (143 bytes).
+[2026-03-08 16:17:43] Iniciando carga en carpeta de MAC: MAC=9C-9C-1F-C6-30-66_Sabado_7_de_Marzo_2026.txt
+[2026-03-08 16:17:43] Exito: MAC=9C-9C-1F-C6-30-66_Sabado_7_de_Marzo_2026.txt guardado en /srv/disk26/4698095/www/marant.medianewsonline.com/Archivos_SDCards/uploads/9C-9C-1F-C6-30-66/ (26174 bytes).
+[2026-03-08 16:17:44] Iniciando carga en carpeta de MAC: MAC=9C-9C-1F-C6-30-66_Registro_normal_de_operacion.txt
+[2026-03-08 16:17:44] Exito: MAC=9C-9C-1F-C6-30-66_Registro_normal_de_operacion.txt guardado en /srv/disk26/4698095/www/marant.medianewsonline.com/Archivos_SDCards/uploads/9C-9C-1F-C6-30-66/ (3587 bytes).
+[2026-03-08 16:17:45] Iniciando carga en carpeta de MAC: MAC=9C-9C-1F-C6-30-66_Registro_normal_de_operacion.txt
+[2026-03-08 16:17:45] Exito: MAC=9C-9C-1F-C6-30-66_Registro_normal_de_operacion.txt guardado en /srv/disk26/4698095/www/marant.medianewsonline.com/Archivos_SDCards/uploads/9C-9C-1F-C6-30-66/ (3587 bytes).

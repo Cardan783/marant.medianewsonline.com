@@ -1,0 +1,3 @@
+MAC=9C-9C-1F-C6-30-66_Viernes_6_de_Marzo_2026.txt
+MAC=9C-9C-1F-C6-30-66_Registro_normal_de_operacion.txt
+MAC=9C-9C-1F-C6-30-66_Alarmas_log.txt
