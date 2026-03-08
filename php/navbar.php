@@ -21,7 +21,7 @@
                     <a class="nav-link" href="<?php echo $base_path; ?>tabla.php"><i class="fa-solid fa-table me-2"></i>Historial</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo $base_path; ?>analisis_operacional.php"><i class="fa-solid fa-sd-card me-2"></i>Análisis operacional diario</a>
+                    <a class="nav-link" href="<?php echo $base_path; ?>analisis_operacional.php"><i class="fa-solid fa-sd-card me-2"></i>Análisis diario de operaciòn</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo $base_path; ?>php/configuracion.php"><i class="fa-solid fa-gear me-2"></i>Configuración</a>
