@@ -33,7 +33,8 @@ foreach ($directorios as $dir) {
 if ($ruta_final) {
     readfile($ruta_final);
 } else {
-    http_response_code(404);
-    echo json_encode(["error" => "Archivo no encontrado", "archivo_buscado" => $nombre_archivo]);
+    // Devolvemos 200 OK para evitar el error rojo en la consola del navegador
+    http_response_code(200);
+    echo json_encode(["status" => "offline", "error" => "Archivo no encontrado"]);
 }
 ?>

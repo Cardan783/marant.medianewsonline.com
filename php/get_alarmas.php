@@ -1,5 +1,15 @@
 <?php
 session_start(); // Iniciar sesión para verificar permisos
+// Definir el token secreto que pusimos en el ESP32
+$api_secret = "SampaTV_Secure";
+
+// Verificar si viene el token correcto en la URL
+$es_esp32 = (isset($_GET['api_token']) && $_GET['api_token'] === $api_secret);
+
+// Si NO es el ESP32 y NO está logueado como usuario, bloquear.
+if (!$es_esp32 && !isset($_SESSION['user_id'])) {
+    die("Error: Acceso no autorizado");
+}
 
 // 1. Incluimos tu archivo de conexión PDO
 include 'conexion.php'; 
@@ -17,21 +27,24 @@ if ($mac_recibida !== '' || $equipo_id_recibido !== '') {
         if ($equipo_id_recibido !== '') {
             // Si recibimos ID directamente (desde la Web)
             
-            if (!isset($_SESSION['user_id'])) {
+            if (!$es_esp32 && !isset($_SESSION['user_id'])) {
                 echo "Error: Acceso no autorizado";
                 exit;
             }
-            $stmt_check = $conn->prepare("SELECT id FROM equipos WHERE id = ? AND usuario_id = ?");
-            $stmt_check->execute([$equipo_id_recibido, $_SESSION['user_id']]);
-            if (!$stmt_check->fetch()) {
-                echo "Error: Equipo no encontrado o acceso denegado";
-                exit;
+            
+            if (!$es_esp32) {
+                $stmt_check = $conn->prepare("SELECT id FROM equipos WHERE id = ? AND usuario_id = ?");
+                $stmt_check->execute([$equipo_id_recibido, $_SESSION['user_id']]);
+                if (!$stmt_check->fetch()) {
+                    echo "Error: Equipo no encontrado o acceso denegado";
+                    exit;
+                }
             }
 
             $equipo_id = $equipo_id_recibido;
         } else {
              // SEGURIDAD: Verificar que el usuario esté logueado
-            if (!isset($_SESSION['user_id'])) {
+            if (!$es_esp32 && !isset($_SESSION['user_id'])) {
                 echo "Error: Acceso no autorizado";
                 exit;
             }
@@ -49,13 +62,15 @@ if ($mac_recibida !== '' || $equipo_id_recibido !== '') {
                 $equipo_id = $fila['id']; 
 
                      // SEGURIDAD: Adicional verificar si la mac pertenece al usuario
-                     $stmt_check_mac = $conn->prepare("SELECT id FROM equipos WHERE mac_address = ? AND usuario_id = ?");
-                     $stmt_check_mac->execute([$mac_recibida, $_SESSION['user_id']]);
+                     if (!$es_esp32) {
+                         $stmt_check_mac = $conn->prepare("SELECT id FROM equipos WHERE mac_address = ? AND usuario_id = ?");
+                         $stmt_check_mac->execute([$mac_recibida, $_SESSION['user_id']]);
 
                          if ($stmt_check_mac->rowCount() === 0) {
                              echo "Error: Equipo no encontrado o acceso denegado";
                              exit;
                          }
+                     }
 
             } else {
 

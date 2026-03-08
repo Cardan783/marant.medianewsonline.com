@@ -116,9 +116,18 @@ unset($equipo); // Romper referencia del foreach
     <div class="container pt-5 pt-lg-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-dark"><i class="bi bi-speedometer2 me-2"></i>Estado de la Flota</h2>
-            <div>
-                <button id="btnMute" class="btn btn-outline-secondary me-2" onclick="toggleMute()"><i class="fa-solid fa-volume-high"></i></button>
-                <button onclick="actualizarPanel()" class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise me-1"></i>Actualizar</button>
+            <div class="d-flex align-items-center gap-2">
+                <!-- Selector de Modo -->
+                <div class="btn-group me-2" role="group" aria-label="Modo de datos">
+                    <input type="radio" class="btn-check" name="modoDatos" id="modoDB" autocomplete="off" checked onchange="cambiarModo('db')">
+                    <label class="btn btn-outline-primary" for="modoDB"><i class="bi bi-database me-1"></i>Periódico (BD)</label>
+
+                    <input type="radio" class="btn-check" name="modoDatos" id="modoLive" autocomplete="off" onchange="cambiarModo('live')">
+                    <label class="btn btn-outline-danger" for="modoLive"><i class="bi bi-lightning-charge me-1"></i>En Vivo</label>
+                </div>
+
+                <button id="btnMute" class="btn btn-outline-secondary" onclick="toggleMute()"><i class="fa-solid fa-volume-high"></i></button>
+                <button id="btnActualizarManual" onclick="actualizarPanel()" class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i></button>
             </div>
         </div>
 
@@ -248,8 +257,8 @@ unset($equipo); // Romper referencia del foreach
     <script>
         console.log(">>> Panel General JS cargado");
         let intervaloPanel = null;
-        let isEmergencyMode = false;
-        let emergencyInterval = null;
+        let intervaloTiempoReal = null;
+        let modoActual = 'db'; // 'db' o 'live'
 
         // --- Lógica de Audio ---
         const audioCritico = new Audio('http://marant.medianewsonline.com/Sonidos/bip-temp-critica.wav');
@@ -288,66 +297,30 @@ unset($equipo); // Romper referencia del foreach
             const hayAdvertencia = document.querySelector('.status-warning');
             const btn = document.getElementById('btnMute');
             
+            // 1. Actualizar UI del botón Mute
             if (isMuted) {
-                // Si hay alarma activa pero está silenciado, cambiar icono para avisar visualmente
                 if (hayPeligro || hayAdvertencia) {
                     btn.innerHTML = '<i class="fa-solid fa-bell-slash fa-shake"></i>';
                 } else {
                     btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
                 }
-                return;
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
             }
             
-            // Si hay peligro y NO estamos en modo emergencia, activarlo
-            if ((hayPeligro || hayAdvertencia) && !isEmergencyMode) {
-                activarModoEmergencia();
-            }
-            
-            if (hayPeligro) {
-                audioCritico.play().catch(e => console.log("Audio play blocked", e));
-            } else if (hayAdvertencia) {
-                audioAdvertencia.play().catch(e => console.log("Audio play blocked", e));
+            // 3. Lógica de Audio (Solo si no está muteado)
+            if (!isMuted) {
+                if (hayPeligro) {
+                    audioCritico.play().catch(e => console.log("Audio play blocked", e));
+                } else if (hayAdvertencia) {
+                    audioAdvertencia.play().catch(e => console.log("Audio play blocked", e));
+                }
             }
         }
 
-        // --- FUNCIONES MODO EMERGENCIA (Lectura JSON) ---
-        function activarModoEmergencia() {
-            if (isEmergencyMode) return;
-            isEmergencyMode = true;
-            console.warn("⚠️ ALERTA DETECTADA: Cambiando a lectura desde archivos JSON (4s)");
-            
-            // Detener actualización normal (BD)
-            if (intervaloPanel) clearInterval(intervaloPanel);
-            
-            // Indicador visual en título
-            const title = document.querySelector('h2');
-            if(title && !document.getElementById('badge-emergencia')) {
-                title.innerHTML += ' <span id="badge-emergencia" class="badge bg-danger blink-active fs-6 align-middle">MODO ALERTA (JSON)</span>';
-            }
-
-            // Iniciar lectura de archivos cada 4 segundos
-            emergencyInterval = setInterval(leerArchivosEmergencia, 4000);
-            leerArchivosEmergencia(); // Ejecutar inmediatamente
-        }
-
-        function desactivarModoEmergencia() {
-            if (!isEmergencyMode) return;
-            isEmergencyMode = false;
-            console.log("✅ VALORES ESTABLES: Retornando a modo normal (BD)");
-            
-            if (emergencyInterval) clearInterval(emergencyInterval);
-            
-            const badge = document.getElementById('badge-emergencia');
-            if(badge) badge.remove();
-
-            // Reiniciar ciclo normal de BD
-            intervaloPanel = setInterval(actualizarPanel, 5000);
-            actualizarPanel();
-        }
-
-        async function leerArchivosEmergencia() {
+        // --- LECTURA CONTINUA DE DATOS JSON (TIEMPO REAL) ---
+        async function leerDatosTiempoReal() {
             const cards = document.querySelectorAll('.equipment-card');
-            let algunCritico = false;
 
             for (const card of cards) {
                 const mac = card.dataset.mac ? card.dataset.mac.trim() : null;
@@ -360,16 +333,23 @@ unset($equipo); // Romper referencia del foreach
                 const maxVolt = parseFloat(card.dataset.maxVolt);
                 const minVolt = parseFloat(card.dataset.minVolt);
 
-                const macFormatted = mac.replace(/:/g, '-');
-                const url = `Archivos_SDCards/MAC=${macFormatted}_ajax.txt?_=${Date.now()}`;
+                // CAMBIO: Usar el intermediario PHP para evitar errores 404 en consola
+                const url = `php/leer_ajax.php?mac=${encodeURIComponent(mac)}&_=${Date.now()}`;
 
                 try {
                     const response = await fetch(url);
-                    if (!response.ok) {
-                        console.warn(`[Modo Alerta] No se encontró archivo para el equipo con MAC: ${mac}. Verifique la BD.`);
+                    
+                    if (!response.ok) { 
                         continue;
                     }
                     const data = await response.json();
+                    
+                    // Si el PHP nos dice que está offline o hay error, limpiamos y seguimos
+                    if (data.status === 'offline' || data.error) {
+                        const badge = card.querySelector('.badge-live');
+                        if(badge) badge.remove();
+                        continue;
+                    }
                     
                     // CORRECCIÓN: Usar las claves exactas que genera ajax.php (temp, pres, volt)
                     const temp = parseFloat(data.temp);
@@ -388,6 +368,16 @@ unset($equipo); // Romper referencia del foreach
                         elTemp.textContent = `${temp.toFixed(1)} °C`;
                         elPres.textContent = `${pres.toFixed(1)} hPa`;
                         elVolt.textContent = `${volt.toFixed(2)} V`;
+
+                        // Agregar indicador visual de "En Vivo"
+                        const header = card.querySelector('.card-header');
+                        if (header && !header.querySelector('.badge-live')) {
+                            const span = document.createElement('span');
+                            span.className = 'badge bg-success ms-2 badge-live';
+                            span.style.fontSize = '0.7em';
+                            span.innerHTML = '<i class="fa-solid fa-bolt"></i> LIVE';
+                            header.appendChild(span);
+                        }
                         
                         // Resetear clases visuales de valores
                         [elTemp, elPres, elVolt].forEach(v => v.className = v.className.replace(/\b(text-danger-custom|blink-active|text-warning|fw-bold)\b/g, '').trim());
@@ -407,14 +397,62 @@ unset($equipo); // Romper referencia del foreach
 
                         // Actualizar estado general de la tarjeta
                         actualizarEstadoTarjeta(card, isCritical, isWarning);
-                        if (isCritical || isWarning) algunCritico = true;
                     }
                 } catch (e) { console.error("Error leyendo JSON:", e); }
             }
 
-            // Si ya no hay críticos, volvemos al modo normal (BD)
-            if (!algunCritico && isEmergencyMode) desactivarModoEmergencia();
-            else verificarAlarmas(); // Para mantener el sonido
+            // Verificar alarmas después de actualizar con datos frescos
+            verificarAlarmas();
+        }
+
+        // --- CONTROL DE MODOS ---
+        function cambiarModo(modo) {
+            if (modo === 'live') {
+                Swal.fire({
+                    title: '¿Activar Modo En Vivo?',
+                    text: "Esta opción consume más datos debido a la actualización constante. ¿Desea continuar?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, activar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        ejecutarCambioModo('live');
+                    } else {
+                        document.getElementById('modoDB').checked = true;
+                    }
+                });
+            } else {
+                ejecutarCambioModo('db');
+            }
+        }
+
+        function ejecutarCambioModo(modo) {
+            modoActual = modo;
+            console.log(`>>> Cambiando a modo: ${modo}`);
+
+            // Limpiar ambos intervalos primero
+            if (intervaloPanel) clearInterval(intervaloPanel);
+            if (intervaloTiempoReal) clearInterval(intervaloTiempoReal);
+
+            if (modo === 'live') {
+                // MODO EN VIVO: Solo lee JSON (rápido)
+                leerDatosTiempoReal(); // Ejecutar inmediatamente
+                intervaloTiempoReal = setInterval(leerDatosTiempoReal, 2000);
+                
+                // Deshabilitar botón manual de BD para evitar confusión
+                document.getElementById('btnActualizarManual').disabled = true;
+            } else {
+                // MODO BD: Solo lee Base de Datos (lento)
+                // Limpiar badges de "LIVE" visualmente
+                document.querySelectorAll('.badge-live').forEach(el => el.remove());
+                
+                actualizarPanel(); // Ejecutar inmediatamente
+                intervaloPanel = setInterval(actualizarPanel, 5000);
+                document.getElementById('btnActualizarManual').disabled = false;
+            }
         }
 
         function actualizarEstadoTarjeta(card, isCritical, isWarning) {
@@ -458,9 +496,9 @@ unset($equipo); // Romper referencia del foreach
                 .catch(err => console.error('Error al actualizar panel:', err));
         }
 
-        // Ejecutar cada 5 segundos para mantener los datos frescos
-        intervaloPanel = setInterval(actualizarPanel, 5000);
-        // Verificar al cargar
+        // INICIALIZACIÓN
+        // Arrancar en modo BD por defecto (coincide con el radio button checked)
+        ejecutarCambioModo('db');
         setTimeout(verificarAlarmas, 1000);
     </script>
 </body>
