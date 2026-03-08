@@ -27,7 +27,7 @@ foreach ($equipos as &$equipo) {
     $equipo['datos'] = $stmt_s->fetch(PDO::FETCH_ASSOC);
 
     // Obtener umbrales de alarma
-    $stmt_a = $conn->prepare("SELECT Temp_advertencia, Temperatura as Temp_critica FROM alarmas WHERE equipo_id = ? LIMIT 1");
+    $stmt_a = $conn->prepare("SELECT Temp_advertencia, Temperatura as Temp_critica, Presion as Presion_min, Voltaje_Max, Voltaje_Min FROM alarmas WHERE equipo_id = ? LIMIT 1");
     $stmt_a->execute([$equipo['id']]);
     $equipo['alarmas'] = $stmt_a->fetch(PDO::FETCH_ASSOC);
 }
@@ -101,6 +101,12 @@ unset($equipo); // Romper referencia del foreach
         body.dark-mode .btn-outline-secondary { color: #adb5bd; border-color: #adb5bd; }
         body.dark-mode .btn-outline-secondary:hover { background-color: #adb5bd; color: #000; }
         body.dark-mode .card-header.bg-secondary { background-color: #495057 !important; }
+
+        /* Animación de Parpadeo para Alertas */
+        @keyframes blink-red { 50% { opacity: 0.5; } }
+        .blink-active { animation: blink-red 1s infinite; }
+        .text-danger-custom { color: #dc3545 !important; font-weight: bold; }
+        .card-danger-glow { box-shadow: 0 0 15px rgba(220, 53, 69, 0.6) !important; border: 1px solid #dc3545 !important; }
     </style>
 </head>
 <body>
@@ -110,35 +116,74 @@ unset($equipo); // Romper referencia del foreach
     <div class="container pt-5 pt-lg-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-dark"><i class="bi bi-speedometer2 me-2"></i>Estado de la Flota</h2>
-            <button onclick="location.reload()" class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise me-1"></i>Actualizar</button>
+            <div>
+                <button id="btnMute" class="btn btn-outline-secondary me-2" onclick="toggleMute()"><i class="fa-solid fa-volume-high"></i></button>
+                <button onclick="actualizarPanel()" class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise me-1"></i>Actualizar</button>
+            </div>
         </div>
 
+        <div id="main-content-area">
         <?php if (count($equipos) > 0): ?>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                 <?php foreach ($equipos as $eq): 
                     // Determinar estado
                     $temp = $eq['datos']['temperatura'] ?? null;
+                    $pres = $eq['datos']['presion'] ?? null;
+                    $volt = $eq['datos']['voltaje'] ?? null;
+
                     $crit = $eq['alarmas']['Temp_critica'] ?? 90;
                     $adv = $eq['alarmas']['Temp_advertencia'] ?? 85;
+                    $min_pres = $eq['alarmas']['Presion_min'] ?? 0;
+                    $max_volt = $eq['alarmas']['Voltaje_Max'] ?? 0;
+                    $min_volt = $eq['alarmas']['Voltaje_Min'] ?? 0;
                     
                     $statusClass = 'status-normal';
                     $headerClass = 'bg-status-normal';
                     $icon = 'bi-check-circle-fill';
                     $estadoTexto = 'Normal';
+                    $hasCritical = false;
+                    $hasWarning = false;
+
+                    // Clases para valores individuales
+                    $classTemp = '';
+                    $classPres = '';
+                    $classVolt = '';
 
                     if ($temp !== null) {
                         if ($temp >= $crit) {
-                            $statusClass = 'status-danger';
-                            $headerClass = 'bg-status-danger';
-                            $icon = 'bi-exclamation-octagon-fill';
-                            $estadoTexto = 'Crítico';
+                            $hasCritical = true;
+                            $classTemp = 'text-danger-custom blink-active';
                         } elseif ($temp >= $adv) {
-                            $statusClass = 'status-warning';
-                            $headerClass = 'bg-status-warning';
-                            $icon = 'bi-exclamation-triangle-fill';
-                            $estadoTexto = 'Alerta';
+                            $hasWarning = true;
+                            $classTemp = 'text-warning fw-bold';
                         }
-                    } else {
+                    }
+
+                    if ($pres !== null && $min_pres > 0) {
+                        if ($pres < $min_pres) {
+                            $hasCritical = true;
+                            $classPres = 'text-danger-custom blink-active';
+                        }
+                    }
+
+                    if ($volt !== null && ($max_volt > 0 || $min_volt > 0)) {
+                        if (($max_volt > 0 && $volt > $max_volt) || ($min_volt > 0 && $volt < $min_volt)) {
+                            $hasCritical = true;
+                            $classVolt = 'text-danger-custom blink-active';
+                        }
+                    }
+
+                    if ($hasCritical) {
+                        $statusClass = 'status-danger card-danger-glow';
+                        $headerClass = 'bg-status-danger';
+                        $icon = 'bi-exclamation-octagon-fill';
+                        $estadoTexto = 'Crítico';
+                    } elseif ($hasWarning) {
+                        $statusClass = 'status-warning';
+                        $headerClass = 'bg-status-warning';
+                        $icon = 'bi-exclamation-triangle-fill';
+                        $estadoTexto = 'Alerta';
+                    } elseif ($temp === null) {
                         $statusClass = 'border-secondary'; // Sin datos
                         $headerClass = 'bg-secondary';
                         $icon = 'bi-question-circle-fill';
@@ -152,19 +197,19 @@ unset($equipo); // Romper referencia del foreach
                             <i class="bi <?php echo $icon; ?>"></i>
                         </div>
                         <div class="card-body">
-                            <h6 class="card-subtitle mb-3 text-muted small"><i class="bi bi-cpu me-1"></i>MAC: <?php echo htmlspecialchars($eq['mac_address']); ?></h6>
+                            <h6 class="card-subtitle mb-3 text-primary small"><i class="bi bi-cpu me-1"></i>MAC: <?php echo htmlspecialchars($eq['mac_address']); ?></h6>
                             
                             <div class="data-row">
                                 <span class="text-secondary"><i class="fa-solid fa-temperature-half me-2"></i>Temperatura</span>
-                                <span class="data-value"><?php echo $temp !== null ? number_format($temp, 1) . ' °C' : '--'; ?></span>
+                                <span class="data-value <?php echo $classTemp; ?>"><?php echo $temp !== null ? number_format($temp, 1) . ' °C' : '--'; ?></span>
                             </div>
                             <div class="data-row">
                                 <span class="text-secondary"><i class="fa-solid fa-gauge me-2"></i>Presión</span>
-                                <span class="data-value"><?php echo isset($eq['datos']['presion']) ? number_format($eq['datos']['presion'], 1) . ' hPa' : '--'; ?></span>
+                                <span class="data-value <?php echo $classPres; ?>"><?php echo isset($eq['datos']['presion']) ? number_format($eq['datos']['presion'], 1) . ' hPa' : '--'; ?></span>
                             </div>
                             <div class="data-row">
                                 <span class="text-secondary"><i class="fa-solid fa-bolt me-2"></i>Voltaje</span>
-                                <span class="data-value"><?php echo isset($eq['datos']['voltaje']) ? number_format($eq['datos']['voltaje'], 2) . ' V' : '--'; ?></span>
+                                <span class="data-value <?php echo $classVolt; ?>"><?php echo isset($eq['datos']['voltaje']) ? number_format($eq['datos']['voltaje'], 2) . ' V' : '--'; ?></span>
                             </div>
 
                             <div class="last-update">
@@ -186,16 +231,86 @@ unset($equipo); // Romper referencia del foreach
                 <p>Ve a la sección de <a href="php/configuracion.php">Configuración</a> para agregar tu primer equipo.</p>
             </div>
         <?php endif; ?>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Auto-refrescar la página cada 60 segundos para mantener los datos actualizados
-        setTimeout(function(){
-           location.reload();
-        }, 60000);
+        // --- Lógica de Audio ---
+        const audioCritico = new Audio('http://marant.medianewsonline.com/Sonidos/bip-temp-critica.wav');
+        const audioAdvertencia = new Audio('http://marant.medianewsonline.com/Sonidos/alarm-door-chime.wav');
+        let isMuted = localStorage.getItem('isMuted') === 'true';
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            localStorage.setItem('isMuted', isMuted);
+            updateMuteUI();
+            if(isMuted) {
+                audioCritico.pause();
+                audioAdvertencia.pause();
+                audioCritico.currentTime = 0;
+                audioAdvertencia.currentTime = 0;
+            }
+            // Verificar estado visual del botón inmediatamente
+            verificarAlarmas();
+        }
+
+        function updateMuteUI() {
+            const btn = document.getElementById('btnMute');
+            if(isMuted) {
+                btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                btn.classList.replace('btn-outline-secondary', 'btn-danger');
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                btn.classList.replace('btn-danger', 'btn-outline-secondary');
+            }
+        }
+        updateMuteUI();
+
+        function verificarAlarmas() {
+            const hayPeligro = document.querySelector('.status-danger');
+            const hayAdvertencia = document.querySelector('.status-warning');
+            const btn = document.getElementById('btnMute');
+            
+            if (isMuted) {
+                // Si hay alarma activa pero está silenciado, cambiar icono para avisar visualmente
+                if (hayPeligro || hayAdvertencia) {
+                    btn.innerHTML = '<i class="fa-solid fa-bell-slash fa-shake"></i>';
+                } else {
+                    btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                }
+                return;
+            }
+            
+            if (hayPeligro) {
+                audioCritico.play().catch(e => console.log("Audio play blocked", e));
+            } else if (hayAdvertencia) {
+                audioAdvertencia.play().catch(e => console.log("Audio play blocked", e));
+            }
+        }
+
+        // Función para actualizar el contenido sin recargar la página (evita flash)
+        function actualizarPanel() {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newContent = doc.getElementById('main-content-area');
+                    if (newContent) {
+                        document.getElementById('main-content-area').innerHTML = newContent.innerHTML;
+                        verificarAlarmas(); // Verificar alarmas tras actualizar
+                    }
+                })
+                .catch(err => console.error('Error al actualizar panel:', err));
+        }
+
+        // Ejecutar cada 60 segundos
+        setInterval(actualizarPanel, 60000);
+        // Verificar al cargar
+        setTimeout(verificarAlarmas, 1000);
     </script>
 </body>
 </html>

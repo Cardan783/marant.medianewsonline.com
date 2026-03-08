@@ -131,6 +131,9 @@ if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in'] === true) 
         <button id="btnExportarPDF" disabled>
           <i class="fa-solid fa-file-pdf"></i> Exportar Gráfica
         </button>
+        <button id="btnMute" class="theme-toggle-button" style="background-color: #6c757d;">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
       </div>
     </div>
 

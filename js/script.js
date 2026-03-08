@@ -71,6 +71,35 @@ let alertaSonoraActiva = false;
 let intervaloActualizacion;
 let alertaActualTipo = null;
 
+// --- Control de Mute ---
+let isMuted = localStorage.getItem('isMuted') === 'true';
+const btnMute = document.getElementById('btnMute');
+
+function updateMuteUI() {
+    if (!btnMute) return;
+    if (isMuted) {
+        if (alertaSonoraActiva) {
+            btnMute.innerHTML = '<i class="fa-solid fa-bell-slash fa-shake"></i>';
+        } else {
+            btnMute.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+        }
+        btnMute.classList.add('btn-danger');
+    } else {
+        btnMute.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+        btnMute.classList.remove('btn-danger');
+    }
+}
+
+if (btnMute) {
+    btnMute.addEventListener('click', () => {
+        isMuted = !isMuted;
+        localStorage.setItem('isMuted', isMuted);
+        updateMuteUI();
+        if (isMuted) detenerAlarmaSonora(null, null, null); // Detener sonido actual
+    });
+    updateMuteUI();
+}
+
 // --- Variables para el Cronómetro y el Intervalo Dinámico ---
 let intervaloCountdown = null;
 // La constante anterior se reemplaza por una función que toma el valor del select
@@ -829,6 +858,8 @@ function iniciarAlarmaSonora(
   umbralAdvertencia,
   umbralCritico,
 ) {
+  if (isMuted) return; // Si está muteado, no hacer nada
+
   const sonido = tipo === "critica" ? sonidoCritico : sonidoAdvertencia;
   const claseAlerta =
     tipo === "critica" ? "alerta-peligro" : "alerta-advertencia";
@@ -856,6 +887,7 @@ function iniciarAlarmaSonora(
   if (!alertaSonoraActiva) {
     alertaSonoraActiva = true;
     alertaActualTipo = tipo;
+    updateMuteUI(); // Actualizar icono si está muteado
 
     contenedorAlerta.textContent = mensaje;
     contenedorAlerta.classList.add(claseAlerta);
@@ -873,7 +905,7 @@ function iniciarAlarmaSonora(
       contenedorAlerta.style.visibility =
         contenedorAlerta.style.visibility === "hidden" ? "visible" : "hidden";
 
-      if (contadorParpadeo % repeticiones === 0) {
+      if (contadorParpadeo % repeticiones === 0 && !isMuted) {
         sonido.currentTime = 0;
         sonido.play().catch((e) => {});
       }
@@ -889,6 +921,7 @@ function detenerAlarmaSonora(currentTemp, umbralAdvertencia, umbralCritico) {
   if (alertaSonoraActiva) {
     alertaSonoraActiva = false;
     alertaActualTipo = null;
+    updateMuteUI(); // Restaurar icono
     clearInterval(intervaloAlarma);
     contenedorAlerta.classList.add("oculto");
     contenedorAlerta.style.visibility = "visible";
